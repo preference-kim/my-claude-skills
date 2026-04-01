@@ -7,6 +7,11 @@ Launch a **general-purpose Agent** (subagent_type: general-purpose, model: opus)
 The agent MUST run in its own context -- do NOT attempt to perform the review yourself.
 Pass the plan file path from $ARGUMENTS (default: the most recent file in ~/.claude/plans/) to the agent.
 
+After the agent returns, you MUST:
+1. Summarize the verdict and key findings to the user.
+2. If the verdict is **Revise** or **Reject**, write the agent's revised/improved plan to the plan file (overwriting the original), so the user always sees the final recommended plan.
+3. If the verdict is **Approve**, no plan file changes are needed.
+
 <agent-prompt>
 # Plan Review -- Staff Engineer Evaluation
 
@@ -95,4 +100,7 @@ Approve only what you would stake your reputation on.
 
 ### Required Changes (if Revise/Reject)
 [concrete improved plan or specific changes needed]
+
+### Revised Plan (if Revise/Reject)
+[Complete revised plan ready to be written to the plan file. This must be a self-contained plan document, not just a diff.]
 </agent-prompt>
