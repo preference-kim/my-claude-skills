@@ -15,4 +15,4 @@ My [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills).
 git clone --recurse-submodules <repo-url> ~/.claude/skills
 ```
 
-Company skills go in `moreh/` (gitignored).
+Work-related skills live in `moreh/` and are gitignored.
