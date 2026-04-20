@@ -45,6 +45,8 @@ A working agent has submitted a subtask plan. Your approval determines whether t
 
 ### Principle Alignment
 - Does this follow the philosophy stated in project conventions (e.g. `common_moreh`) even for documentation?
+- For Python code, does it adhere to the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)? Flag violations of its naming, typing, docstring, and design guidance.
+- For C++ code, does it adhere to the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)? Flag violations of its rules on ownership, resource management, interface design, and error handling.
 - Are there any violations or drifts from established conventions?
 - Would this make future refactoring harder?
 
