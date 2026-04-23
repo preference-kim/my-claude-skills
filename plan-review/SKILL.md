@@ -5,12 +5,46 @@ description: Staff Engineer plan reviewer. Spawns an isolated agent to rigorousl
 
 Launch a **general-purpose Agent** (subagent_type: general-purpose, model: opus) with the prompt below.
 The agent MUST run in its own context -- do NOT attempt to perform the review yourself.
-Pass the plan file path from $ARGUMENTS (default: the most recent file in ~/.claude/plans/) to the agent.
 
-After the agent returns, you MUST:
-1. Summarize the verdict and key findings to the user.
-2. If the verdict is **Revise** or **Reject**, write the agent's revised/improved plan to the plan file (overwriting the original), so the user always sees the final recommended plan.
-3. If the verdict is **Approve**, no plan file changes are needed.
+**Resolve the plan file path BEFORE launching the agent** so that both you and the agent operate on the same file:
+- If `$ARGUMENTS` looks like a filesystem path (starts with `/`, `~`, or `./`, or matches an existing file when joined with `~/.claude/plans/`), use it. Expand `~` and resolve to an absolute path.
+- Otherwise (empty, or free-form text like "the auth plan"): run `ls -t ~/.claude/plans/*.md | head -n 1`. If that is empty, ask the user for a path and stop. If `$ARGUMENTS` had free-form text, tell the user "I'm reviewing `<resolved file>` -- override with a path if wrong" in your response, so a wrong guess is catchable.
+- Pass the resolved absolute path to the agent. Do not let the agent re-resolve "most recent" independently.
+Remember this path as `PLAN_PATH` for the post-agent steps.
+
+## Post-agent protocol (MANDATORY -- do not skip any step)
+
+The skill is not complete until the user has seen the final plan rendered. Just summarizing the verdict is a failure mode. Execute these steps in order:
+
+### Step 1 -- Persist the revised plan (if Revise/Reject)
+If verdict is **Revise** or **Reject**: extract the content **under** the agent's `### Revised Plan` heading (exclude the heading itself and anything after the section ends) and write it to `PLAN_PATH`, overwriting the original. If verdict is **Approve**: leave the file unchanged.
+
+**Extraction rules — preserve content, strip only the wrapper:**
+- If the agent wrapped the plan in an outer code fence (e.g. ```` ```markdown ... ``` ````), strip **only** that outermost fence pair. Inner code fences (```` ```python ```` etc.) must stay intact.
+- Preserve every character otherwise: unicode (±, →, —), whitespace, list markers, trailing newlines. Do **not** paraphrase, re-wrap, or "clean up" the text. The file content after write must byte-for-byte match the agent's section (modulo the outer fence).
+- If the section boundary is ambiguous (heading name differs, multiple candidates, or the section is empty), do **not** overwrite. Tell the user what you found and ask before writing.
+
+### Step 2 -- Re-read and present the final plan
+Read `PLAN_PATH` back from disk (do NOT rely on the agent's returned text -- read the actual file) and emit a response structured exactly like this:
+
+```
+## Plan Review Verdict: <Approve | Revise | Reject>
+
+<2-4 sentence summary of the key findings from the reviewer>
+
+---
+
+## Final plan (<PLAN_PATH>)
+
+<full contents of the plan file, rendered as markdown>
+```
+
+This "browse" step is non-negotiable -- it is the entire point of the skill. Without it the user cannot see what was changed.
+
+### Step 3 -- Plan-mode reconciliation
+If the skill was invoked while you were in **plan mode** (i.e. the conversation originated from an ExitPlanMode-gated plan), do NOT call ExitPlanMode yourself after this skill. The revised plan on disk is now the source of truth; wait for the user to either approve execution or give further direction. If the user then says "go ahead" / "proceed" / equivalent, call ExitPlanMode with the file contents of `PLAN_PATH` as its `plan` argument -- never with the pre-review plan, and never with your own paraphrase.
+
+If you were NOT in plan mode when invoked, simply stop after Step 2 and await user direction.
 
 <agent-prompt>
 # Plan Review -- Staff Engineer Evaluation
@@ -104,5 +138,11 @@ Approve only what you would stake your reputation on.
 [concrete improved plan or specific changes needed]
 
 ### Revised Plan (if Revise/Reject)
-[Complete revised plan ready to be written to the plan file. This must be a self-contained plan document, not just a diff.]
+[Complete revised plan ready to be written to the plan file. This must be a self-contained plan document, not just a diff.
+REQUIRED when verdict is Revise or Reject. If you cannot produce one, downgrade the verdict to a form you can justify -- do NOT return Revise/Reject without a full replacement plan, because the calling skill will overwrite the plan file with the content of this section verbatim.
+
+**Format rules for this section (the caller will extract and write it to disk):**
+- Emit the plan body directly under the heading. Do NOT wrap the whole plan in an outer code fence like ```` ```markdown ... ``` ````; the caller would have to strip it and might make mistakes. Inner code fences for actual code snippets (```` ```python ````, ```` ```bash ````) are fine and expected.
+- End the section with a blank line, then stop. Do not append commentary after the plan.
+- The section content will be written to disk byte-for-byte (after stripping any outer fence if you use one anyway). Any editorial asides, meta-comments, or "here is the plan:" preambles will end up in the file.]
 </agent-prompt>
