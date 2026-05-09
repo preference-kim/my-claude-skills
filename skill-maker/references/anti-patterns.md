@@ -2,7 +2,34 @@
 
 Use this checklist during CREATE and REFINE critique. The core reference is Perplexity's "Designing, Refining, and Maintaining Agent Skills at Perplexity"; these rules adapt that methodology for Claude Code skills. The goal is not to make a skill look like documentation; the goal is to make another agent load the right context at the right time and then perform better than it would without the skill.
 
-## 1. Description As Documentation
+Run these checks in order. A routing failure invalidates later prose polish because the body may never load.
+
+## 1. Unevaluated Routing
+
+The description is a routing interface. Treat every new skill and every description change as behavior that needs positive, negative, and adjacent examples.
+
+Detect this when a draft:
+
+- has no routing eval pack
+- changes a description without comparing old and new routing behavior
+- adds broad terms like "documents," "research," "coding," or "review" without negative examples
+- cannot name the adjacent skill or workflow it must not steal
+
+Before:
+
+```yaml
+description: Use when the user asks for review, writing, documentation, or coding help.
+```
+
+After:
+
+```yaml
+description: Use when the user asks to draft, critique, refine, or improve a Claude Code SKILL.md or bundled skill folder.
+```
+
+Before accepting a description, write or reuse a routing eval pack with at least three positives, one negative, and one adjacent collision case. If the revised description cannot pass those examples, keep iterating before writing.
+
+## 2. Description As Documentation
 
 The description is the routing layer. It is paid for in every session and read before the skill body is available. A weak description explains what the skill contains; a strong description describes when the user wants it loaded.
 
@@ -27,7 +54,58 @@ description: Use when the user asks to prepare, verify, ship, or roll back a ser
 
 Changing a description after a skill exists is risky. Check it against positive, negative, and adjacent utterances before accepting the change.
 
-## 2. System-Prompt Recap
+## 3. Non-Load-Bearing Content
+
+Every paragraph should pass the failure-without-this test: would the agent likely get the task wrong without it? If not, cut it or move it out of the loaded body.
+
+Detect this when content:
+
+- explains basic concepts instead of operational gotchas
+- repeats the same rule in multiple sections
+- includes motivational framing
+- preserves planning notes that do not affect execution
+- teaches a common tool at beginner level
+
+Before:
+
+```markdown
+Skills are useful because they package repeatable instructions and help agents perform specialized tasks more consistently.
+```
+
+After:
+
+```markdown
+Ask for positive and negative routing utterances before drafting; otherwise the description usually becomes too broad.
+```
+
+The second sentence changes behavior. The first only explains the category.
+
+## 4. Missing Gotcha Capture
+
+Skills should become append-mostly where failures accumulate as durable negative examples. A critique that finds a reusable failure mode should not disappear into the chat transcript.
+
+Detect this when a refinement:
+
+- fixes a mistake without naming the failure mode
+- discovers an adjacent routing collision but does not record it
+- repeats a previous correction that could have been a gotcha
+- treats gotchas as optional prose instead of primary content
+
+Before:
+
+```markdown
+I tightened the description so it does not trigger on PR reviews.
+```
+
+After:
+
+```markdown
+Candidate gotcha: Do not add "review" to the description for skill-making; it collides with code review and plan-review routing. Keep "review" as a post-load synonym only.
+```
+
+At the end of critique, list candidate gotchas separately. Ask whether each belongs in the target skill's gotchas or in this anti-pattern file.
+
+## 5. System-Prompt Recap
 
 A skill should not restate behavior the agent already receives globally. Recapping general coding, safety, editing, formatting, or collaboration rules wastes context and can conflict with newer system instructions.
 
@@ -55,57 +133,28 @@ When refining a skill, inspect its frontmatter and any referenced bundled files 
 
 The revised version is specific to skill critique; the original is generic agent behavior.
 
-## 3. Deterministic Command Recipes
+## 6. Misused Hierarchy
 
-Do not turn a skill into a brittle list of commands the model already knows how to adapt. Exact commands are useful when the command itself is the reusable artifact, when flags are easy to get wrong, or when a local script exists. Otherwise, describe intent and constraints.
+A skill is a folder, but extra files should earn their keep. Use `references/` for heavy conditional knowledge, `scripts/` for deterministic logic the agent would otherwise rewrite, and `assets/` for reusable output resources. Do not create folders just to look complete.
 
-Detect this when the skill lists ordinary shell or git steps in sequence:
-
-- `git status`, then `git add`, then `git commit`
-- `mkdir`, then `touch`, then `cat`
-- a fixed read/edit/test sequence with no domain-specific reason
+Detect underuse when a `SKILL.md` grows into long conditional sections, pasted schemas, or many examples that only apply sometimes. Detect overuse when the skill creates empty folders, redundant README files, or reference files that contain the same rules as the body.
 
 Before:
 
 ```markdown
-Run `git status`, create a branch, edit SKILL.md, run `git diff`, and then summarize the changes.
+## API Errors
+[300 lines of status codes and retry behavior inline]
 ```
 
 After:
 
 ```markdown
-Revise the target skill in place only after confirmation. Preserve unrelated worktree changes and summarize the final diff.
+If the API returns a non-2xx response, read `references/api-errors.md` before retrying or reporting failure.
 ```
 
-Keep exact commands when they encode real local knowledge, such as a repo-specific validation script or a fragile conversion command.
+The body should tell the agent when to load the spoke. The spoke can hold the bulky detail.
 
-## 4. Non-Load-Bearing Content
-
-Every paragraph should pass the failure-without-this test: would the agent likely get the task wrong without it? If not, cut it or move it out of the loaded body.
-
-Detect this when content:
-
-- explains basic concepts instead of operational gotchas
-- repeats the same rule in multiple sections
-- includes motivational framing
-- preserves planning notes that do not affect execution
-- teaches a common tool at beginner level
-
-Before:
-
-```markdown
-Skills are useful because they package repeatable instructions and help agents perform specialized tasks more consistently.
-```
-
-After:
-
-```markdown
-Ask for positive and negative routing utterances before drafting; otherwise the description usually becomes too broad.
-```
-
-The second sentence changes behavior. The first only explains the category.
-
-## 5. Volatile Inline References
+## 7. Volatile Inline References
 
 Skills should not embed facts that change faster than the skill is maintained. This includes active API shapes, model lists, pricing, UI labels, current policies, and external service behavior. Either require live lookup, point to a reference file with clear ownership, or avoid the detail.
 
@@ -130,45 +179,29 @@ For model choice, check the official provider docs at task time and choose the c
 
 Durable local policy can stay inline. Volatile public facts should be looked up or isolated so drift is easier to spot.
 
-## 6. Misused Hierarchy
+## 8. Deterministic Command Recipes
 
-A skill is a folder, but extra files should earn their keep. Use `references/` for heavy conditional knowledge, `scripts/` for deterministic logic the agent would otherwise rewrite, and `assets/` for reusable output resources. Do not create folders just to look complete.
+Do not turn a skill into a brittle list of commands the model already knows how to adapt. Exact commands are useful when the command itself is the reusable artifact, when flags are easy to get wrong, or when a local script exists. Otherwise, describe intent and constraints.
 
-Detect underuse when a `SKILL.md` grows into long conditional sections, pasted schemas, or many examples that only apply sometimes. Detect overuse when the skill creates empty folders, redundant README files, or reference files that contain the same rules as the body.
+Detect this when the skill lists ordinary shell or git steps in sequence:
+
+- `git status`, then `git add`, then `git commit`
+- `mkdir`, then `touch`, then `cat`
+- a fixed read/edit/test sequence with no domain-specific reason
 
 Before:
 
 ```markdown
-## API Errors
-[300 lines of status codes and retry behavior inline]
+Run `git status`, create a branch, edit SKILL.md, run `git diff`, and then summarize the changes.
 ```
 
 After:
 
 ```markdown
-If the API returns a non-2xx response, read `references/api-errors.md` before retrying or reporting failure.
+Revise the target skill in place only after confirmation. Preserve unrelated worktree changes and summarize the final diff.
 ```
 
-The body should tell the agent when to load the spoke. The spoke can hold the bulky detail.
-
-## 7. Unevaluated Description Changes
-
-Small wording changes in descriptions can change routing. Treat description edits as behavior changes, not prose cleanup.
-
-Detect this when a refinement:
-
-- adds broad terms like "documents," "research," "coding," or "review" without negative examples
-- removes concrete user verbs
-- optimizes for sounding complete instead of routing precision
-- fails to test neighboring skills
-
-Before accepting a description, write or reuse:
-
-- at least three positive utterances that should load it
-- at least one negative utterance that should not
-- any adjacent skill that could be affected
-
-If the revised description cannot pass those examples, keep iterating before writing.
+Keep exact commands when they encode real local knowledge, such as a repo-specific validation script or a fragile conversion command.
 
 ## Source
 
