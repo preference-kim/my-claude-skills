@@ -8,6 +8,7 @@ My [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills).
 |-------|-------------|
 | [humanizer](humanizer/) | Rewrites AI-sounding text. Fork of [blader/humanizer](https://github.com/blader/humanizer). |
 | [plan-review](plan-review/) | Reviews implementation plans for scope and risk before coding starts. |
+| [skill-maker](skill-maker/) | Authors and refines SKILL.md files; audits drafts against an anti-patterns checklist. |
 
 ## Setup
 
