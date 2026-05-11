@@ -90,6 +90,9 @@ Detect this when a refinement:
 - discovers an adjacent routing collision but does not record it
 - repeats a previous correction that could have been a gotcha
 - treats gotchas as optional prose instead of primary content
+- turns one incident into a general rule but keeps incident-specific IDs,
+  timestamps, or examples in always-loaded skill text even though they are
+  not load-bearing
 
 Before:
 
@@ -104,6 +107,10 @@ Candidate gotcha: Do not add "review" to the description for skill-making; it co
 ```
 
 At the end of critique, list candidate gotchas separately. Ask whether each belongs in the target skill's gotchas or in this anti-pattern file.
+
+Single-incident anchoring: when turning one incident into a reusable rule,
+generalize the failure mode and avoid embedding incident-specific IDs/examples
+in always-loaded skill text unless they are load-bearing.
 
 ## 5. System-Prompt Recap
 
