@@ -16,8 +16,6 @@ My [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills).
 git clone --recurse-submodules <repo-url> ~/.claude/skills
 ```
 
-Work-related skills live in `moreh/` and are gitignored.
-
 ## References
 
 - [Designing, Refining, and Maintaining Agent Skills at Perplexity](https://research.perplexity.ai/articles/designing-refining-and-maintaining-agent-skills-at-perplexity) — principles for authoring and maintaining agent skills ("a Skill is a folder, not a file").
