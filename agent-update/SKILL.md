@@ -37,14 +37,17 @@ Before changing tracked files:
 
 ## Maintain global symlinks
 
-Keep these host-global entry points:
+Keep these host-global instruction entry points:
 
 - `~/.codex/AGENTS.md -> <dotfiles>/.codex/AGENTS.md`
 - `~/.claude/CLAUDE.md -> <dotfiles>/.claude/CLAUDE.md`
-- `~/.claude/skills -> <dotfiles>/.claude/skills`
 - `~/.agents/skills/agent-update -> <dotfiles>/.agents/skills/agent-update`
 
-Create missing parent directories. Leave correct links unchanged and replace an incorrect symlink. Never replace a real file or directory; stop and report the conflicting path instead.
+Keep `~/.claude/skills` as a real directory so host-local and shared skills can coexist. For each top-level directory under `<dotfiles>/skills` that contains `SKILL.md`, maintain this entry when its name is available:
+
+- `~/.claude/skills/<name> -> <dotfiles>/skills/<name>`
+
+Create missing parent directories. Leave correct links unchanged and replace an incorrect symlink. Never replace a real file or directory. For an instruction entry point, stop and report the conflict. For a per-skill Claude entry, preserve the existing item as a host-local override, report it as skipped, and continue with the remaining skills.
 
 ## Reconcile upstream guidance
 
