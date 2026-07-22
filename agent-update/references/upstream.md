@@ -13,6 +13,7 @@ Advance the reviewed commit only after both paths at the new commit have been in
 ## Local design
 
 - Keep `AGENTS.md` at the dotfiles root as the canonical instruction file.
+- Keep the user-owned stable working principles at the top of `AGENTS.md`, semantically independent from upstream-derived Moreh operational guidance. Upstream reconciliation must preserve their meaning and position unless the user explicitly requests a change.
 - Keep shared skills in the `skills` submodule backed by `preference-kim/my-claude-skills`.
 - Discover the shared file and skill through relative repository symlinks plus host-global Codex and Claude links.
 - Run synchronization from the first agent session on each local calendar day; do not depend on cron, launchd, or a continuously running process.
