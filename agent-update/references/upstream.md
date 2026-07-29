@@ -4,7 +4,7 @@
 
 - Repository: `https://github.com/csehydrogen/.files.git`
 - Branch: `master`
-- Reviewed commit: `00b6870f0cafd975193d5b0f31aeefa2f701bcc9`
+- Reviewed commit: `4c8bcc0accbf9f5a76549f22ff03c9811a48a367`
 - Instruction path: `AGENTS.md`
 - Skill path: `skills/agent-update/SKILL.md`
 
