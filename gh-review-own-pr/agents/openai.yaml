@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Current PR"
+  short_description: "Submit a PR and plan approved review fixes"
+  default_prompt: "Use $gh-review-own-pr to submit my current branch, collect independent reviews, and prepare an approval-gated response plan."

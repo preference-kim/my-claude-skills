@@ -11,6 +11,7 @@
 
 ## Adopted skill mappings
 
+- `skills/agent-update/` → `<dotfiles>/skills/agent-update/`
 - `skills/gh-review-own-pr/` → `<dotfiles>/skills/gh-review-own-pr/`
 
 Advance the reviewed commit only after the instruction file, updater skill, and full upstream skill manifest inventory at the new commit have been inspected and every applicable change has been reconciled or consciously covered by an intentional divergence.
