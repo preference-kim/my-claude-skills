@@ -1,4 +1,4 @@
 interface:
   display_name: "Agent Update"
-  short_description: "Sync shared agent guidance across hosts"
-  default_prompt: "Use $agent-update to refresh shared agent guidance and skills."
+  short_description: "Sync shared agent guidance and skills"
+  default_prompt: "Use $agent-update to refresh shared agent guidance, canonical skills, and tool-specific installations."
