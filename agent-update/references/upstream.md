@@ -4,7 +4,7 @@
 
 - Repository: `https://github.com/csehydrogen/.files.git`
 - Branch: `master`
-- Reviewed commit: `ac034f1387bca107dcb71595910d5a43eb9db60c`
+- Reviewed commit: `47db6aa7622190b939a18f5a2f877d2a5f8da1fa`
 - Instruction path: `AGENTS.md`
 - Skill path: `skills/agent-update/SKILL.md`
 - Skill scope: every file below `skills/`, including manifest, resource, and script additions, removals, renames, and content changes.
@@ -12,6 +12,7 @@
 ## Adopted skill mappings
 
 - `skills/agent-update/` → `<dotfiles>/skills/agent-update/`
+- `skills/gh-review-other-pr/` → `<dotfiles>/skills/gh-review-other-pr/`
 - `skills/gh-review-own-pr/` → `<dotfiles>/skills/gh-review-own-pr/`
 
 Advance the reviewed commit only after the instruction file, updater skill, and full upstream skill manifest inventory at the new commit have been inspected and every applicable change has been reconciled or consciously covered by an intentional divergence.
@@ -32,7 +33,8 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 - Use `sunho/` rather than `heehoon/` as the default feature-branch prefix.
 - Allow tray-scoped Galaxy locking, reset, and `TT_VISIBLE_DEVICES` configuration when the matching tray lock is held. Do not import upstream's blanket prohibition on tray-scoped work.
 - Use the portable canonical-submodule and per-skill-link layout above rather than upstream-specific `~/.files`, Moreh-server paths, tool-specific clones, or whole-directory Codex or Claude skill links.
+- Permit `git worktree` only for static code analysis or documentation at a specific HEAD; keep builds and device-backed work in the primary checkout. Adapt upstream primary-checkout guidance to this narrower local exception.
 - Preserve the daily semantic reconciliation workflow in the local `agent-update` skill instead of replacing it with upstream's simpler pull-only workflow.
-- Keep a curated local skill set rather than mirroring upstream skills wholesale. At the reviewed baseline, `caveman` is not adopted because persistent compressed speech can undermine the local completeness requirements; `gh-review-other-pr` is not adopted because its temporary clone/worktree guidance must first be reconciled with the local worktree restriction. `gh-review-own-pr` is adopted through the mapping above.
+- Keep a curated local skill set rather than mirroring upstream skills wholesale. `caveman` is not adopted because persistent compressed speech can undermine the local completeness requirements. The two GitHub review skills are adopted through local counterparts that preserve the primary-checkout, branch, and read-only/write-boundary rules above.
 
 These are policy differences, not frozen text. Reconcile upstream changes that improve their safety or clarity without reversing the local decision.
