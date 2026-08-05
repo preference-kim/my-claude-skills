@@ -23,6 +23,16 @@ Resolve paths from this skill rather than assuming where dotfiles was cloned:
 - **Requested edit:** When the user supplies update text, refresh first, then apply that request to the canonical AGENTS or shared skills before validation and publication.
 - **Link repair:** When asked to install or repair shared agent files, run the symlink checks even if today's refresh already succeeded.
 
+## Check GitHub CLI freshness
+
+During every daily, forced, or requested refresh, check the installed GitHub CLI when `gh` is available:
+
+1. Record `gh --version` and compare its semantic version with the latest official release from `gh api repos/cli/cli/releases/latest --jq .tag_name`. Use the public GitHub API directly as a fallback when the installed `gh` cannot perform the query.
+2. Report whether the installed version is current, outdated, or could not be checked. Include the installed version and the latest version when available.
+3. Do not upgrade or install `gh` automatically during a refresh. Perform that change only when the user explicitly requests it.
+
+If `gh` is not installed, report that the version check could not be performed; do not install it implicitly.
+
 ## Lock and preflight
 
 Use `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/lock` as an atomic directory lock. Record the current hostname and PID, remove the lock on exit, and reclaim it only when its recorded process is no longer alive on the same host.
