@@ -16,7 +16,9 @@ turn the PR body into an experiment log or edit history.
 2. Inspect the actual diff and the source, design documents, tests, benchmark
    artifacts, and integration reports needed to verify the claims.
 3. Separate retained and validated behavior from work in progress, rejected
-   probes, historical baselines, and unverified plans.
+   probes, historical baselines, transient bugs or errors resolved during
+   development, and unverified plans. Omit those transient events unless they
+   explain a design decision that remains in the final change.
 4. When revising an existing PR, read the live body before editing. Compare it
    with any local draft so that concurrent or integration-owned updates are not
    overwritten.

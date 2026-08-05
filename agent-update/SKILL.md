@@ -41,7 +41,7 @@ Before changing tracked files:
 
 1. Inspect `git status --short --branch` in both repositories.
 2. Require `main`, no unrelated tracked or untracked changes, and a fast-forward relationship with each `origin/main`.
-3. Fetch both origins. Pull the dotfiles repository with `--ff-only`, initialize submodules recursively, switch the skills repository to `main`, and pull it with `--ff-only`.
+3. Fetch both origins. Pull the dotfiles repository with `--ff-only`, synchronize submodule URLs recursively, initialize and update submodules recursively, switch the skills repository to `main`, and pull it with `--ff-only`.
 4. Re-read AGENTS.md and this skill if either changed during the pull.
 5. Stop without stashing, rebasing, resetting, or force-pushing when these conditions are not satisfied.
 
