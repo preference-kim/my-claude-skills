@@ -9,6 +9,29 @@ Write the PR description as a decision document for reviewers. Present the
 current change, its evidence, and its limits as one coherent argument. Do not
 turn the PR body into an experiment log or edit history.
 
+## Write only the final state and final results
+
+Write as though the final branch appeared in its current form. State the final
+retained design, its behavior relative to the base branch, final validation
+outcomes, final measurements, and remaining constraints. Do not narrate how the
+branch reached that state.
+
+Exclude commit-by-commit evolution, review iterations, rebases, remote-branch
+updates, intermediate candidates, superseded maps or allocations, failed or
+discarded experiments, transient regressions, fixes to problems absent from the
+final change, infrastructure retries, and rerun chronology. Avoid narrative
+labels such as "initial", "follow-up", "candidate", "final candidate",
+"previously", "then", and "later" when they describe branch history rather
+than the resulting design.
+
+A historical baseline may appear only as a direct side-by-side comparison
+needed to quantify or justify a retained final result. Present the baseline,
+final value, workload, and delta together; do not explain the sequence of
+experiments that produced them. A commit SHA may identify measurement source,
+but must not become a development timeline. If evidence was not measured at
+the PR head, give the narrow evidence-scope qualifier adjacent to the claim or
+omit the claim; do not narrate why successive reruns did or did not occur.
+
 ## Establish the review scope
 
 1. Identify the repository, PR, base, head, audience, and decision the reviewer
@@ -17,8 +40,9 @@ turn the PR body into an experiment log or edit history.
    artifacts, and integration reports needed to verify the claims.
 3. Separate retained and validated behavior from work in progress, rejected
    probes, historical baselines, transient bugs or errors resolved during
-   development, and unverified plans. Omit those transient events unless they
-   explain a design decision that remains in the final change.
+   development, and unverified plans. Omit the non-final material. When a
+   retained decision needs evidence, state the final constraint and the direct
+   matched comparison without recounting the branch history.
 4. When revising an existing PR, read the live body before editing. Compare it
    with any local draft so that concurrent or integration-owned updates are not
    overwritten.
@@ -116,8 +140,9 @@ interpretation, constraints, and decisions.
 
 Describe retained production mechanisms in the PR body. Keep rejected probes,
 raw A/B tables, temporary instrumentation, profiler logs, and chronological
-debug notes in working artifacts unless a compact comparison is essential to
-justify a retained decision.
+debug notes in working artifacts. When a compact comparison is essential to
+justify a retained decision, show only the baseline and final result under the
+matched protocol.
 
 When listing optimizations, include only the few mechanisms that materially
 explain the current design or result. Fold smaller refinements into the
@@ -168,6 +193,8 @@ Before handing off the PR description, verify that:
 
 - The opening states what the PR does and its supported boundary.
 - Every section describes the current design rather than the edit history.
+- No section tells the story of how the branch evolved; comparisons contain
+  only the baseline and final result needed for the review decision.
 - Contracts, ownership, defaults, and unsupported cases are explicit.
 - Correctness claims match their source, thresholds, and coverage.
 - Performance claims state their boundary, denominator, and resources.
