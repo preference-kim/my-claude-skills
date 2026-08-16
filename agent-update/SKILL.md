@@ -1,6 +1,6 @@
 ---
 name: agent-update
-description: Synchronize the shared dotfiles AGENTS.md and agent skills into the current host's configured layout (host-global or the sibling moreh-metal checkout) while preserving intentional local policy. Use for daily session refreshes, /agent-update or $agent-update requests, agent-instruction edits, entry-point repair, upstream reconciliation, or committing and pushing shared agent-file changes.
+description: Synchronize the shared dotfiles AGENTS.md and agent skills into the current host's configured layout (`host-global` or `moreh-dev`) while preserving intentional local policy. Use for daily session refreshes, /agent-update or $agent-update requests, agent-instruction edits, entry-point repair, upstream reconciliation, or committing and pushing shared agent-file changes.
 ---
 
 # Agent Update
@@ -15,7 +15,7 @@ Resolve paths from this skill rather than assuming where dotfiles was cloned:
 2. Run `git rev-parse --show-toplevel` from the skills repository's parent to find the dotfiles repository.
 3. Use `<dotfiles>/AGENTS.md` as the canonical instruction file and `<dotfiles>/skills` as the skills repository.
 4. Determine the current host's layout mode: read `mode:` from `<dotfiles>/agent-file-sync.local.yaml` if it exists. This file is host-local and gitignored, never committed, so it never reflects another host's setting. If it is absent, the host has no configured mode; do not guess or fall back to a default, and do not create it without being asked (point to `agent-file-sync.example.yaml` instead).
-5. When the mode is `moreh-metal`, resolve `<dotfiles>/../moreh-metal` as the managed project checkout. If it exists, require `git -C <candidate> rev-parse --show-toplevel` to resolve to that same directory. Do not search for, create, or clone an alternate checkout when it is absent or invalid; report that project synchronization could not run.
+5. When the mode is `moreh-dev`, resolve `<dotfiles>/../moreh-metal` as the managed project checkout. If it exists, require `git -C <candidate> rev-parse --show-toplevel` to resolve to that same directory. Do not search for, create, or clone an alternate checkout when it is absent or invalid; report that project synchronization could not run.
 6. Read [references/upstream.md](references/upstream.md) before comparing or updating upstream content.
 
 ## Choose the mode
@@ -73,7 +73,7 @@ Remove a stale per-skill symlink only when its resolved target is below `<dotfil
 
 Verify the installation as a manifest comparison, not by checking selected names: every source skill must resolve through both tool directories to the canonical directory and a readable `SKILL.md`, or be listed as an explicit host-local override. A refresh is not successful while a source skill is silently missing from either tool.
 
-### Mode `moreh-metal`
+### Mode `moreh-dev`
 
 Do not create or repair host-global entries below `~/.codex` or `~/.claude` in this mode. Keep these project-local instruction entry points in the managed `moreh-metal` checkout:
 
