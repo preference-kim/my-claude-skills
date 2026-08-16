@@ -14,7 +14,7 @@ Resolve paths from this skill rather than assuming where dotfiles was cloned:
 1. Resolve this skill's real path and run `git rev-parse --show-toplevel` from it to find the skills repository.
 2. Run `git rev-parse --show-toplevel` from the skills repository's parent to find the dotfiles repository.
 3. Use `<dotfiles>/AGENTS.md` as the canonical instruction file and `<dotfiles>/skills` as the skills repository.
-4. Determine the current host's layout mode: run `git -C <dotfiles> secret reveal -f` to decrypt `agent-file-sync.yaml`, then look up the current hostname in its `hosts` map. If `git secret reveal` fails (no local decryption key) or the hostname is absent from the map, the host has no configured mode; do not guess or fall back to a default.
+4. Determine the current host's layout mode: read `mode:` from `<dotfiles>/agent-file-sync.local.yaml` if it exists. This file is host-local and gitignored, never committed, so it never reflects another host's setting. If it is absent, the host has no configured mode; do not guess or fall back to a default, and do not create it without being asked (point to `agent-file-sync.example.yaml` instead).
 5. When the mode is `moreh-metal`, resolve `<dotfiles>/../moreh-metal` as the managed project checkout. If it exists, require `git -C <candidate> rev-parse --show-toplevel` to resolve to that same directory. Do not search for, create, or clone an alternate checkout when it is absent or invalid; report that project synchronization could not run.
 6. Read [references/upstream.md](references/upstream.md) before comparing or updating upstream content.
 
@@ -49,7 +49,7 @@ Before changing tracked files:
 
 ## Maintain the configured entry points and skill installations
 
-If the current host has no configured mode (see step 4 of "Resolve the repositories"), do not create, remove, or repair any entry point below `~/.codex`, `~/.claude`, or a `moreh-metal` checkout. Report that the host is unconfigured, what `agent-file-sync.yaml` needs (a `hosts: <hostname>: host-global|moreh-metal` entry) and what GPG/`git secret` access it needs, and stop this part of the refresh.
+If the current host has no configured mode (see step 4 of "Resolve the repositories"), do not create, remove, or repair any entry point below `~/.codex`, `~/.claude`, or a `moreh-metal` checkout. Report that the host is unconfigured and that it needs an `agent-file-sync.local.yaml` (copy `agent-file-sync.example.yaml` and set `mode:`), and stop this part of the refresh.
 
 ### Mode `host-global`
 
