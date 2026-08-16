@@ -22,7 +22,7 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 - Keep `AGENTS.md` at the dotfiles root as the canonical instruction file.
 - Keep the user-owned stable working principles at the top of `AGENTS.md`, semantically independent from upstream-derived Moreh operational guidance. Upstream reconciliation must preserve their meaning and position unless the user explicitly requests a change.
 - Keep shared skills in the `skills` submodule backed by `preference-kim/my-claude-skills`.
-- Discover the shared instruction file through relative repository symlinks plus host-global instruction links. Expose every shared skill through per-skill links inside the real `~/.codex/skills` and `~/.claude/skills` directories so host-local skills and overrides can coexist. Do not keep independent tool-specific clones or whole-directory skill links.
+- Discover the shared instruction files in the sibling `moreh-metal` checkout through relative repository symlinks. Expose every shared skill through per-skill links inside the real `moreh-metal/.codex/skills` and `moreh-metal/.claude/skills` directories so project-owned skills and overrides can coexist. Do not install host-global entry points, keep independent tool-specific clones, or create whole-directory skill links.
 - Track locally maintained or locally adapted skills directly. A verbatim third-party skill may remain a nested submodule when its independent provenance and update boundary are useful; `humanizer` is the current instance of this policy.
 - Run synchronization from the first agent session on each local calendar day; do not depend on cron, launchd, or a continuously running process.
 - Publish personal agent-file updates directly to `main` in the skills repository first and the dotfiles repository second.
@@ -32,7 +32,7 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 
 - Use `sunho/` rather than `heehoon/` as the default feature-branch prefix.
 - Allow tray-scoped Galaxy locking, reset, and `TT_VISIBLE_DEVICES` configuration when the matching tray lock is held. Do not import upstream's blanket prohibition on tray-scoped work.
-- Use the portable canonical-submodule and per-skill-link layout above rather than upstream-specific `~/.files`, Moreh-server paths, tool-specific clones, or whole-directory Codex or Claude skill links.
+- Use the portable sibling-checkout and per-skill-link layout above rather than upstream-specific `~/.files`, host-global installation paths, Moreh-server paths, tool-specific clones, or whole-directory Codex or Claude skill links.
 - Permit `git worktree` only for static code analysis or documentation at a specific HEAD; keep builds and device-backed work in the primary checkout. Adapt upstream primary-checkout guidance to this narrower local exception.
 - Preserve the daily semantic reconciliation workflow in the local `agent-update` skill instead of replacing it with upstream's simpler pull-only workflow.
 - Keep a curated local skill set rather than mirroring upstream skills wholesale. `caveman` is not adopted because persistent compressed speech can undermine the local completeness requirements. The two GitHub review skills are adopted through local counterparts that preserve the primary-checkout, branch, and read-only/write-boundary rules above.
