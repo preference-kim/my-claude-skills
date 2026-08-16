@@ -31,7 +31,6 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 ## Intentional divergences
 
 - Use `sunho/` rather than `heehoon/` as the default feature-branch prefix.
-- Allow tray-scoped Galaxy locking, reset, and `TT_VISIBLE_DEVICES` configuration when the matching tray lock is held. Do not import upstream's blanket prohibition on tray-scoped work.
 - Use a gitignored, per-host `agent-file-sync.local.yaml` to choose between the host-global and sibling-checkout (`moreh-metal`) layouts above, rather than a single layout fixed in `AGENTS.md`/`SKILL.md`: because the file never syncs through git, no agent-update run on any host can read, set, or redefine another host's mode; each host's choice is made only on that host. `agent-file-sync.example.yaml` is the tracked template new hosts copy from. Use the portable per-skill-link layout above rather than upstream-specific `~/.files`, Moreh-server paths, tool-specific clones, or whole-directory Codex or Claude skill links.
 - Permit `git worktree` only for static code analysis or documentation at a specific HEAD; keep builds and device-backed work in the primary checkout. Adapt upstream primary-checkout guidance to this narrower local exception.
 - Preserve the daily semantic reconciliation workflow in the local `agent-update` skill instead of replacing it with upstream's simpler pull-only workflow.
