@@ -1,13 +1,13 @@
 ---
 name: write-technical-pr
-description: Draft, restructure, audit, and update technical GitHub pull-request descriptions as concise current-design documents. Use when creating or revising a PR body, especially for systems, kernel, distributed, performance, or model-integration work that must explain interfaces, invariants, implementation, correctness, resource limits, benchmarks, figures, and remaining constraints.
+description: Draft, restructure, audit, and update technical GitHub pull-request descriptions as concise, self-contained current-design documents. Use when creating or revising a PR body, especially for systems, kernel, distributed, performance, or model-integration work that must explain interfaces, invariants, implementation, correctness, resource limits, reproducible benchmarks, figures, and remaining constraints.
 ---
 
 # Write Technical PR
 
 Write the PR description as a decision document for reviewers. Present the
-current change, its evidence, and its limits as one coherent argument. Do not
-turn the PR body into an experiment log or edit history.
+current change, its evidence, and its limits as one self-contained argument.
+Do not turn the PR body into an experiment log or edit history.
 
 ## Write only the final state and final results
 
@@ -31,6 +31,20 @@ experiments that produced them. A commit SHA may identify measurement source,
 but must not become a development timeline. If evidence was not measured at
 the PR head, give the narrow evidence-scope qualifier adjacent to the claim or
 omit the claim; do not narrate why successive reruns did or did not occur.
+
+## Keep the review self-contained
+
+- Include every material fact needed to understand the problem, retained
+  design, relevant contracts and constraints, reproduction procedure, and
+  evidence in the PR description itself.
+- Never include a local artifact path or cite a local-only file, log, plot,
+  report, working-tree state, or other reviewer-inaccessible resource as
+  evidence. Transfer its material facts into the PR body.
+- Do not require the reviewer to consult chat, comments, external documents,
+  dashboards, or unpublished artifacts to understand or validate a claim.
+  External references may provide supplementary detail only.
+- Use direct, specific wording. Write short bullets grouped by distinct topics
+  instead of dense paragraphs, ambiguous abstractions, or repetitive prose.
 
 ## Establish the review scope
 
@@ -57,7 +71,10 @@ write a PR description unless the user separately requests those changes.
 Adapt the structure to the change. Use only sections that help the reviewer,
 typically:
 
-- **Summary:** State the purpose, boundary, target, and headline evidence.
+- **Korean Summary:** Make `## Korean Summary` the first section. Write it in
+  Korean using vocabulary and concepts already established in the codebase.
+  State the core problem, retained solution, and concrete result without
+  external context or unexplained promotional terminology.
 - **Interface and contracts:** Define inputs, outputs, ownership, shapes,
   invariants, defaults, and unsupported configurations.
 - **Implementation:** Explain the current dataflow, partitioning, resource
@@ -132,17 +149,33 @@ column or describe one as the other.
   the work more clearly.
 - Define uncommon ratios and abbreviations at first use.
 
-Use tables for repeated comparisons and figures for relationships that prose
-cannot show efficiently. Use prose only to explain methodology,
-interpretation, constraints, and decisions.
+Present concrete results in Markdown tables. Include the workload, conditions,
+units, acceptance criterion or comparison basis, and result needed to interpret
+each value. Use figures only for relationships that a table cannot show
+efficiently. Use short bullets only to explain methodology, interpretation,
+constraints, and decisions.
+
+## Make experiments reproducible
+
+- For every reported experiment, provide the exact command line in a fenced
+  `bash` code block.
+- Include the repository-relative working directory, required environment
+  variables and inputs, and exact test or benchmark selection.
+- Do not depend on local aliases, private wrappers, undeclared state, or
+  machine-specific absolute paths.
+- Put concrete results in the corresponding Markdown table, not only in prose
+  or an external artifact.
+- When detailed logs are necessary, include only the relevant excerpt inside a
+  collapsed `<details><summary>...</summary>...</details>` block with a
+  specific summary label. Omit irrelevant output, secrets, and local paths.
 
 ## Separate the design from the experiment record
 
-Describe retained production mechanisms in the PR body. Keep rejected probes,
+Describe retained production mechanisms in the PR body. Omit rejected probes,
 raw A/B tables, temporary instrumentation, profiler logs, and chronological
-debug notes in working artifacts. When a compact comparison is essential to
-justify a retained decision, show only the baseline and final result under the
-matched protocol.
+debug notes. Do not link to their local artifacts. When a compact comparison
+is essential to justify a retained decision, show only the baseline and final
+result under the matched protocol.
 
 When listing optimizations, include only the few mechanisms that materially
 explain the current design or result. Fold smaller refinements into the
@@ -168,9 +201,13 @@ limits as rows in a current resource-usage table.
 - Distinguish direct samples, interpolation, derived series, and model-derived
   expectations in labels or captions.
 - Do not relabel stale data as current.
-- Preserve a clear HTML placeholder when a user will upload a pending figure.
+- Do not hand off a PR that depends on a pending figure. Attach a required
+  figure or replace it with a complete table before publication; otherwise
+  omit the unsupported claim.
 - Keep local plots, CSVs, logs, and temporary scripts out of the production
   diff unless the repository explicitly requires them.
+- Never expose their local paths or require them to interpret the PR. Put the
+  necessary values, method, and conclusion in the PR body.
 
 ## Revise and publish
 
@@ -180,8 +217,8 @@ limits as rows in a current resource-usage table.
    time around obsolete structure.
 3. Verify every headline, table, formula, link, source identity, test count,
    and figure caption against its evidence.
-4. Confirm that Summary, Correctness, Performance, and integration evidence do
-   not contradict one another.
+4. Confirm that Korean Summary, Correctness, Performance, and integration
+   evidence do not contradict one another.
 5. Update the live PR only when the user authorized the mutation.
 6. Re-read the live body after updating it. Confirm that rendering-sensitive
    Markdown, comments, tables, and links survived and that no concurrent
@@ -191,7 +228,11 @@ limits as rows in a current resource-usage table.
 
 Before handing off the PR description, verify that:
 
-- The opening states what the PR does and its supported boundary.
+- `## Korean Summary` is the first section and states the core problem,
+  retained solution, and concrete result using established codebase terms.
+- The PR body contains every material fact needed for the review decision and
+  does not cite local artifacts or require external context.
+- Text uses short, topic-grouped bullets with direct and specific wording.
 - Every section describes the current design rather than the edit history.
 - No section tells the story of how the branch evolved; comparisons contain
   only the baseline and final result needed for the review decision.
@@ -203,4 +244,8 @@ Before handing off the PR description, verify that:
 - Significant digits match the evidence and decision.
 - Rejected experiments and temporary artifacts are absent from the review
   narrative and production diff.
+- Every reported experiment has an exact reproducible command in a fenced
+  `bash` block and its concrete results in a Markdown table.
+- Necessary detailed logs are reduced to relevant excerpts in collapsed
+  `<details>` blocks; secrets and local paths are absent.
 - The live PR body was re-read after publication.

@@ -1,4 +1,4 @@
 interface:
   display_name: "Write Technical PR"
-  short_description: "Write concise, evidence-driven technical PRs"
-  default_prompt: "Use $write-technical-pr to draft or revise this PR description as a concise current-design document."
+  short_description: "Write self-contained, evidence-driven PRs"
+  default_prompt: "Use $write-technical-pr to draft or revise this PR description as a concise, self-contained current-design document."
