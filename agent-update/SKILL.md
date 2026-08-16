@@ -14,8 +14,8 @@ Resolve paths from this skill rather than assuming where dotfiles was cloned:
 1. Resolve this skill's real path and run `git rev-parse --show-toplevel` from it to find the skills repository.
 2. Run `git rev-parse --show-toplevel` from the skills repository's parent to find the dotfiles repository.
 3. Use `<dotfiles>/AGENTS.md` as the canonical instruction file and `<dotfiles>/skills` as the skills repository.
-4. Determine the current host's layout mode: read `mode:` from `<dotfiles>/agent-file-sync.local.yaml` if it exists. This file is host-local and gitignored, never committed, so it never reflects another host's setting. If it is absent, the host has no configured mode; do not guess or fall back to a default, and do not create it without being asked (point to `agent-file-sync.example.yaml` instead).
-5. When the mode is `moreh-dev`, resolve `<dotfiles>/../moreh-metal` as the managed project checkout. If it exists, require `git -C <candidate> rev-parse --show-toplevel` to resolve to that same directory. Do not search for, create, or clone an alternate checkout when it is absent or invalid; report that project synchronization could not run.
+4. Determine the current host's layout mode: read `mode:` from `<dotfiles>/agent-file-sync.local.yaml` if it exists and require `host-global` or `moreh-dev`. This file is host-local and gitignored, never committed, so it never reflects another host's setting. If it is absent or the mode is invalid, the host has no usable configuration; do not guess or fall back to a default, and do not create or edit it without being asked (point to `agent-file-sync.example.yaml` instead).
+5. When the mode is `moreh-dev`, read the required non-empty `moreh_dev_root` from the same file. Use an absolute path as written; resolve a relative path from the dotfiles root. Canonicalize the result, require the directory to exist, and require `git -C <candidate> rev-parse --show-toplevel` to resolve to that exact directory. Do not expand shell expressions, search for, create, or clone an alternate checkout when the configured target is absent or invalid; report that project synchronization could not run.
 6. Read [references/upstream.md](references/upstream.md) before comparing or updating upstream content.
 
 ## Choose the mode
@@ -49,7 +49,7 @@ Before changing tracked files:
 
 ## Maintain the configured entry points and skill installations
 
-If the current host has no configured mode (see step 4 of "Resolve the repositories"), do not create, remove, or repair any entry point below `~/.codex`, `~/.claude`, or a `moreh-metal` checkout. Report that the host is unconfigured and that it needs an `agent-file-sync.local.yaml` (copy `agent-file-sync.example.yaml` and set `mode:`), and stop this part of the refresh.
+If the current host has no usable configuration (see steps 4-5 of "Resolve the repositories"), do not create, remove, or repair any entry point below `~/.codex`, `~/.claude`, or a possible development checkout. Report the missing or invalid field, point to `agent-file-sync.example.yaml`, and stop this part of the refresh.
 
 ### Mode `host-global`
 
@@ -75,25 +75,25 @@ Verify the installation as a manifest comparison, not by checking selected names
 
 ### Mode `moreh-dev`
 
-Do not create or repair host-global entries below `~/.codex` or `~/.claude` in this mode. Keep these project-local instruction entry points in the managed `moreh-metal` checkout:
+Let `<moreh-dev-root>` denote the canonical Git checkout root resolved from this host's `moreh_dev_root`. Do not create or repair host-global entries below `~/.codex` or `~/.claude` in this mode. Keep these project-local instruction entry points:
 
-- `<moreh-metal>/AGENTS.md -> <dotfiles>/AGENTS.md`
-- `<moreh-metal>/CLAUDE.md -> <dotfiles>/CLAUDE.md`
+- `<moreh-dev-root>/AGENTS.md -> <dotfiles>/AGENTS.md`
+- `<moreh-dev-root>/CLAUDE.md -> <dotfiles>/CLAUDE.md`
 
-Use relative symlink targets derived from the resolved repository locations so moving the sibling checkouts together preserves the links. Before creating either link, require that the destination path is not tracked by `moreh-metal`. Leave a correct link unchanged and replace an incorrect symlink. Never replace a real file or directory; report the conflict and stop project synchronization.
+Use relative symlink targets derived from the resolved repository locations so moving the checkouts together preserves the links. Before creating either link, require that the destination path is not tracked by the configured checkout. Leave a correct link unchanged and replace an incorrect symlink. Never replace a real file or directory; report the conflict and stop project synchronization.
 
-Keep `<moreh-metal>/.codex/skills` and `<moreh-metal>/.claude/skills` as real directories so project-owned and shared skills can coexist. Do not replace either directory with a whole-directory symlink. Enumerate every top-level directory under `<dotfiles>/skills` that contains `SKILL.md` after recursive submodule initialization. For each source skill, maintain both project entries as relative links to the canonical skill directory:
+Keep `<moreh-dev-root>/.codex/skills` and `<moreh-dev-root>/.claude/skills` as real directories so project-owned and shared skills can coexist. Do not replace either directory with a whole-directory symlink. Enumerate every top-level directory under `<dotfiles>/skills` that contains `SKILL.md` after recursive submodule initialization. For each source skill, maintain both project entries as relative links to the canonical skill directory:
 
-- `<moreh-metal>/.codex/skills/<name> -> <dotfiles>/skills/<name>`
-- `<moreh-metal>/.claude/skills/<name> -> <dotfiles>/skills/<name>`
+- `<moreh-dev-root>/.codex/skills/<name> -> <dotfiles>/skills/<name>`
+- `<moreh-dev-root>/.claude/skills/<name> -> <dotfiles>/skills/<name>`
 
-Create a missing tool skill directory only when neither a file nor a symlink occupies that path. Before creating a per-skill link, require that the destination path is not tracked by `moreh-metal`. Leave a correct link unchanged and replace an incorrect symlink. Preserve a real file or directory as a project-owned override, report it as skipped, and continue with the remaining skills.
+Create a missing tool skill directory only when neither a file nor a symlink occupies that path. Before creating a per-skill link, require that the destination path is not tracked by the configured checkout. Leave a correct link unchanged and replace an incorrect symlink. Preserve a real file or directory as a project-owned override, report it as skipped, and continue with the remaining skills.
 
 Remove a stale per-skill symlink only when its resolved target is below `<dotfiles>/skills` and that source skill no longer exists. Do not touch real entries, tracked entries, or links to any other location.
 
-Keep managed links out of `moreh-metal` Git status through a delimited block in the file returned by `git -C <moreh-metal> rev-parse --git-path info/exclude`. The block must start with `# BEGIN agent-update managed links` and end with `# END agent-update managed links`. Preserve all content outside the block. Within it, list only the repository-relative paths that currently exist as managed symlinks; update the block after link creation or removal, and never use a broad wildcard that could hide project-owned files.
+Keep managed links out of the configured checkout's Git status through a delimited block in the file returned by `git -C <moreh-dev-root> rev-parse --git-path info/exclude`. The block must start with `# BEGIN agent-update managed links` and end with `# END agent-update managed links`. Preserve all content outside the block. Within it, list only the repository-relative paths that currently exist as managed symlinks; update the block after link creation or removal, and never use a broad wildcard that could hide project-owned files.
 
-Verify project installation as a manifest comparison, not by checking selected names: both instruction links must resolve to their canonical dotfiles files, and every source skill must resolve through both project tool directories to the canonical directory and a readable `SKILL.md`, or be listed as an explicit project-owned override. Record `moreh-metal` status before and after synchronization and require that its tracked and ordinary untracked state is unchanged; the managed ignored links must be the only local metadata added. A refresh is not successful while a required project entry is silently missing.
+Verify project installation as a manifest comparison, not by checking selected names: both instruction links must resolve to their canonical dotfiles files, and every source skill must resolve through both project tool directories to the canonical directory and a readable `SKILL.md`, or be listed as an explicit project-owned override. Record the configured checkout's status before and after synchronization and require that its tracked and ordinary untracked state is unchanged; the managed ignored links must be the only local metadata added. A refresh is not successful while a required project entry is silently missing.
 
 ## Reconcile upstream guidance and skills
 
@@ -117,6 +117,6 @@ Do not make the canonical AGENTS depend on a particular host alias, clone path, 
 5. Push the skills commit to `origin/main`. Confirm it is reachable from the remote branch, then push dotfiles to `origin/main`. Do not create a feature branch or pull request for these personal agent-file updates.
 6. If the child push succeeds but the parent push fails, report both commit IDs. Retry the parent only when the remote remains an ancestor of the local commit; otherwise stop without rewriting history.
 7. Write today's date and the reviewed upstream commit to `last-successful-sync` only after both pushes succeed or when no tracked change was needed, and only after the current host's configured entry points and complete skill manifest pass verification. If the host is unconfigured, do not write `last-successful-sync` for this refresh.
-8. Re-read the final AGENTS.md and SKILL.md for the current session. Report changed files, commit IDs, push results, the host's configured mode (or its unconfigured state), repaired links, and any verification limitation. Keep a no-change daily refresh unobtrusive.
+8. Re-read the final AGENTS.md and SKILL.md for the current session. Report changed files, commit IDs, push results, the host's configured mode and resolved `moreh_dev_root` when applicable (or its unconfigured state), repaired links, and any verification limitation. Keep a no-change daily refresh unobtrusive.
 
 Never commit secrets, credentials, caches, histories, state files, or unrelated local settings.
