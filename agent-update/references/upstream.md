@@ -4,7 +4,7 @@
 
 - Repository: `https://github.com/csehydrogen/.files.git`
 - Branch: `master`
-- Reviewed commit: `a2c7d69f71acaff2c5e84c30f6d0d57ceb64f341`
+- Reviewed commit: `0348a20bcebf494f3ba42dc601d8675bf2784d4f`
 - Instruction path: `AGENTS.md`
 - Skill path: `skills/agent-update/SKILL.md`
 - Skill scope: every file below `skills/`, including manifest, resource, and script additions, removals, renames, and content changes.
