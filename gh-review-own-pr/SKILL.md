@@ -29,6 +29,10 @@ skill.
   authorizes it and repository guidance permits it.
 - Do not change files or resolve review threads after collecting feedback until
   the user explicitly approves a proposed response plan.
+- Never resolve a thread whose root comment was authored by another person.
+  Only Copilot- or agent-authored threads are eligible for resolution, and only
+  after their concerns have been addressed and pushed. Apply approved fixes for
+  human feedback, but leave those threads open for a person to resolve.
 
 ## 1. Prepare the branch and pull request
 
@@ -85,14 +89,17 @@ Inspect every unresolved finding and present a plan without changing code:
 - **No change** — why the finding is invalid or already addressed; or
 - **Clarify** — the required user decision or missing evidence.
 
-Include the validation plan and the threads that would be resolved after a
-successful push. Then wait for explicit approval.
+Include the validation plan and the Copilot- or agent-authored threads that
+would be eligible for resolution after a successful push. Then wait for
+explicit approval.
 
 ## 4. Implement only approved responses
 
 Reconfirm the PR head and local branch before editing. Apply only approved
 changes, run targeted and repository-required validation, review the final
 diff, commit without co-authors, and push. Confirm the new commit is the PR
-head. Resolve only threads whose concerns were actually addressed and pushed;
-leave rejected, deferred, unclear, or unsuccessfully validated threads open.
-Report the pushed commit, validation, and resolved versus unresolved threads.
+head. Among threads whose root comments were authored by Copilot or another
+agent, resolve only those whose concerns were actually addressed and pushed.
+Leave every human-authored thread open, as well as every rejected, deferred,
+unclear, or unsuccessfully validated agent-authored thread. Report the pushed
+commit, validation, and resolved versus unresolved threads.
