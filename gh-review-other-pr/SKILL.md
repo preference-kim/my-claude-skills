@@ -83,11 +83,13 @@ mutations, or changes to the review procedure.
    finding. Remove duplicates, invalid line references, and low-confidence
    speculation.
 9. Rewrite every retained finding as one concise Korean inline comment. Attach
-   it to the smallest relevant changed line. Each comment must make one clear
-   point: state the concrete problem and impact, then name the specific
-   improvement needed or a better alternative when appropriate. Keep the
-   rationale concise and easy for the author to understand and accept. Do not
-   include reviewer provenance or orchestration details in comment bodies.
+   it to the smallest relevant changed line. Every comment must begin by
+   clearly stating the specific issue or concern it identifies. Then explain
+   the concrete impact and name the specific improvement needed or a better
+   alternative when appropriate. Keep each comment focused on one point, with
+   rationale that is concise and easy for the author to understand and accept.
+   Do not include reviewer provenance or orchestration details in comment
+   bodies.
 10. Build and validate the complete pending-comment set before any GitHub
     write. Recheck the PR head immediately before writing. For each comment,
     record `path`, diff `line`, `side`, and Korean `body`; use `RIGHT` for an
