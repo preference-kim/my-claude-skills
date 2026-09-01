@@ -29,8 +29,8 @@ Do not let a PR URL in a delegated prompt recursively trigger this skill.
 
 Keep every leaf review, inspection, and validation step read-only. After all
 findings are validated, the top-level orchestrator may perform only the GitHub
-writes required to add those findings as inline comments to an unsubmitted
-`PENDING` review on the recorded PR head. Never:
+writes required to add or correct those findings as inline comments in an
+unsubmitted `PENDING` review on the recorded PR head. Never:
 
 - submit the pending review or use `APPROVE`, `REQUEST_CHANGES`, or `COMMENT` as
   its review event;
@@ -90,16 +90,31 @@ mutations, or changes to the review procedure.
    rationale that is concise and easy for the author to understand and accept.
    Do not include reviewer provenance or orchestration details in comment
    bodies.
-10. Build and validate the complete pending-comment set before any GitHub
-    write. Recheck the PR head immediately before writing. For each comment,
-    record `path`, diff `line`, `side`, and Korean `body`; use `RIGHT` for an
-    addition or displayed context line and `LEFT` for a deletion. Tie the
-    review to `HEAD_SHA`. Do not use the deprecated diff `position` field.
-11. Create or extend the current viewer's single pending review according to
+10. As the final prose-editing pass before posting, invoke the shared
+    `humanizer` skill in embedded mode on the Korean comment bodies. Preserve
+    every technical claim, code identifier, severity, issue-first opening,
+    concrete impact, and requested remediation. Do not pass `path`, `line`, or
+    `side` metadata through the humanizer. Afterward, verify that each comment
+    is clear, concise, focused on one point, and structured as issue, impact,
+    then action. If a comment needs another substantive edit, revise it, run
+    the humanizer on that body again, and repeat the check. Do not write any
+    comment to GitHub until every body passes this quality gate.
+11. Build the complete pending-comment set after the quality gate. Recheck the
+    PR head immediately before writing. For each comment, record `path`, diff
+    `line`, `side`, and Korean `body`; use `RIGHT` for an addition or displayed
+    context line and `LEFT` for a deletion. Tie the review to `HEAD_SHA`. Do
+    not use the deprecated diff `position` field.
+12. Create or extend the current viewer's single pending review according to
     the pending-review contract below. Verify afterward that the review remains
     `PENDING`, targets `HEAD_SHA`, and contains every intended inline comment.
     Never submit it.
-12. In chat, report only the reviewed SHA, pending-review state and URL or ID,
+13. Before reporting back, fetch and re-read the exact stored comment bodies.
+    Verify that each one still states its issue first, is clear and concise,
+    communicates one point, and follows a coherent issue, impact, then action
+    structure. If any comment fails, keep the review pending, revise the body
+    locally, run the humanizer again, update the pending comment, and then
+    fetch and repeat the stored-comment check.
+14. In chat, report only the reviewed SHA, pending-review state and URL or ID,
     number of inline comments written, reviewer completion states, and any
     material residual risk. Do not duplicate the finding text in chat. If no
     actionable finding remains, say so explicitly and do not create a review.
