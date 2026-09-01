@@ -35,5 +35,6 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 - Permit `git worktree` only for static code analysis or documentation at a specific HEAD; keep builds and device-backed work in the primary checkout. Adapt upstream primary-checkout guidance to this narrower local exception.
 - Preserve the daily semantic reconciliation workflow in the local `agent-update` skill instead of replacing it with upstream's simpler pull-only workflow.
 - Keep a curated local skill set rather than mirroring upstream skills wholesale. `caveman` is not adopted because persistent compressed speech can undermine the local completeness requirements. The two GitHub review skills are adopted through local counterparts that preserve the primary-checkout, branch, and read-only/write-boundary rules above.
+- Unlike upstream's chat-only `gh-review-other-pr`, write validated findings as concise Korean inline comments in the current viewer's unsubmitted pending review. Keep leaf reviewers and validation read-only, authorize no other GitHub mutation, and never publish or submit the review; this places the final feedback on the relevant diff lines while preserving user control over submission.
 
 These are policy differences, not frozen text. Reconcile upstream changes that improve their safety or clarity without reversing the local decision.

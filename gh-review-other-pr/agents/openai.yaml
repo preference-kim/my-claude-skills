@@ -1,4 +1,4 @@
 interface:
   display_name: "GH Review Other PR"
-  short_description: "Run parallel read-only reviews of another PR"
-  default_prompt: "Use $gh-review-other-pr to run parallel Codex and Claude reviews of this PR without posting to GitHub."
+  short_description: "Draft Korean inline comments for another PR"
+  default_prompt: "Use $gh-review-other-pr to review this PR with Codex and Claude, then leave validated findings as Korean inline comments in an unsubmitted pending GitHub review."
