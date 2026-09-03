@@ -25,16 +25,6 @@ Resolve paths from this skill rather than assuming where dotfiles was cloned:
 - **Requested edit:** When the user supplies update text, refresh first, then apply that request to the canonical AGENTS or shared skills before validation and publication.
 - **Link repair:** When asked to install or repair shared agent files, run the current host's symlink checks even if today's refresh already succeeded.
 
-## Check GitHub CLI freshness
-
-During every daily, forced, or requested refresh, check the installed GitHub CLI when `gh` is available:
-
-1. Record `gh --version` and compare its semantic version with the latest official release from `gh api repos/cli/cli/releases/latest --jq .tag_name`. Use the public GitHub API directly as a fallback when the installed `gh` cannot perform the query.
-2. Report whether the installed version is current, outdated, or could not be checked. Include the installed version and the latest version when available.
-3. Do not upgrade or install `gh` automatically during a refresh. Perform that change only when the user explicitly requests it.
-
-If `gh` is not installed, report that the version check could not be performed; do not install it implicitly.
-
 ## Lock and preflight
 
 Use `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/lock` as an atomic directory lock. Record the current hostname and PID, remove the lock on exit, and reclaim it only when its recorded process is no longer alive on the same host.
@@ -46,6 +36,22 @@ Before changing tracked files:
 3. Fetch both origins. Pull the dotfiles repository with `--ff-only`, synchronize submodule URLs recursively, initialize and update submodules recursively, switch the skills repository to `main`, and pull it with `--ff-only`.
 4. Re-read AGENTS.md and this skill if either changed during the pull.
 5. Stop without stashing, rebasing, resetting, or force-pushing when these conditions are not satisfied.
+
+## Keep agent command-line tools current
+
+During every full daily, forced, or requested refresh, update each installed `claude`, `codex`, and `gh` command to the latest release available through its verified installation channel. Perform these checks and updates while holding the agent-update lock, after repository preflight. A same-day daily refresh that skips network and repository work may skip these checks; a forced or requested refresh never skips them.
+
+For every command:
+
+1. Record `command -v`, every PATH-visible installation, the resolved executable or symlink target, and the pre-update version. Determine which installer or package manager owns the executable selected by PATH; do not update a shadowed copy and claim that the active command changed.
+2. Use the updater that owns that active installation:
+   - For a native Claude Code installation, use `claude update` on the `latest` channel. If its configured channel is `stable`, move it to `latest` with the native `claude install latest` command before verification. For package-managed installations, update only the installed Claude Code package with that manager's documented latest-channel command.
+   - For Codex CLI, prefer `codex update` when the installed version provides it. Otherwise use the existing installation mechanism's documented command, such as `npm install -g @openai/codex@latest`, `brew upgrade codex`, or the official standalone installer. Do not replace an app-bundled Codex binary in place; update an independently installed CLI, or report that the desktop app owns the only available binary.
+   - For GitHub CLI, compare `gh --version` with `gh api repos/cli/cli/releases/latest --jq .tag_name`, using the public GitHub API directly if the installed client cannot query it. When outdated, use the owning package manager's command for the `gh` package, such as `brew upgrade gh`, `apt install gh`, or `dnf update gh`.
+3. Update only the named CLI package and dependencies required by that package. Never run a package-manager-wide upgrade, switch an unrelated repository or tap, weaken package or tap trust, disable signature verification, bootstrap a different package manager, or replace one installation method with another merely to obtain an update. Use only already-configured non-interactive authorization; never wait for a password prompt or modify privilege policy.
+4. Re-resolve the active executable and record its post-update version. Compare it with the latest version reported by the native updater, package registry, or official release source. A Codex process that updates its own executable continues on the old in-memory version until restarted; verify the external `codex --version` result and report that a restart is required when applicable.
+
+If a command is absent, report it as not installed and do not install it implicitly. Continue checking the other commands after one update fails. If an installed command is known to be outdated but its update fails, remains shadowed, requires unavailable privilege, or cannot be verified, complete safe repository reconciliation and link repair but do not write `last-successful-sync`; report the exact command, installed version, target version when known, failure, and required recovery. A transient inability to discover a latest version is a reported verification limitation, not evidence that the installed version is current.
 
 ## Maintain the configured entry points and skill installations
 
@@ -116,7 +122,7 @@ Do not make the canonical AGENTS depend on a particular host alias, clone path, 
 4. Commit skills changes first with a concise message and no co-author. Commit the dotfiles change second so its submodule pointer names that child commit.
 5. Push the skills commit to `origin/main`. Confirm it is reachable from the remote branch, then push dotfiles to `origin/main`. Do not create a feature branch or pull request for these personal agent-file updates.
 6. If the child push succeeds but the parent push fails, report both commit IDs. Retry the parent only when the remote remains an ancestor of the local commit; otherwise stop without rewriting history.
-7. Write today's date and the reviewed upstream commit to `last-successful-sync` only after both pushes succeed or when no tracked change was needed, and only after the current host's configured entry points and complete skill manifest pass verification. If the host is unconfigured, do not write `last-successful-sync` for this refresh.
-8. Re-read the final AGENTS.md and SKILL.md for the current session. Report changed files, commit IDs, push results, the host's configured mode and resolved `moreh_dev_root` when applicable (or its unconfigured state), repaired links, and any verification limitation. Keep a no-change daily refresh unobtrusive.
+7. Write today's date and the reviewed upstream commit to `last-successful-sync` only after both pushes succeed or when no tracked change was needed, the current host's configured entry points and complete skill manifest pass verification, and no installed CLI remains known to be outdated. If the host is unconfigured or a known-outdated CLI could not be updated and verified, do not write `last-successful-sync` for this refresh.
+8. Re-read the final AGENTS.md and SKILL.md for the current session. Report changed files, commit IDs, push results, the host's configured mode and resolved `moreh_dev_root` when applicable (or its unconfigured state), repaired links, each CLI's before/after version and update outcome, any required process restart, and any verification limitation. Keep a no-change daily refresh unobtrusive.
 
 Never commit secrets, credentials, caches, histories, state files, or unrelated local settings.
