@@ -23,12 +23,12 @@ Obtain a rigorous review of an existing plan from the opposite agent family. The
 
 ## Select an independent reviewer
 
-Read [references/reviewer-adapters.md](references/reviewer-adapters.md), then use the available opposite-family reviewer at the configured highest model and `xhigh` effort:
+Read [references/reviewer-adapters.md](references/reviewer-adapters.md), then use the available opposite-family reviewer with the configured highest model as the primary and `xhigh` effort:
 
 - From Codex, use Claude.
 - From Claude, use Codex.
 
-Do not substitute the same agent family, the calling agent's self-review, or a lower model or effort while describing the result as independent. If the current agent family cannot be determined or the required reviewer is unavailable, report that independent review is blocked and state the failed prerequisite.
+Use a lower model only through the adapter's ordered fallback chain and only when the primary is unavailable because of model quota, capacity, or availability. A fallback result is still independent, but report the actual model and do not describe it as a highest-model review. Do not substitute the same agent family, the calling agent's self-review, an unconfigured lower model, or lower effort. If the current agent family cannot be determined or every configured reviewer model is unavailable, report that independent review is blocked and state the failed prerequisite.
 
 ## Run the review
 
@@ -44,6 +44,7 @@ Do not provide the calling agent's expected verdict, suspected defects, preferre
 
 Report the independent review without silently changing the plan:
 
+- reviewer family and actual model, including whether a configured fallback was used;
 - verdict: `Approve`, `Revise`, or `Reject`;
 - concise rationale and evidence-backed material findings;
 - required changes, if any;

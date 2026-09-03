@@ -4,12 +4,12 @@ This file contains runtime-specific configuration. The review contract, criteria
 
 ## Current reviewer selection
 
-| Calling agent | Independent reviewer | Model | Effort |
-| --- | --- | --- | --- |
-| Codex | Claude Code | `fable` | `xhigh` |
-| Claude Code | Codex | `sol` | `xhigh` |
+| Calling agent | Independent reviewer | Primary model | Ordered fallback | Effort |
+| --- | --- | --- | --- | --- |
+| Codex | Claude Code | `fable` | `opus`, then `sonnet` | `xhigh` |
+| Claude Code | Codex | `sol` | none | `xhigh` |
 
-These aliases represent the current highest configured models for each family. Update this table and the matching invocation when the configured highest model changes; do not embed model aliases in the shared review criteria or prompt.
+The primary aliases represent the current highest configured models for each family. The Claude fallback is an explicit resource-availability policy, not an equivalent quality tier. Update this table and the matching invocation when the configured model order changes; do not embed model aliases in the shared review criteria or prompt.
 
 Prefer a native opposite-agent delegation facility when it can enforce the same model, effort, isolation, and read-only boundary. Otherwise use the corresponding non-interactive CLI adapter below.
 
@@ -24,15 +24,18 @@ env \
   -u ANTHROPIC_AUTH_TOKEN \
   claude --print \
   --model fable \
+  --fallback-model opus,sonnet \
   --effort xhigh \
   --permission-mode dontAsk \
   --no-session-persistence \
   --disable-slash-commands \
   --tools "Read,Glob,Grep" \
-  --output-format text
+  --output-format json
 ```
 
-Pass the composed reviewer prompt on standard input or as the non-interactive prompt. The restricted tool list keeps the reviewer read-only and disables shell, browser, messaging, and external mutation tools. A successful reviewer request is the authentication check; `claude auth status` alone does not prove that a configured credential is accepted by the service.
+Pass the composed reviewer prompt on standard input or as the non-interactive prompt. Use the top-level JSON `result` as the review text. Inspect `modelUsage` for the configured Fable, Opus, or Sonnet candidate that produced the response; ignore auxiliary model entries outside that chain. If Opus or Sonnet produced the result, report the fallback explicitly. The restricted tool list keeps the reviewer read-only and disables shell, browser, messaging, and external mutation tools. A successful reviewer request is the authentication check; `claude auth status` alone does not prove that a configured credential is accepted by the service.
+
+The fallback chain is permitted only when Claude Code classifies Fable as unavailable because of model quota, capacity, or availability. If account-wide usage or exhausted credits prevent every candidate from running, report the review as blocked; do not change authentication providers or introduce an API credential.
 
 If the managed login is unavailable or cannot refresh, report the authentication prerequisite as a blocker and ask the user to run `claude auth login`. Do not start the login flow or create and persist a fallback token without explicit authorization.
 
@@ -56,4 +59,4 @@ Pass the composed reviewer prompt on standard input. Keep the sandbox read-only 
 
 ## Unavailable reviewer
 
-If the opposite CLI or delegation facility, required model, authentication, or read-only execution boundary is unavailable, stop and report that independent review is blocked. Include the failed prerequisite; do not fall back to the calling family or silently change model or effort.
+If the primary model is unavailable and a configured fallback succeeds, continue but disclose the actual model. If the opposite CLI or delegation facility, every configured model, authentication, or read-only execution boundary is unavailable, stop and report that independent review is blocked. Include the failed prerequisite; do not fall back to the calling family or silently change model or effort.

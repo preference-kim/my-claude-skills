@@ -60,6 +60,28 @@ Start every review before waiting for any one of them:
   repository root. Give each the exact PR URL and head SHA, and require a
   visible `[Codex review]` or `[Claude review]` prefix on every GitHub review
   body and inline comment.
+- For the Claude leaf, remove inherited `CLAUDE_CODE_OAUTH_TOKEN`,
+  `ANTHROPIC_API_KEY`, and `ANTHROPIC_AUTH_TOKEN` from that child process, then
+  invoke the equivalent of:
+
+  ```bash
+  env \
+    -u CLAUDE_CODE_OAUTH_TOKEN \
+    -u ANTHROPIC_API_KEY \
+    -u ANTHROPIC_AUTH_TOKEN \
+    claude --print \
+    --model fable \
+    --fallback-model opus,sonnet \
+    --effort xhigh \
+    --no-session-persistence \
+    --output-format json
+  ```
+
+  Use the top-level `result` as its response and inspect `modelUsage` to record
+  whether Fable or a configured Opus/Sonnet fallback produced it. Permit
+  fallback only for model quota, capacity, or availability; if every candidate
+  is unavailable, treat that reviewer as failed instead of changing
+  credentials.
 - Each leaf reviewer must review directly; it must not read or invoke review
   skills, spawn subagents, launch other reviewers, edit files, alter branches,
   commit, push, approve, merge, or resolve threads. It may post only
@@ -78,10 +100,11 @@ state rather than a shared fixed file.
 
 Use a bounded wait and a process-aware monitor; do not busy-poll. Before
 presenting results, verify that Copilot reviewed the recorded SHA, both leaf
-reviewers completed successfully, required prefixes and resolvable inline
-threads are present, the PR head did not change, and the checkout remains
-clean. If a reviewer fails or times out, report its exact state and stop unless
-the user explicitly authorizes proceeding with partial results.
+reviewers completed successfully, the actual Claude model and any fallback are
+recorded, required prefixes and resolvable inline threads are present, the PR
+head did not change, and the checkout remains clean. If a reviewer fails or
+times out, report its exact state and stop unless the user explicitly
+authorizes proceeding with partial results.
 
 Inspect every unresolved finding and present a plan without changing code:
 
