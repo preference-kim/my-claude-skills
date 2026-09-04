@@ -20,7 +20,7 @@ Resolve paths from this skill rather than assuming where dotfiles was cloned:
 
 ## Choose the mode
 
-- **Daily refresh:** When the canonical AGENTS requests the session-start refresh, skip network and repository work if `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/last-successful-sync` contains today's local date. Still verify and repair the current host's configured entry points and complete skill manifest. Otherwise run the full refresh.
+- **Daily refresh:** When the canonical AGENTS requests the session-start refresh, skip network and repository work if `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/last-successful-sync` contains today's local date. Still clean completed workspace artifacts and verify and repair the current host's configured entry points and complete skill manifest. Otherwise run the full refresh.
 - **Forced refresh:** For `/agent-update`, `$agent-update`, or a direct refresh request, ignore the date stamp and run the full refresh.
 - **Requested edit:** When the user supplies update text, refresh first, then apply that request to the canonical AGENTS or shared skills before validation and publication.
 - **Link repair:** When asked to install or repair shared agent files, run the current host's symlink checks even if today's refresh already succeeded.
@@ -52,6 +52,16 @@ For every command:
 4. Re-resolve the active executable and record its post-update version. Compare it with the latest version reported by the native updater, package registry, or official release source. A Codex process that updates its own executable continues on the old in-memory version until restarted; verify the external `codex --version` result and report that a restart is required when applicable.
 
 If a command is absent, report it as not installed and do not install it implicitly. Continue checking the other commands after one update fails. If an installed command is known to be outdated but its update fails, remains shadowed, requires unavailable privilege, or cannot be verified, complete safe repository reconciliation and link repair but do not write `last-successful-sync`; report the exact command, installed version, target version when known, failure, and required recovery. A transient inability to discover a latest version is a reported verification limitation, not evidence that the installed version is current.
+
+## Clean completed workspace artifacts
+
+Perform this cleanup during every daily, forced, or requested refresh, including a same-day daily refresh that skips network and repository work.
+
+1. Inspect the home-directory top level and known reviewer temporary/cache roots for abandoned review outputs, temporary directories, diagnostic scratch, and other agent-created transient artifacts. Also identify completed experiment outputs or datasets whose producing session no longer needs them.
+2. Enumerate every cleanup target as an exact canonical path. Before deletion, require that each target is owned by the current user, is not a symlink, is not a Git repository or worktree, is not referenced by a live process, and is not a credential or configuration directory, shared default asset, active input, or evidence still needed to reproduce a current conclusion. Never delete through a broad home-directory glob, follow a symlink, or infer ownership for an ambiguous path.
+3. Remove unambiguous abandoned review and temporary artifacts without asking. Prefer a recoverable trash operation when it is available and preserves the intended space reclamation; otherwise delete only the individually verified targets.
+4. Ask whether the user wants to retain completed experiment data, explicitly stating that deletion is the default. Delete it unless the user requests retention. If the user does not answer or the completed scope is unclear, preserve it and report the unresolved cleanup item.
+5. Report the exact categories removed, the measured space reclaimed, any retained experiment data, and whether recovery is possible. An unexpected cleanup failure is a refresh failure: report its current impact and do not write the successful-sync stamp.
 
 ## Maintain the configured entry points and skill installations
 
@@ -122,7 +132,7 @@ Do not make the canonical AGENTS depend on a particular host alias, clone path, 
 4. Commit skills changes first with a concise message and no co-author. Commit the dotfiles change second so its submodule pointer names that child commit.
 5. Push the skills commit to `origin/main`. Confirm it is reachable from the remote branch, then push dotfiles to `origin/main`. Do not create a feature branch or pull request for these personal agent-file updates.
 6. If the child push succeeds but the parent push fails, report both commit IDs. Retry the parent only when the remote remains an ancestor of the local commit; otherwise stop without rewriting history.
-7. Write today's date and the reviewed upstream commit to `last-successful-sync` only after both pushes succeed or when no tracked change was needed, the current host's configured entry points and complete skill manifest pass verification, and no installed CLI remains known to be outdated. If the host is unconfigured or a known-outdated CLI could not be updated and verified, do not write `last-successful-sync` for this refresh.
+7. Write today's date and the reviewed upstream commit to `last-successful-sync` only after both pushes succeed or when no tracked change was needed, completed workspace cleanup succeeds, the current host's configured entry points and complete skill manifest pass verification, and no installed CLI remains known to be outdated. If cleanup fails, the host is unconfigured, or a known-outdated CLI could not be updated and verified, do not write `last-successful-sync` for this refresh.
 8. Re-read the final AGENTS.md and SKILL.md for the current session. Report changed files, commit IDs, push results, the host's configured mode and resolved `moreh_dev_root` when applicable (or its unconfigured state), repaired links, each CLI's before/after version and update outcome, any required process restart, and any verification limitation. Keep a no-change daily refresh unobtrusive.
 
 Never commit secrets, credentials, caches, histories, state files, or unrelated local settings.
