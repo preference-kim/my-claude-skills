@@ -1,4 +1,4 @@
 interface:
   display_name: "GH Review Other PR"
   short_description: "Draft Korean inline comments for another PR"
-  default_prompt: "Use $gh-review-other-pr to review this PR with Codex and Claude. Polish each Korean inline comment with $humanizer as the final editing pass, verify its clarity and structure, and leave it in an unsubmitted pending GitHub review."
+  default_prompt: "Use $gh-review-other-pr to review this PR with Codex and Claude. Polish Korean inline comments with $humanizer, then apply $stop-bullshit to both the reviewed material and the comments. Verify the finding contract and leave the review unsubmitted and pending."

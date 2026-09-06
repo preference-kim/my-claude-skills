@@ -1,54 +1,65 @@
 ---
 name: skill-maker
-description: Use when the user asks to create, scaffold, draft, critique, refine, or improve a Claude Code SKILL.md or skill folder.
+description: Use to create, critique, refine, or maintain agent SKILL.md files, skill folders, or shared harness structure across Claude and Codex. Not for code review or critique of an implementation plan.
 ---
 
 # Skill Maker
 
-Route the request before doing anything else. Use REFINE when the user names an existing skill, names a filesystem path, or uses any of: critique, review, refine, improve, tighten, fix. Use CREATE when the user asks to make, create, scaffold, draft, or write a new skill. If both modes are plausible, ask one disambiguation question.
+## Resolve ownership and routing first
 
-"review" is intentionally absent from the description (collides with `plan-review`, `review`, `security-review`) but kept here as a synonym once skill-maker is loaded. Do not "reconcile" by adding it back to the description.
+Refine an existing target when named; create only for a new capability. Resolve
+symlinks, repository ownership, installed copies, and the target runtime before
+choosing a path. Resolve installation and publication targets separately: a skill
+discovered in a project may belong to a personal repository. Never default to a
+Claude-only user directory. For shared skills,
+edit the canonical source and expose it through each configured runtime adapter.
+Preserve unique local overrides and dirty repositories; equal names do not prove
+equivalent behavior. Ask only when scope or ownership cannot be established.
 
-## CREATE Mode
+Before drafting a new skill, establish its name (matching its directory), purpose,
+and adjacent capabilities. Before changing any routing description, prepare the
+[routing eval pack](assets/routing-eval-template.md): at least three positive
+utterances, one negative, and one adjacent collision. Record expected changes
+from the old description. Derive examples from the task when clear; ask only for
+missing intent. Descriptions say when to load, preferably in 50 words or fewer.
 
-Interview before drafting. Gather only what changes routing or content:
+## Refine against failures
 
-1. Skill name. The folder name and frontmatter `name` must match.
-2. One-sentence purpose.
-3. Three concrete user utterances that should load the skill, one negative utterance that should not, and any adjacent skill likely to collide.
+Draft in working memory, then read [anti-patterns](references/anti-patterns.md)
+and critique in its listed order: routing failures invalidate later prose polish.
+Use [template](assets/skill-template.md) for a new skill unless the target runtime
+requires another format. Keep name/description as the default frontmatter; add
+platform metadata only for a concrete need.
 
-Before drafting, check whether `~/.claude/skills/<name>/` already exists. If it exists, do not overwrite it. Ask whether to switch to REFINE mode for that skill or choose a different name.
+Keep only instructions whose absence causes a plausible task failure. Retain
+local contracts and fragile flags; omit generic tool tutorials and system-prompt
+recaps. Keep a flat body unless conditional references, reusable scripts, or
+output assets demonstrably reduce loading or reconstruction. State exactly when
+to read each reference. Do not move everything into a file loaded unconditionally.
 
-Create a routing eval pack from `assets/routing-eval-template.md` before drafting. The description is not acceptable until the pack can explain why positives route here and negatives do not.
+For a harness, separate always-loaded policy, discovery descriptions, task bodies,
+and conditional resources. Map every existing requirement to its retained owner.
+Consolidate duplicates without weakening semantics; flag contradictions instead
+of silently changing behavior. Keep provider details in adapters and maintain
+routing cases across Claude and Codex. Measure each loading tier separately.
+Keep internal task-derived fixtures, results, inventories, and audits outside
+public worktrees, in the local agent-update state directory. Reusable published examples must be synthetic or explicitly cleared
+for the destination audience; do not send internal evidence to another service
+for evaluation without authorization.
 
-Draft from `assets/skill-template.md` unless the target system requires a different format. Write the description first: it is the routing trigger, not internal documentation. Prefer "Use when..." or "Load when..." phrasing, target 50 words or fewer, cover the positive utterances, and exclude the negative utterance.
+## Apply and verify
 
-Write the body for another agent, not for a human reader. Lead with gotchas, decisions, and failure modes the model would plausibly miss. Keep obvious model knowledge out of the body. Do not restate generic shell, git, editing, or system-prompt behavior.
+Show concrete edits and routing deltas, not generic critique. If implementation is
+already authorized, write the scoped changes and make the resulting diff reviewable;
+otherwise present the full candidate bundle and wait for explicit write approval.
+Do not request approval again for work already authorized in the session.
 
-Default to a flat `SKILL.md`. Add `references/`, `scripts/`, or `assets/` only when the material is heavy and conditional, deterministic enough to reuse, or an output resource the agent should fill rather than reconstruct.
+Validate frontmatter, reference paths, requirement coverage, and routing positives,
+negatives, and collisions. For shared harness changes, evaluate both runtimes in
+fresh sessions; disclose unavailable models/authentication and distinguish test
+judgments from observed live routing. Re-read written files and report limits.
 
-## REFINE Mode
-
-Resolve the target skill, then inspect the target `SKILL.md` and bundled files only when they affect the critique.
-
-If the description will change, create or update a routing eval pack from `assets/routing-eval-template.md` before accepting the rewrite. Treat the old and new descriptions as behaviorally different and record the expected routing delta.
-
-## Pipeline
-
-Both modes follow the same order. Do not skip or reorder.
-
-1. **Route.** Choose CREATE or REFINE and resolve the target or intended name.
-2. **Eval Pack.** Write or update a routing eval pack in working memory. Do not write it to disk unless the user approves the final bundle.
-3. **Draft.** Produce a candidate `SKILL.md` (CREATE) or revision (REFINE) in working memory. Do not write to disk.
-4. **Critique.** Read `references/anti-patterns.md` and run every section in order, top to bottom. Earlier failures invalidate later checks; fix them before continuing. Prioritize routing failures because the description is paid for before the body is available.
-5. **Apply.** Edit the in-memory draft to fix every concrete issue. Report critique as concrete edits, not vague advice:
-   - `description: rewrite "...old..." -> "...new..." because the old version documents internals instead of routing intent`
-   - `Body / Drafting: cut paragraph about generic git workflow; the base agent already knows it`
-   - `Body / Resources: move API status codes to references/api-errors.md because they are heavy and conditional`
-6. **Show.** Present findings, the routing eval pack summary, candidate gotchas, and the full revised `SKILL.md` in a fenced `markdown` block.
-7. **Approve.** Wait for explicit user confirmation before any disk write. This is the only approval gate; do not ask earlier.
-8. **Write.** On approval, write to `~/.claude/skills/<name>/SKILL.md` (CREATE) or overwrite the resolved target path (REFINE). Also write any approved bundled files. Do not edit `~/.claude/skills/README.md`; mention it as a manual follow-up.
-9. **Verify.** Re-read the written files and summarize the final state.
-10. **Capture Gotchas.** If critique found a reusable failure mode, ask whether to append it to the target skill's gotchas or to `skill-maker/references/anti-patterns.md`.
-
-Do not add frontmatter fields just because another skill has them. Default to minimal (`name` + `description`); add `allowed-tools`, `license`, `version`, or compatibility metadata only when genuinely needed.
+Turn reusable failures into small regression cases and consolidate them with the
+existing owner. Do not append incident histories or duplicate gotchas. Add only
+the shortest rule needed to prevent recurrence. Preserve local indexes unless
+the authorized scope includes their maintenance.

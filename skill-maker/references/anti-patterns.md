@@ -1,6 +1,6 @@
 # Skill Anti-Patterns
 
-Use this checklist during CREATE and REFINE critique. The core reference is Perplexity's "Designing, Refining, and Maintaining Agent Skills at Perplexity"; these rules adapt that methodology for Claude Code skills. The goal is not to make a skill look like documentation; the goal is to make another agent load the right context at the right time and then perform better than it would without the skill.
+Use this checklist during CREATE and REFINE critique. The core reference is Perplexity's "Designing, Refining, and Maintaining Agent Skills at Perplexity"; these rules adapt that methodology for agent skills across Claude and Codex. The goal is not to make a skill look like documentation; the goal is to make another agent load the right context at the right time and then perform better than it would without the skill.
 
 Run these checks in order. A routing failure invalidates later prose polish because the body may never load.
 
@@ -24,7 +24,7 @@ description: Use when the user asks for review, writing, documentation, or codin
 After:
 
 ```yaml
-description: Use when the user asks to draft, critique, refine, or improve a Claude Code SKILL.md or bundled skill folder.
+description: Use when the user asks to draft, critique, refine, or improve an agent SKILL.md or bundled skill folder.
 ```
 
 Before accepting a description, write or reuse a routing eval pack with at least three positives, one negative, and one adjacent collision case. If the revised description cannot pass those examples, keep iterating before writing.
@@ -82,7 +82,7 @@ The second sentence changes behavior. The first only explains the category.
 
 ## 4. Missing Gotcha Capture
 
-Skills should become append-mostly where failures accumulate as durable negative examples. A critique that finds a reusable failure mode should not disappear into the chat transcript.
+Preserve reusable failure modes as regression cases, consolidating overlapping rules rather than accumulating instructions. A critique that finds a reusable failure mode should not disappear into the chat transcript.
 
 Detect this when a refinement:
 
@@ -103,10 +103,10 @@ I tightened the description so it does not trigger on PR reviews.
 After:
 
 ```markdown
-Candidate gotcha: Do not add "review" to the description for skill-making; it collides with code review and plan-review routing. Keep "review" as a post-load synonym only.
+Candidate gotcha: Do not use unqualified "review" as a skill-making trigger; it collides with code review and implementation-plan critique; qualify the trigger by skill/harness intent.
 ```
 
-At the end of critique, list candidate gotchas separately. Ask whether each belongs in the target skill's gotchas or in this anti-pattern file.
+At the end of critique, list candidate gotchas separately. Place each in its existing owner when maintenance is authorized; otherwise include it in the proposed bundle.
 
 Single-incident anchoring: when turning one incident into a reusable rule,
 generalize the failure mode and avoid embedding incident-specific IDs/examples

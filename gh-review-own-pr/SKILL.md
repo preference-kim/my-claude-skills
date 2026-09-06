@@ -1,6 +1,6 @@
 ---
 name: gh-review-own-pr
-description: Prepare the current branch for submission, create or reuse its pull request, coordinate independent Copilot, Codex, and Claude reviews, and address only user-approved feedback. Use only for a top-level request to submit or review the user's own pull request, address its review feedback, or an explicit gh-review-own-pr invocation.
+description: Use for a top-level request to submit or review the user's own PR, or address its review feedback. Not for another author's PR, PR-body-only editing, or delegated leaf review.
 ---
 
 # Review the Current Pull Request
@@ -45,7 +45,8 @@ skill.
    feature branch. Stage only intended paths, review the staged diff, run
    `git diff --cached --check`, and commit without a co-author trailer.
 4. Push the branch, then reuse its open pull request or create one with a
-   concise summary, validation evidence, and known limitations. Do not create
+   description prepared with `write-technical-pr`, including validation evidence
+   and known limitations. Do not create
    an empty commit or duplicate pull request.
 5. Record the canonical PR URL, owner, repository, PR number, exact head SHA,
    and the existing review/thread IDs. Confirm local `HEAD`, pushed branch, and
@@ -60,36 +61,17 @@ Start every review before waiting for any one of them:
   repository root. Give each the exact PR URL and head SHA, and require a
   visible `[Codex review]` or `[Claude review]` prefix on every GitHub review
   body and inline comment.
-- For the Claude leaf, remove inherited `CLAUDE_CODE_OAUTH_TOKEN`,
-  `ANTHROPIC_API_KEY`, and `ANTHROPIC_AUTH_TOKEN` from that child process, then
-  invoke the equivalent of:
-
-  ```bash
-  env \
-    -u CLAUDE_CODE_OAUTH_TOKEN \
-    -u ANTHROPIC_API_KEY \
-    -u ANTHROPIC_AUTH_TOKEN \
-    claude --print \
-    --model fable \
-    --fallback-model opus,sonnet \
-    --effort xhigh \
-    --no-session-persistence \
-    --output-format json
-  ```
-
-  Use the top-level `result` as its response and inspect `modelUsage` to record
-  whether Fable or a configured Opus/Sonnet fallback produced it. Permit
-  fallback only for model quota, capacity, or availability; if every candidate
-  is unavailable, treat that reviewer as failed instead of changing
-  credentials.
+- For the Claude leaf, read [Claude adapter](../review-common/claude.md) and
+  apply its authentication, model, isolation, and reporting contract.
 - Each leaf reviewer must review directly; it must not read or invoke review
   skills, spawn subagents, launch other reviewers, edit files, alter branches,
   commit, push, approve, merge, or resolve threads. It may post only
   resolvable inline review comments on changed lines of the recorded head SHA.
-- Ask reviewers to report only concrete, high-confidence issues involving
-  correctness, concurrency, security, compatibility, resource lifetime, test
-  coverage, or material maintainability. Each finding must state the scenario,
-  impact, and remediation; do not manufacture findings or post style nits.
+- Read [finding contract](../review-common/feedback.md), include it in both
+  leaf prompts together with its required `stop-bullshit` instructions, and
+  require `stop-bullshit` on both the material and comments after the final
+  edit and before a leaf posts. Prioritize correctness, concurrency, security,
+  compatibility, resource lifetime, test coverage, and material maintainability.
 
 Use a unique `mktemp -d` directory outside the repository for each review run.
 Capture the Codex and Claude outputs and exit states separately, print
@@ -106,7 +88,9 @@ head did not change, and the checkout remains clean. If a reviewer fails or
 times out, report its exact state and stop unless the user explicitly
 authorizes proceeding with partial results.
 
-Inspect every unresolved finding and present a plan without changing code:
+Apply the finding contract and `stop-bullshit` to all collected feedback,
+including Copilot's, and to your own response. Inspect every unresolved finding
+and present a plan without changing code:
 
 - **Fix** — the precise code or test change;
 - **No change** — why the finding is invalid or already addressed; or

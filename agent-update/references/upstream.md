@@ -19,13 +19,13 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 
 ## Local design
 
-- Keep `AGENTS.md` at the dotfiles root as the canonical instruction file.
+- Keep `AGENTS.md` at the dotfiles root as the canonical instruction file. Keep its always-loaded policy concise; shared personal guidance lives in conditionally loaded `agent-guidance/` or skill references. Preserve the approved Moreh/TT-Metal development knowledge under `agent-guidance/tt-metal/`, with mandatory triggers in AGENTS.md. New private project details and local evidence stay outside public worktrees. Preserve requirement meaning and reachability, not monolithic placement.
 - Keep the user-owned stable working principles at the top of `AGENTS.md`, semantically independent from upstream-derived Moreh operational guidance. Upstream reconciliation must preserve their meaning and position unless the user explicitly requests a change.
 - Keep shared skills in the `skills` submodule backed by `preference-kim/my-claude-skills`.
 - Discover the shared instruction files and skills through a per-host layout mode, `host-global` or `moreh-dev`, recorded in `agent-file-sync.local.yaml` at the dotfiles root: a gitignored, host-local file (templated by the tracked `agent-file-sync.example.yaml`) that never syncs through git, so no host's mode or target is visible or settable from another host. `host-global` exposes them at `~/.codex`/`~/.claude` entry points, with per-skill links inside the real `~/.codex/skills`/`~/.claude/skills` directories; `moreh-dev` exposes the same entry points and per-skill links inside the host-specific Git checkout named by the required `moreh_dev_root`, with no host-global installation. Resolve relative targets from the dotfiles root, accept explicit absolute targets, validate the exact Git root, and never search for or create a target. Do not keep independent tool-specific clones or whole-directory skill links in either mode.
-- Track locally maintained or locally adapted skills directly. A verbatim third-party skill may remain a nested submodule when its independent provenance and update boundary are useful; `humanizer` is the current instance of this policy.
+- Track locally maintained or adapted skills directly unless they have a separate authoritative repository. Preserve that repository as a nested submodule: `stop-bullshit` is user-owned at `preference-kim/stop-bullshit`; `humanizer` is a verbatim third-party skill. Publish changed user-owned nested skills before this repository, then publish the dotfiles pointer.
 - Run synchronization from the first agent session on each local calendar day; do not depend on cron, launchd, or a continuously running process.
-- Publish personal agent-file updates directly to `main` in the skills repository first and the dotfiles repository second.
+- Publish personal agent-file updates directly to `main` in the skills repository first and the dotfiles repository second. The configured development checkout receives ignored local links only; it is not a publication destination. Preserve tracked project skills unless the user explicitly requests that project contribution.
 - Monitor the full upstream skill manifest inventory. Adopt compatible skills through explicit source mappings and preserve a documented rationale for any non-adoption.
 
 ## Intentional divergences
@@ -36,5 +36,17 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 - Preserve the daily semantic reconciliation workflow in the local `agent-update` skill instead of replacing it with upstream's simpler pull-only workflow.
 - Keep a curated local skill set rather than mirroring upstream skills wholesale. `caveman` is not adopted because persistent compressed speech can undermine the local completeness requirements. The two GitHub review skills are adopted through local counterparts that preserve the primary-checkout, branch, and read-only/write-boundary rules above.
 - Unlike upstream's chat-only `gh-review-other-pr`, write validated findings as concise Korean inline comments in the current viewer's unsubmitted pending review. Use the shared `humanizer` skill as the final prose-editing pass, then verify each stored comment's clarity, concision, and structure before reporting back. Keep leaf reviewers and validation read-only, authorize no other GitHub mutation, and never publish or submit the review; this places the final feedback on the relevant diff lines while preserving user control over submission.
+
+- Preserve the shared Claude/Codex harness structure: one owner per contract, narrow routing descriptions with positive/negative/adjacent cases, and runtime details in adapters. Reconcile changed upstream requirements into their owning reference rather than restoring an always-loaded catalog. Shared skill discovery uses tracked files and approved gitlinks only. Internal maintenance and evaluation evidence stays outside both worktrees and skill discovery. Do not restore a tracked evidence directory or treat personal publication authority as permission to disclose project information.
+
+- The dedicated `plan-review` skill is retired at the user's request. Do not recreate its discovery entries or mandatory opposite-family review workflow during synchronization. Ordinary plan critique uses the agent's normal capabilities.
+
+- Preserve the Frankfurt-inspired core guard against bullshit in the always-loaded
+  scientific reasoning and delivery principles. The separately maintained
+  `stop-bullshit` skill owns the detailed check; keep that single name throughout
+  the harness. It is distinct from the prose-editing role of `humanizer`. Preserve
+  the AGENTS trigger for user reactions indicating bullshit, evasion, or unearned
+  certainty. PR review checks both source material and feedback after prose
+  editing, including isolated reviewer prompts.
 
 These are policy differences, not frozen text. Reconcile upstream changes that improve their safety or clarity without reversing the local decision.

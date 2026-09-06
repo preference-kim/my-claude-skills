@@ -1,3 +1,7 @@
 [submodule "humanizer"]
 	path = humanizer
 	url = https://github.com/blader/humanizer.git
+[submodule "stop-bullshit"]
+	path = stop-bullshit
+	url = git@github.com:preference-kim/stop-bullshit.git
+	branch = main
