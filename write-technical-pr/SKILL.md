@@ -35,7 +35,7 @@ or omit it. Do not use candidate allocations as current resource usage.
 - Transfer every material fact into the body; local artifacts are not citations.
 - Keep the few mechanisms that explain the design/results; fold small refinements
   into their owning section. No superseded experiments or raw diagnostic logs.
-- Check every headline, table, formula, link, source identity, test count, and
+- Check every headline, table, formula, link, source identity, quantitative claim, and
   caption against evidence. Ensure summary, correctness, performance, and
   integration scopes agree. State missing validation without inventing success.
 - After the last prose edit, apply
