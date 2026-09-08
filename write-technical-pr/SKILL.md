@@ -35,11 +35,20 @@ or omit it. Do not use candidate allocations as current resource usage.
 - Transfer every material fact into the body; local artifacts are not citations.
 - Keep the few mechanisms that explain the design/results; fold small refinements
   into their owning section. No superseded experiments or raw diagnostic logs.
-- Check every headline, table, formula, link, source identity, quantitative claim, and
-  caption against evidence. Ensure summary, correctness, performance, and
-  integration scopes agree. State missing validation without inventing success.
-- After the last prose edit, apply
-  [stop-bullshit](../stop-bullshit/SKILL.md) on the source claims and final body;
+- Review substantive content against the description policy and applicable
+  evidence contracts: check every headline, table, formula, link, source identity,
+  quantitative claim, and caption against evidence. Ensure the summary explains
+  the problem, retained solution, and result; correctness, performance, and
+  integration scopes must agree. State missing validation without inventing
+  success. After the last prose edit, apply
+  [stop-bullshit](../stop-bullshit/SKILL.md) to the source claims and final body;
   when auditing a description, also check your review comments themselves.
-- Check policy and applicable evidence contracts, then update the live body only
-  when authorized. Re-read it to verify Markdown and concurrent content survived.
+- Separately check language, structure, and formatting against the description
+  policy, including the opening `## Korean Summary` and its Korean content,
+  reproduction commands and result tables where required, and absence of local
+  artifact paths. Passing these checks does not establish substantive correctness.
+- Update the live body only when authorized, after completing the substantive
+  review and language/structure/formatting checks and correcting any violations.
+  Re-read it to verify the reviewed body was published
+  and concurrent content survived. Successful publication and readback establish
+  delivery, not substantive correctness or policy compliance.
