@@ -1,3 +1,7 @@
 moreh/
 moreh-tt-metal/
 .agent-local/
+
+# macOS Finder metadata
+.DS_Store
+._*
