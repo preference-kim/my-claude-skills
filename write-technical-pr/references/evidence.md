@@ -14,6 +14,15 @@ identity, workload, units, denominator, participating resources, and protocol
 needed to interpret a quantitative claim. If evidence is stale or covers a
 narrower source or test scope, say so plainly or remove it.
 
+Explain a source revision's role and relationship to the submitted implementation;
+a bare hash is not measurement context. For an optimization comparison, name the
+baseline, the changed option or code, and the conditions held equal instead of
+using an unexplained qualifier such as "matched." Distinguish final latency from
+speedup. When only the final path was measured, identify the missing baseline;
+do not invent a reason it was omitted or imply that no benefit exists.
+Unless the task requires that comparison, narrow the performance claim rather
+than turn missing measurements into a new experiment or publication prerequisite.
+
 Keep facts and limitations adjacent. Do not rely on a distant disclaimer to
 correct an over-broad table or headline.
 

@@ -26,7 +26,8 @@ dataflow, synchronization, and material allocation assumptions where relevant.
 
 Report only the current design relative to the base and final retained results.
 Exclude branch evolution, rejected probes, transient bugs, retries, and rerun
-chronology. A baseline is a direct matched comparison, never a development story.
+chronology. Use performance baselines to quantify retained results under stated
+comparable conditions, not to narrate development.
 If measured source differs from PR head, put the narrow qualifier beside the claim
 or omit it. Do not use candidate allocations as current resource usage.
 
@@ -39,8 +40,10 @@ or omit it. Do not use candidate allocations as current resource usage.
   evidence contracts: check every headline, table, formula, link, source identity,
   quantitative claim, and caption against evidence. Ensure the summary explains
   the problem, retained solution, and result; correctness, performance, and
-  integration scopes must agree. State missing validation without inventing
-  success. After the last prose edit, apply
+  integration scopes must agree. Check whether a reviewer can reconstruct the
+  base-to-PR change, the mechanism and producer-to-consumer path, and the source
+  of each material constraint; correct missing relationships, not only wording.
+  State missing validation without inventing success. After the last prose edit, apply
   [stop-bullshit](../stop-bullshit/SKILL.md) to the source claims and final body;
   when auditing a description, also check your review comments themselves.
 - Separately check language, structure, and formatting against the description
