@@ -18,8 +18,15 @@ body before revising so concurrent or integration-owned content is not overwritt
 Preserve an explicitly requested structure when semantically valid; reshape stale
 sections instead of appending patch notes.
 
-Start with `## Korean Summary`: problem, retained solution, and concrete result
-using established codebase terms. Add only useful topics: interfaces/contracts,
+Use the description policy's language and draft-confirmation rules. Present the
+initial manuscript with its proposed language before publishing; an explicit
+language request or prior approval settles that choice. The default is an English
+body preceded by `## Korean Summary` in Korean. A requested single-language body
+uses that language throughout, including headings and summary.
+
+Explain the problem, retained solution, and concrete result using established
+codebase terms. Prefer topic bullets with explanatory sub-bullets; preserve the
+connections that make the change understandable. Add only useful topics: interfaces/contracts,
 implementation, correctness, performance, resources, integration, remaining limits.
 Define inputs/outputs, ownership, shapes, invariants, defaults, unsupported cases,
 dataflow, synchronization, and material allocation assumptions where relevant.
@@ -46,11 +53,11 @@ or omit it. Do not use candidate allocations as current resource usage.
   State missing validation without inventing success. After the last prose edit, apply
   [stop-bullshit](../stop-bullshit/SKILL.md) to the source claims and final body;
   when auditing a description, also check your review comments themselves.
-- Separately check language, structure, and formatting against the description
-  policy, including the opening `## Korean Summary` and its Korean content,
+- Separately check language, structure, and formatting against the confirmed
+  language choice and description policy, including the opening summary,
   reproduction commands and result tables where required, and absence of local
   artifact paths. Passing these checks does not establish substantive correctness.
-- Update the live body only when authorized, after completing the substantive
+- Update the live body only when the manuscript and language are approved, after completing the substantive
   review and language/structure/formatting checks and correcting any violations.
   Re-read it to verify the reviewed body was published
   and concurrent content survived. Successful publication and readback establish

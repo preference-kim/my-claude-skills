@@ -62,11 +62,13 @@ column or describe one as the other.
   the work more clearly.
 - Define uncommon ratios and abbreviations at first use.
 
-Present concrete results in Markdown tables. Include the workload, conditions,
+Use Markdown tables for comparable results; keep a single component result in
+its owning bullet when a table adds no useful comparison. Include the workload, conditions,
 units, acceptance criterion or comparison basis, and result needed to interpret
 each value. Use figures only for relationships that a table cannot show
-efficiently. Use short bullets only to explain methodology, interpretation,
-constraints, and decisions.
+efficiently. Group methodology, interpretation, constraints, and decisions into
+topic bullets and explanatory sub-bullets; keep the relationships needed to
+interpret the numbers explicit.
 
 ## Make experiments reproducible
 
@@ -76,8 +78,8 @@ constraints, and decisions.
   variables and inputs, and exact test or benchmark selection.
 - Do not depend on local aliases, private wrappers, undeclared state, or
   machine-specific absolute paths.
-- Put concrete results in the corresponding Markdown table, not only in prose
-  or an external artifact.
+- Put concrete results in the body, using the tables or component bullets
+  described above; do not leave them in an external artifact or duplicate them.
 - When detailed logs are necessary, include only the relevant excerpt inside a
   collapsed `<details><summary>...</summary>...</details>` block with a
   specific summary label. Omit irrelevant output, secrets, and local paths.
