@@ -8,6 +8,7 @@ directories contain links to these canonical directories rather than copies.
 
 | Skill | Description |
 |-------|-------------|
+| [agent-handoff](agent-handoff/) | Prepares a reviewed task handoff and the opening prompt for a fresh session. |
 | [agent-update](agent-update/) | Synchronizes shared agent guidance across hosts while preserving local policy. |
 | [gh-review-other-pr](gh-review-other-pr/) | Reviews another author’s PR and prepares a pending review. |
 | [gh-stack](gh-stack/) | Manages dependent branches and pull requests. |
@@ -15,7 +16,7 @@ directories contain links to these canonical directories rather than copies.
 | [humanizer](humanizer/) | Rewrites AI-sounding text. Submodule tracking [blader/humanizer](https://github.com/blader/humanizer). |
 | [skill-maker](skill-maker/) | Authors and refines SKILL.md files; audits drafts against an anti-patterns checklist. |
 | [stop-bullshit](stop-bullshit/) | Checks unsupported claims and evasive reasoning; independently maintained at [preference-kim/stop-bullshit](https://github.com/preference-kim/stop-bullshit). |
-| [write-technical-pr](write-technical-pr/) | Drafts and audits technical pull-request descriptions as current-design documents. |
+| [write-technical-pr](write-technical-pr/) | Drafts technical PR descriptions and finalizes them after independent prose and evidence review. |
 
 ## Storage policy
 

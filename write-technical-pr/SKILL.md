@@ -6,6 +6,8 @@ description: Use to draft, revise, or audit a technical GitHub PR description an
 # Write Technical PR
 
 Read [description policy](references/policy.md) before drafting any PR body.
+Read the [document revision workflow](../review-common/document-revision.md)
+before preparing the mandatory separate-agent manuscript review.
 For experiments, quantitative claims, correctness coverage, or figures, also read
 [evidence contracts](references/evidence.md). Do not run experiments or modify
 source, tests, branches, or benchmark artifacts merely to write a description.
@@ -38,7 +40,7 @@ comparable conditions, not to narrate development.
 If measured source differs from PR head, put the narrow qualifier beside the claim
 or omit it. Do not use candidate allocations as current resource usage.
 
-## Verify and publish
+## Review, revise, and publish
 
 - Transfer every material fact into the body; local artifacts are not citations.
 - Keep the few mechanisms that explain the design/results; fold small refinements
@@ -50,13 +52,19 @@ or omit it. Do not use candidate allocations as current resource usage.
   integration scopes must agree. Check whether a reviewer can reconstruct the
   base-to-PR change, the mechanism and producer-to-consumer path, and the source
   of each material constraint; correct missing relationships, not only wording.
-  State missing validation without inventing success. After the last prose edit, apply
-  [stop-bullshit](../stop-bullshit/SKILL.md) to the source claims and final body;
-  when auditing a description, also check your review comments themselves.
+  State missing validation without inventing success.
 - Separately check language, structure, and formatting against the confirmed
   language choice and description policy, including the opening summary,
   reproduction commands and result tables where required, and absence of local
   artifact paths. Passing these checks does not establish substantive correctness.
+- Send every new or revised manuscript to a separate agent under the document
+  revision workflow. The reviewer uses [humanizer](../humanizer/SKILL.md) in
+  embedded mode, then [stop-bullshit](../stop-bullshit/SKILL.md) on the revised
+  prose, source claims, and its own findings. Apply justified revisions and
+  complete the final author check in that workflow before presenting a finalized
+  manuscript or publishing it. A code review or the author's self-check alone
+  does not satisfy this manuscript review. Delegated manuscript reviewers follow
+  the supplied content policies and do not invoke this orchestration again.
 - Update the live body only when the manuscript and language are approved, after completing the substantive
   review and language/structure/formatting checks and correcting any violations.
   Re-read it to verify the reviewed body was published
