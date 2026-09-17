@@ -38,6 +38,9 @@ skill.
 
 1. Inspect the complete intended change set, current branch, remotes, and its
    base branch. Ask the user if the submission scope or base is ambiguous.
+   Apply the environment-variable check in the repository's Git guidance before
+   validation and commit; for this shared harness, read
+   `../../agent-guidance/version-control.md` from this skill's canonical directory.
 2. Run repository-required formatting, build, and test commands. Follow the
    repository's worktree restriction: device-backed or build work stays in the
    current session checkout.
