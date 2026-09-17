@@ -42,8 +42,12 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 - The dedicated `plan-review` skill is retired at the user's request. Do not recreate its discovery entries or mandatory opposite-family review workflow during synchronization. Ordinary plan critique uses the agent's normal capabilities.
 
 - Preserve accurate reasoning, explicit understanding of the task and relevant
-  context before consequential action, and clear language in the always-loaded
-  scientific reasoning and delivery principles. Keep philosophical attribution
+  context before consequential action, and reader-oriented documentation in the
+  always-loaded reasoning and delivery principles. Keep essential explanations
+  in the document, match evidence to claims, and preserve minimal verified
+  procedures. Apply the same principles to instruction documents; keep task-only
+  formats in their owning skills. Preserve the PR local-artifact prohibition and
+  the explicit same-environment handoff exception. Keep philosophical attribution
   out of AGENTS.md. The separately maintained
   `stop-bullshit` skill owns the detailed check; keep that single name throughout
   the harness. It is distinct from the prose-editing role of `humanizer`. Preserve

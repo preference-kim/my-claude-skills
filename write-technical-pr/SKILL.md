@@ -8,9 +8,11 @@ description: Use to draft, revise, or audit a technical GitHub PR description an
 Read [description policy](references/policy.md) before drafting any PR body.
 Read the [document revision workflow](../review-common/document-revision.md)
 before preparing the mandatory separate-agent manuscript review.
-For experiments, quantitative claims, correctness coverage, or figures, also read
-[evidence contracts](references/evidence.md). Do not run experiments or modify
-source, tests, branches, or benchmark artifacts merely to write a description.
+For experiments, quantitative claims, correctness coverage, performance comparisons,
+or figures, also read [evidence contracts](references/evidence.md); that reference
+owns reproduction commands, result presentation, and diagnostic excerpts.
+Do not run experiments or modify source, tests, branches, or benchmark artifacts
+merely to write a description.
 
 ## Establish the current argument
 
@@ -42,9 +44,10 @@ or omit it. Do not use candidate allocations as current resource usage.
 
 ## Review, revise, and publish
 
-- Transfer every material fact into the body; local artifacts are not citations.
-- Keep the few mechanisms that explain the design/results; fold small refinements
-  into their owning section. No superseded experiments or raw diagnostic logs.
+- Apply the description policy's self-contained evidence and citation requirements.
+  Keep the mechanisms that explain the change; fold refinements into their owning
+  section. Retain relevant failure signatures under the evidence contracts, not
+  superseded experiments or unfiltered diagnostic output.
 - Review substantive content against the description policy and applicable
   evidence contracts: check every headline, table, formula, link, source identity,
   quantitative claim, and caption against evidence. Ensure the summary explains
@@ -55,8 +58,8 @@ or omit it. Do not use candidate allocations as current resource usage.
   State missing validation without inventing success.
 - Separately check language, structure, and formatting against the confirmed
   language choice and description policy, including the opening summary,
-  reproduction commands and result tables where required, and absence of local
-  artifact paths. Passing these checks does not establish substantive correctness.
+  evidence presentation where required, and absence of local artifact paths.
+  Passing these checks does not establish substantive correctness.
 - Send every new or revised manuscript to a separate agent under the document
   revision workflow. The reviewer uses [humanizer](../humanizer/SKILL.md) in
   embedded mode, then [stop-bullshit](../stop-bullshit/SKILL.md) on the revised

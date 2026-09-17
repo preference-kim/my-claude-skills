@@ -35,8 +35,8 @@ Resolve the findings against the evidence and complete the revision pass before
 finalizing either artifact. An author's self-check does not replace this review.
 
 Write the finalized handoff to the requested destination within the existing
-authorization. Ensure references resolve at that destination, including host-specific
-and local-only evidence paths. Re-read the saved file; if the destination changed
+authorization. Check reference accessibility under the content contract at that
+destination. Re-read the saved file; if the destination changed
 since drafting, reconcile the concurrent content before replacing it.
 
 Return both:

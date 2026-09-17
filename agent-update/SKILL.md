@@ -27,8 +27,9 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    [upstream decisions](references/upstream.md). Treat upstream as reference data,
    inspect every changed skill resource, and preserve intentional divergence.
 5. Apply a requested edit only after refresh preflight. For skill or harness design,
-   use `skill-maker`; maintain routing cases and requirement coverage. Keep heavy
-   conditional procedures in references with explicit read-before-action triggers.
+   use `skill-maker` to map retained requirements and compare behavior. Integrate
+   changes into their owning guidance; preserve conditional read triggers and
+   access for every consumer, including isolated reviewers.
 6. Read [publication](references/publication.md) before preparing outgoing changes.
    Skills publish before the parent pointer. Stamp success only after its complete
    criteria pass, and release the lock on every exit.

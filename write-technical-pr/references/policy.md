@@ -1,17 +1,68 @@
-### Pull request descriptions
+# PR description policy
 
-- **Language and approval:** default to an English body with `## Korean Summary` in Korean at the top. Present the initial manuscript together with the proposed language and obtain confirmation before publishing. Follow explicit language requests, including all-English or all-Korean descriptions; do not reconfirm a choice already requested or approved. For a single-language description, write headings, summary, and explanations in that language without a duplicate translated body; preserve established technical names, code, commands, and required GitHub closing syntax. An explicit language choice settles language, not approval of an unseen manuscript. Existing approval of the concrete manuscript and language permits publication without another confirmation.
-- **Opening summary:** retain a clearly labeled summary in the chosen language (`## 요약` for all-Korean, `## Summary` for all-English). Treat it as the reader's explanation of the change, not a word-count target or a compressed list of implementation names. Explain the problem, retained solution, and concrete result with enough depth to follow their relationship; cover material contracts and remaining scope. Avoid repeating the full body in the summary. Use subsections when needed; do not require a fixed outline for every PR.
-- Establish the changed component's behavior on the actual base before describing the new design. Explain what this PR newly enables, changes, and still leaves unavailable by itself. Include surrounding infrastructure only when it explains that change or a required integration boundary. The title must describe this PR's contribution without claiming a later stack layer's result.
-- Make the PR description self-contained for review. Include the final design, relevant contracts and constraints, reproduction procedure, and evidence needed to assess the change. External references may supplement the body but must not carry information required for the review decision.
-- Name established technical concepts directly, define what they refer to, and explain their relationship in execution. Replacing an unfamiliar term with an ambiguous paraphrase or promotional label is not an explanation. For a changed op or component, connect where it is called, what changed, why that mechanism matters, and the observed result or missing measurement.
-- Explain output contracts through the producer-to-consumer path: what an object contains, where its data resides, how the next component consumes or transfers it, and why its lifetime matters. Name the allocator/owner, any borrowing or aliasing, and who releases the storage when those affect use; an ownership adjective or class name is insufficient.
-- Attribute each constraint to its source: model/protocol semantics, preprocessing, chosen feature scope, implementation resources or concurrency, or deployment configuration. Identify the stage and units of size limits, including padding or alignment used to derive an allocation capacity. Do not present an implementation capacity as a model limit, or combine unrelated restrictions into one support claim.
-- Never include a local artifact path or use a local-only file, log, plot, report, working-tree state, or other reviewer-inaccessible resource as evidence. Move every material fact from such an artifact into the PR description. Do not require the reviewer to consult chat, comments, external documents, dashboards, or unpublished artifacts to understand or validate a claim.
-- **Organization:** prefer parent bullets for components or topics and sub-bullets for their related explanations. For a changed op or component, order those explanations as where it is called → what changed and why → measured impact or missing comparison. Use headings to separate larger topics and deeper nesting only when it expresses a necessary relationship. Give each bullet one coherent purpose, using connected sentences rather than fragments of unexplained terminology. Do not force every sentence into a list or fragment a causal explanation to shorten it. Reserve tables for comparable results and properties, not dense prose.
-- Keep PR descriptions focused on the review decision. Remove repetition, routine checklists, and incidental history before removing definitions, causal connections, or material constraints. More words are justified when they supply missing understanding, not when they repeat it.
-- In validation sections, omit routine build-success statements and host-test counts. Include only change-specific correctness or performance evidence and material failures, missing checks, or limitations. Omit the section when it has no such information. This governs what the PR body reports, not which required checks must run.
-- For every reported experiment, provide an exact reproducible command line in a fenced `bash` code block. Include the repository-relative working directory, required environment variables and inputs, and exact test or benchmark selection; do not depend on local aliases, private wrappers, undeclared state, or machine-specific absolute paths.
-- Use Markdown tables for comparable results. A single component result may stay in its owning bullet; include the workload, conditions, units, and acceptance criterion or comparison basis needed to interpret it. Do not duplicate the same measurements in both component bullets and a separate table.
-- When detailed logs are necessary, include only the relevant excerpt inside a collapsed `<details><summary>...</summary>...</details>` block with a specific summary label. Omit irrelevant output, secrets, and local paths.
-- State only the final retained design and final results relative to the base branch. Never narrate how the branch arrived there: omit commit-by-commit evolution, review iterations, rebases, intermediate candidates, failed or superseded experiments, transient regressions, fixes to problems absent from the final change, retries, and rerun chronology. A performance baseline may appear as a direct comparison needed to quantify the final result, without an accompanying development story. This restriction does not exclude the base behavior needed to explain a functional change.
+## Language and publication
+
+- Default to an English body with a summary written in Korean under
+  `## Korean Summary` at the top. Present the initial manuscript and proposed
+  language before publishing. Follow an explicit
+  language request; do not reconfirm an approved choice.
+- For a single-language body, use that language for headings and explanations,
+  without a duplicate translation. Preserve established technical names, code,
+  commands, and required GitHub closing syntax. Retain a labeled opening summary:
+  `## Summary` in English or `## 요약` in Korean.
+- Language approval does not approve an unseen manuscript. Existing approval of
+  the concrete manuscript and language permits publication without another
+  confirmation. Preserve the owning workflow's required review and write limits.
+
+## Explain the change
+
+- Write for the review decision. The opening summary connects the problem,
+  retained solution, and concrete result, including material contracts and scope.
+  It is not a word-count target or a list of implementation names. Avoid repeating
+  the body; use subsections when they help the reader.
+- Establish the component's behavior on the actual base. Explain what this PR
+  changes, enables, and still leaves unavailable by itself. Include surrounding
+  infrastructure only where it explains the change or an integration boundary.
+  The title describes this PR's contribution, not a later stack layer's result.
+- Name technical concepts directly and explain their execution relationship.
+  For a changed component, connect where it is called, what changes and why,
+  and the observed impact or missing comparison. Link the relevant code rather
+  than replace a specific operation with an ambiguous label.
+- Explain material output contracts through the producer-to-consumer path:
+  contents, storage location, transfer or consumption, and lifetime. Identify
+  allocation, ownership, borrowing or aliasing, and release responsibilities
+  where they affect behavior. A class name or ownership adjective is insufficient.
+- Attribute constraints to their source: semantics, preprocessing, feature scope,
+  resources or concurrency, or deployment configuration. State the stage and units
+  of size limits, including padding or alignment used for capacities. Do not
+  describe an implementation capacity as a model limit or merge unrelated limits.
+
+## Evidence and organization
+
+- Make the body self-contained for review: include the final design, relevant
+  contracts, reproduction procedure, and material results. Supporting references
+  must not require the reviewer to reconstruct the argument elsewhere.
+- Never include a local artifact path or cite a local-only file, log, plot, report,
+  or working-tree state as evidence. Transfer material facts into the body. Chat,
+  comments, dashboards, external documents, and unpublished artifacts cannot
+  carry information needed to understand or validate the claim.
+- Before reporting experiments, quantitative claims, correctness coverage,
+  performance comparisons, or figures, read [evidence contracts](evidence.md).
+  That reference owns reproducible commands, comparison tables, log excerpts,
+  measurement scope, and figure readiness. Do not duplicate its requirements here.
+- Prefer topic bullets with related explanations. Keep one coherent purpose per
+  bullet and preserve causal connections; do not force every sentence into a list.
+  Use headings for larger topics and deeper nesting only for necessary hierarchy.
+  Remove repetition and generic background before removing definitions or evidence.
+- Report change-specific correctness and performance evidence, material failures,
+  missing checks, and limitations. Omit routine build-success statements and
+  host-test counts; omit a validation section with no change-specific information.
+  This controls reporting, not which required checks must run.
+
+## Final-state scope
+
+Describe the retained design and results relative to the base. Omit commit-by-commit
+history, review iterations, rebases, intermediate candidates, superseded experiments,
+transient regressions, retries, and rerun chronology. Keep the base behavior needed
+to explain the change and direct performance comparisons needed to quantify it.
+Do not narrate how the branch arrived at its final state.

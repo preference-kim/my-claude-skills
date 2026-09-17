@@ -65,6 +65,8 @@ Detect this when content:
 - includes motivational framing
 - preserves planning notes that do not affect execution
 - teaches a common tool at beginner level
+- uses an abstract instruction without a discernible condition, action, or check
+- prescribes the same sections or evidence format regardless of the reader's task
 
 Before:
 
@@ -75,7 +77,7 @@ Skills are useful because they package repeatable instructions and help agents p
 After:
 
 ```markdown
-Ask for positive and negative routing utterances before drafting; otherwise the description usually becomes too broad.
+Derive positive, negative, and adjacent routing cases from the request before drafting; clarify only missing intent.
 ```
 
 The second sentence changes behavior. The first only explains the category.
@@ -159,7 +161,9 @@ After:
 If the API returns a non-2xx response, read `references/api-errors.md` before retrying or reporting failure.
 ```
 
-The body should tell the agent when to load the spoke. The spoke can hold the bulky detail.
+The body must state when and why to read the reference. Moving a requirement
+out of the body is valid only if its consumers, including isolated reviewers,
+will still receive it. Check the reference chain rather than counting shorter files.
 
 ## 7. Volatile Inline References
 
@@ -205,7 +209,7 @@ Run `git status`, create a branch, edit SKILL.md, run `git diff`, and then summa
 After:
 
 ```markdown
-Revise the target skill in place only after confirmation. Preserve unrelated worktree changes and summarize the final diff.
+Revise the target skill within the user-authorized scope. Preserve unrelated worktree changes and report the resulting behavior.
 ```
 
 Keep exact commands when they encode real local knowledge, such as a repo-specific validation script or a fragile conversion command.

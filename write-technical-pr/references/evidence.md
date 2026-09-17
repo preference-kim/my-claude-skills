@@ -62,27 +62,25 @@ column or describe one as the other.
   the work more clearly.
 - Define uncommon ratios and abbreviations at first use.
 
-Use Markdown tables for comparable results; keep a single component result in
-its owning bullet when a table adds no useful comparison. Include the workload, conditions,
-units, acceptance criterion or comparison basis, and result needed to interpret
-each value. Use figures only for relationships that a table cannot show
-efficiently. Group methodology, interpretation, constraints, and decisions into
-topic bullets and explanatory sub-bullets; keep the relationships needed to
-interpret the numbers explicit.
+## Reproduction and result presentation
 
-## Make experiments reproducible
-
-- For every reported experiment, provide the exact command line in a fenced
-  `bash` code block.
-- Include the repository-relative working directory, required environment
-  variables and inputs, and exact test or benchmark selection.
-- Do not depend on local aliases, private wrappers, undeclared state, or
-  machine-specific absolute paths.
-- Put concrete results in the body, using the tables or component bullets
-  described above; do not leave them in an external artifact or duplicate them.
-- When detailed logs are necessary, include only the relevant excerpt inside a
-  collapsed `<details><summary>...</summary>...</details>` block with a
-  specific summary label. Omit irrelevant output, secrets, and local paths.
+- For every reported experiment, include the exact command in a fenced `bash`
+  block: repository-relative working directory, required environment and inputs,
+  and exact test or benchmark selection. Avoid local aliases, private wrappers,
+  undeclared state, and machine-specific absolute paths.
+- Describe the smallest verified procedure that preserves the relevant behavior
+  and checks. A shortened but untested command is not the measured reproducer.
+  Writing a description does not authorize new experiments or implementation work.
+- Put material results in the body. Use tables for comparable results; a single
+  component result may stay in its owning bullet. Include workload, conditions,
+  units, and the acceptance criterion or comparison basis. Do not duplicate the
+  same measurements in both component bullets and a separate results section.
+- When logs are needed to establish a failure or result, include the relevant
+  output in a fenced block. Put detailed excerpts in a collapsed
+  `<details><summary>...</summary>...</details>` block with a specific label.
+  Omit unrelated output, secrets, and local paths; explain what the excerpt shows.
+- Group method and interpretation with the result they explain. A figure is useful
+  when a table cannot communicate the relationship efficiently.
 
 ## Report correctness without overclaiming
 
@@ -106,5 +104,5 @@ interpret the numbers explicit.
   omit the unsupported claim.
 - Keep local plots, CSVs, logs, and temporary scripts out of the production
   diff unless the repository explicitly requires them.
-- Never expose their local paths or require them to interpret the PR. Put the
-  necessary values, method, and conclusion in the PR body.
+- Apply the [description policy](policy.md)'s citation restrictions to figures
+  and their supporting artifacts as well.

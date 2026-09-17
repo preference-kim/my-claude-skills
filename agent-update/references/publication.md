@@ -19,7 +19,11 @@ visibility or unrelated history without authorization. A local deletion or new d
 commit does not establish removal from GitHub history, PR refs, caches, or copies.
 Report verified removal separately from remaining access and unresolved checks.
 
-1. Re-read every changed instruction or skill file and remove duplication, stale paths, and chronological patchwork.
+1. Re-read changed guidance against its purpose and retained requirements. Resolve
+   duplication, stale paths, contradictions, and chronological patchwork. For a
+   skill or harness change, complete `skill-maker`'s requirement and behavior
+   checks before publication; an instruction file must meet the same communication
+   principles it requires of its consumers.
 2. Run `git diff --check` in both repositories. Run the installed skill validator when available and verify the required SKILL.md frontmatter directly otherwise. Re-run the full instruction-link and skill manifest comparison for the current host's configured mode after link repair.
 3. Read `<dotfiles>/PUBLICATION.md`, then run
    `python3 <dotfiles>/scripts/publication-guard.py install` to install or verify

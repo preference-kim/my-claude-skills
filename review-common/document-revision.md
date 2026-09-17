@@ -14,9 +14,11 @@ before composing the review brief. Start a separate agent with:
 - The relevant source material and evidence, with claim-specific pointers and
   explicit gaps. Include the handoff's opening prompt when reviewing a handoff;
   include the base/head diff and evidence for claims retained in a PR description.
-- The owning content rules: handoff content contract, or PR description policy
-  and applicable evidence contracts. Supply their contents when the reviewer cannot
-  access the canonical files.
+- The applicable reasoning and communication principles from the canonical
+  AGENTS.md, plus the owning handoff content contract or PR description policy
+  and applicable evidence contracts. Read them before preparing the brief.
+  Supply their contents when the reviewer cannot access the canonical files;
+  carry required conditional rules into the isolated context as well.
 - Readable canonical paths to both skills above, or their full loaded instructions
   when isolated. Naming skills without supplying access to them is insufficient.
 
@@ -32,6 +34,9 @@ after the prose pass, checking both the proposed document and its own feedback.
 Style improvements must not invent facts or preserve a contradicted claim merely
 because it appeared in the source draft.
 
+Check whether a reader without the conversation can follow each material
+conclusion and access its support. Distinguish an explanation missing from the
+draft from a fact missing in the evidence; editing cannot supply the latter.
 Return material findings with their evidence and precise locations, proposed
 revisions, and any unresolved source or scope gap. A no-finding result is valid;
 do not manufacture changes to demonstrate activity. Identify which draft was

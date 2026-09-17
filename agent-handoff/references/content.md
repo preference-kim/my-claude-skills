@@ -1,8 +1,9 @@
 # Task handoffs
 
-A handoff must let a fresh agent understand the work and decide how to continue.
-Preserve the user's objective, requirements, and the evidence needed for that
-decision. Leave room to reassess the previous agent's diagnosis and approach.
+A handoff must let a fresh agent understand the work and decide how to continue
+without the preceding conversation. Put the objective, current state, constraints,
+and basis for the next decision in the body. References support verification.
+Leave room to reassess the previous agent's diagnosis and approach.
 
 ## Required structure
 
@@ -16,8 +17,10 @@ Explain the intended behavior before using PR numbers or internal shorthand.
 Identify the repository, checkout path, branch and relevant revision, and the
 server or cluster where the work ran. Distinguish the writer's location from
 execution hosts. Include uncommitted work, active jobs, and task-specific
-authorization or restrictions when they affect continuation. Date observations
-of mutable state; say which relevant state was not checked.
+authorization or restrictions when they affect continuation. Use a recorded
+observation time for mutable state; the current date is not evidence of when
+a check occurred. If that time is unavailable, leave it unknown. Identify
+relevant state that was not checked.
 
 ### 2. Existing plan
 
@@ -30,7 +33,9 @@ in the next section and new suggestions under remaining work.
 
 ### 3. Work done
 
-Map the plan's parts to completed, partial, or unverified results. For each
+Map the plan's parts to completed, partial, or unverified results using the
+recorded status. Keep "unfinished" when that is all the record establishes;
+"not started" or "absent" requires evidence of that specific state. For each
 material result, explain what changed, identify the implementation files or
 symbols to inspect, and cite the relevant validation and its scope. Include
 test and evidence files alongside implementation pointers. Distinguish work
@@ -60,9 +65,12 @@ Provide a selective map to the task requirements, design, implementation,
 reproducers, results, and relevant discussions. Explain what each source
 establishes and cite it near the supported claim. Use precise file/symbol,
 section, result-field, or log pointers where useful. Define path roots and
-hosts; identify local-only evidence that will not travel with Git. Preserve
-reproduction details in their owning files. A directory name or a hash alone
-does not explain a result, and an uninspected receipt is not verified evidence.
+hosts. Same-environment handoffs may link local files accessible to the receiving
+agent; identify what will not travel with Git. For another environment, transfer
+the needed facts and provide accessible sources or reproducible instructions.
+Keep the method and result needed for the next decision in the body; reference
+maintained files for detailed procedures. A directory, hash, or uninspected receipt
+is not an explanation or verified evidence.
 
 ## Compose and check
 
@@ -76,8 +84,9 @@ or ability to verify a material claim. Brevity alone is not the acceptance test.
 
 Before delivery, check the document against the actual request and available
 sources. Missing information stays unknown; do not fill gaps with plausible
-dates, statuses, dependencies, or authority. Can a reader without the conversation
-explain the goal, the plan and its rationale, what exists and where, what remains
+dates, statuses, dependencies, or authority. State consequential gaps once where
+they affect the next decision.
+Can a reader without the conversation explain the goal, the plan and its rationale, what exists and where, what remains
 and why, and how to verify those conclusions? Resolve contradictions and
 unsupported completion claims;
 state consequential evidence gaps without inventing facts or prior authority.
