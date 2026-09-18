@@ -26,7 +26,9 @@ Use the description policy's language and draft-confirmation rules. Present the
 initial manuscript with its proposed language before publishing; an explicit
 language request or prior approval settles that choice. The default is an English
 body preceded by `## Korean Summary` in Korean. A requested single-language body
-uses that language throughout, including headings and summary.
+uses that language for explanatory prose without duplicate translation. Follow
+the description policy's English conventions for titles, headings, technical
+terminology, and visual elements even when the request says "entirely in Korean".
 
 Explain the problem, retained solution, and concrete result using established
 codebase terms. Prefer topic bullets with explanatory sub-bullets; preserve the

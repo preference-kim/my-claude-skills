@@ -6,10 +6,13 @@
   `## Korean Summary` at the top. Present the initial manuscript and proposed
   language before publishing. Follow an explicit
   language request; do not reconfirm an approved choice.
-- For a single-language body, use that language for headings and explanations,
-  without a duplicate translation. Preserve established technical names, code,
-  commands, and required GitHub closing syntax. Retain a labeled opening summary:
-  `## Summary` in English or `## 요약` in Korean.
+- For a single-language body, use that language for explanatory prose without
+  duplicate translation. Even when requested entirely in Korean, keep PR titles,
+  section headings, and conventional English concepts and technical terminology
+  in English. Keep text in tables, plots, figures, and similar visual elements
+  in English, including headers, cells, labels, legends, and captions. Use
+  `## Summary` for the opening summary of a single-language body. Preserve code,
+  commands, and required GitHub closing syntax.
 - Language approval does not approve an unseen manuscript. Existing approval of
   the concrete manuscript and language permits publication without another
   confirmation. Preserve the owning workflow's required review and write limits.
