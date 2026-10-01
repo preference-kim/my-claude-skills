@@ -22,7 +22,8 @@ clean tree and matching origin; report divergence rather than reset it. Fetch
 <commit>:<file>`. Do not rely on stale working-tree files or move a dirty checkout.
 Reject a fetched revision that is not a descendant of the last successfully
 recorded revision unless the user explicitly authorized that rollback. Repository
-authentication uses a host-generated, read-only deploy key and `ssh -F /dev/null`
+authentication uses the registered host or credential group's read-only deploy key and
+`ssh -F /dev/null`
 with an explicit identity and known-hosts file, plus `IdentitiesOnly=yes`, `IdentityAgent=none`, `ForwardAgent=no` and pinned GitHub
 host keys. The initial maintainer may use its existing repository authentication.
 Never disable SSH host-key verification to repair access.
@@ -129,13 +130,31 @@ the reviewed inventory to its private recipient list and bind approval to the
 new ciphertext digest. Commit and publish the private revision before deployment.
 Keep the HF approval unchanged when only the inventory changes, and vice versa.
 
-Enrollment requires explicit scope. Generate two native age identities and a
-separate repository SSH key on that host. Register only public keys: repository
-access is read-only and recipient lists stay private. Re-encrypt each authorized
-payload on a maintainer host; do not copy private identities, user GitHub tokens
-or user SSH keys to the new host. A shared home reuses its existing identities;
-add an explicit hostname/profile mapping rather than racing to replace keys.
-Verify repository read access and each authorized decryption locally on the host.
+Enrollment requires explicit scope. For host-local enrollment, generate identities
+on the host and register only public keys. Use host-local identities by default, or an
+explicitly authorized shared credential group recorded as `credential_group` in
+registration. A group shares one read-only repository key and one age identity
+per payload; inventory and HF identities remain separate. Generate group keys on
+the maintainer and distribute them only over authenticated SSH to approved
+members authorized for each payload. Group membership alone does not grant HF
+access. Never commit private keys to either repository or copy personal GitHub
+credentials or personal SSH keys. Keep group
+membership, recipients and deployment targets private; exclusions remain excluded.
+
+A shared home reuses its installed identities and an explicit hostname/profile
+mapping. Do not race to replace keys. An excluded host must not be able to read
+a member's shared key directory; hostname checks cannot isolate readable secrets.
+
+On the maintainer, first add group recipients while retaining existing recipients,
+re-encrypt each authorized payload and bind approval to its new digest. Label
+recipients by owner in the private records. Verify repository reads and each
+authorized payload decryption using replacement identities before changing
+registration or revoking prior access. Record the group and public key/recipient
+fingerprints used, so success with an old key cannot validate migration. Retain protected rollback configuration until the group
+rollout is verified. Retire superseded deploy keys and remove old recipients from
+new ciphertext only after every affected member passes, then re-bind the updated
+approval digests. Retain excluded hosts' recipients in current ciphertext and
+leave their deploy keys and registration untouched. Do not treat a group member change as token rotation.
 
 Removing a deploy key blocks future repository reads; removing an age recipient
 affects only newly encrypted payloads. Neither revokes historical ciphertext or
