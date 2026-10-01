@@ -16,6 +16,7 @@ directories contain links to these canonical directories rather than copies.
 | [humanizer](humanizer/) | Rewrites AI-sounding text. Submodule tracking [blader/humanizer](https://github.com/blader/humanizer). |
 | [skill-maker](skill-maker/) | Authors and refines SKILL.md files; audits drafts against an anti-patterns checklist. |
 | [stop-bullshit](stop-bullshit/) | Checks unsupported claims and evasive reasoning; independently maintained at [preference-kim/stop-bullshit](https://github.com/preference-kim/stop-bullshit). |
+| [tt-device-investigation](tt-device-investigation/) | Investigates TT device anomalies; installed only in the configured Moreh checkout. |
 | [write-technical-pr](write-technical-pr/) | Drafts technical PR descriptions and finalizes them after independent prose and evidence review. |
 
 ## Storage policy
@@ -29,15 +30,21 @@ directories contain links to these canonical directories rather than copies.
 - Track locally maintained or adapted skills directly unless they have a separate
   authoritative repository. Use a nested submodule for that repository's update
   boundary: `stop-bullshit` is user-owned; `humanizer` is a verbatim third-party skill.
-- Do not clone this repository into `~/.codex/skills` or `~/.claude/skills`.
-  The `agent-update` skill maintains per-skill links in both real directories,
-  preserving unrelated host-local skills.
+- `.installation-policy.json` assigns every approved skill to `user` or
+  `moreh-dev`. User skills install in both modes at `~/.agents/skills` (Codex)
+  and `~/.claude/skills` (Claude); project skills install only in `moreh-dev`,
+  at the checkout’s `.agents/skills` and `.claude/skills`.
+- Keep discovery roots as real directories with per-skill canonical symlinks.
+  Do not clone this repository into them. Preserve unrelated local skills.
+  Resolve each skill’s canonical directory before reading relative resources,
+  including sibling `review-common` and dotfiles `agent-guidance`.
 
 ## Setup
 
 Clone `preference-kim/dotfiles` with recursive submodules, then invoke
-`agent-update`. It validates the canonical manifest and installs every shared
-skill for both tools.
+`agent-update`. It validates publication approval and complete scope classification, then
+installs the expected skills for both tools. Invalid project configuration does
+not block user skills, but prevents a successful refresh stamp.
 
 ## References
 

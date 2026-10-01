@@ -5,6 +5,9 @@ description: Use for a top-level request to submit or review the user's own PR, 
 
 # Review the Current Pull Request
 
+Resolve this skill’s symlink to its canonical directory before reading relative
+references, including sibling shared resources and dotfiles guidance.
+
 Use this skill only in the top-level agent. A delegated reviewer must inspect the
 pull request directly and must not invoke this or another review-orchestration
 skill.

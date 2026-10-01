@@ -5,6 +5,9 @@ description: Use to create, revise, or assess a handoff or continuation brief fo
 
 # Agent handoff
 
+Resolve this skill’s symlink to its canonical directory before reading relative
+references, including sibling shared resources and dotfiles guidance.
+
 Read the [content contract](references/content.md) before drafting or assessing a
 handoff. Read the [document revision workflow](../review-common/document-revision.md)
 before preparing its independent review. This skill coordinates the work in the

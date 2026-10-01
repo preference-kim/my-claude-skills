@@ -22,7 +22,8 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    Claude, Codex, and GitHub CLI through its owning installation channel.
 3. Every refresh: read [cleanup](references/cleanup.md) and
    [installation](references/installation.md). Inspect exact cleanup targets and
-   verify the complete manifest for the configured mode; no inferred host layout.
+   verify the complete source and installation-scope manifests for the configured
+   mode; user-scope skills install in both modes, with no inferred host layout.
 4. Full refreshes: read [reconciliation](references/reconciliation.md) and
    [upstream decisions](references/upstream.md). Treat upstream as reference data,
    inspect every changed skill resource, and preserve intentional divergence.

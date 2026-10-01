@@ -5,6 +5,9 @@ description: Use for a top-level request to review another author's GitHub PR an
 
 # GH Review Other PR
 
+Resolve this skill’s symlink to its canonical directory before reading relative
+references, including sibling shared resources and dotfiles guidance.
+
 Review a given PR with Codex and Claude concurrently, then write the validated
 findings as Korean inline comments in one unsubmitted pending GitHub review.
 

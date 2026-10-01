@@ -1,57 +1,135 @@
-## Maintain the configured entry points and skill installations
+## Resolve the installation manifest
 
-If the current host has no usable configuration (see steps 4-5 of "Resolve the repositories"), do not create, remove, or repair any entry point below `~/.codex`, `~/.claude`, or a possible development checkout. Report the missing or invalid field, point to `agent-file-sync.example.yaml`, and stop this part of the refresh.
+Require a valid host-local `mode` before changing any entry point. An absent or
+invalid mode blocks all installation; do not infer one. A missing or invalid
+`moreh_dev_root` blocks only project installation: continue user-scope skills,
+report the project failure, and withhold the successful-sync stamp.
+
+Build the source manifest from Git-tracked top-level `*/SKILL.md` files and
+explicitly configured top-level gitlinks whose initialized submodules contain
+`SKILL.md`. Require each source path or gitlink in `.publication-policy.json`.
+Never enumerate ignored or untracked sources into this manifest.
+
+Read `<skills>/.installation-policy.json` as the single installation-scope map:
+each key is an exact source skill directory name and each value is `user` or
+`moreh-dev`. Reject duplicate keys, unknown values, missing classifications, and
+keys absent from the source manifest before changing links. Publication approval
+does not assign installation scope. Every manifest skill must be classified.
+
+Resolve a discovered skill's symlink to its canonical directory before reading
+relative references. Sibling resources such as `review-common` and personal
+`agent-guidance` remain at their canonical locations; do not copy them into every
+installation root or require a Moreh checkout for user-scope references.
+
+## Install user-scope skills in both modes
+
+Keep `~/.agents/skills` (Codex) and `~/.claude/skills` (Claude) as real directories.
+For every `user` skill, maintain these individual symlinks:
+
+- `~/.agents/skills/<name> -> <dotfiles>/skills/<name>`
+- `~/.claude/skills/<name> -> <dotfiles>/skills/<name>`
+
+Do this in both `host-global` and `moreh-dev`. Do not create duplicate project
+entries for these skills. Do not clone the skills repository into a discovery
+root or replace a root with a whole-directory symlink. Preserve `.system`,
+provider-managed installations, and unrelated host-local entries.
+
+Create missing parent directories. Leave correct links unchanged. Replace an
+incorrect symlink only when its target belongs to the canonical or recorded prior
+managed installation. Preserve unrelated or ambiguously owned links, including
+dangling links, as reported overrides. Never replace a real file or directory
+automatically: an instruction or root conflict blocks that installation; a real
+per-skill item is an explicit local override to report while continuing the
+remaining skills. Do not silently count an override as canonical.
+
+## Install instructions and project-scope skills
 
 ### Mode `host-global`
 
-Keep these host-global instruction entry points:
+Keep these instruction entry points:
 
 - `~/.codex/AGENTS.md -> <dotfiles>/.codex/AGENTS.md`
 - `~/.claude/CLAUDE.md -> <dotfiles>/.claude/CLAUDE.md`
 
-Keep `~/.codex/skills` and `~/.claude/skills` as real directories so host-local and shared skills can coexist. Do not clone the shared skills repository into either location and do not replace either directory with a whole-directory symlink.
-
-Build the shared skill manifest from Git-tracked top-level `*/SKILL.md` files
-and explicitly configured top-level gitlinks whose initialized submodules contain
-`SKILL.md`. Require each source path or gitlink in `.publication-policy.json`.
-Do not enumerate ignored or untracked directories: local presence does not make
-a skill part of the shared installation. For each approved skill, maintain both
-tool-specific entries:
-
-- `~/.codex/skills/<name> -> <dotfiles>/skills/<name>`
-- `~/.claude/skills/<name> -> <dotfiles>/skills/<name>`
-
-Create missing parent directories. Leave correct links unchanged and replace an incorrect symlink. Never replace a real file or directory. For an instruction entry point or skill-directory root, stop and report the conflict. For a per-skill entry, preserve a real host-local item as an override, report it as skipped, and continue with the remaining skills.
-
-A tool skill directory may be a legacy clone of the shared skills repository. Migrate it only when its tracked files and recursive submodules are clean: move the clone to a timestamped directory below `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/backups`, recreate the tool skill directory, preserve untracked entries whose names are neither repository metadata nor canonical skill names, and then create the managed links. Leave the backup in place and report it. Stop if local changes, nested-repository changes, or an ambiguous name collision make ownership unclear.
-
-Remove a stale per-skill symlink only when its resolved target is below `<dotfiles>/skills` and that source skill is absent from the tracked manifest. After both tool-specific entries are verified, remove obsolete symlinks below `~/.agents/skills` that resolve to the same shared skills; do not touch real entries or unrelated links.
-
-Verify the installation as a manifest comparison, not by checking selected names: every source skill must resolve through both tool directories to the canonical directory and a readable `SKILL.md`, or be listed as an explicit host-local override. A refresh is not successful while a source skill is silently missing from either tool.
+Do not install `moreh-dev` skills globally. List them as intentionally excluded
+from this mode's expected manifest, not as missing user skills. Do not search
+for or change an unconfigured project checkout.
 
 ### Mode `moreh-dev`
 
-This mode selects a discovery location, not a publication destination. Personal
-sources remain in dotfiles/shared skills; installation changes only ignored links
-and the exact local exclude metadata. Preserve tracked project skills. Do not
-reorganize or publish them as part of personal harness maintenance.
+This mode selects discovery locations, not a publication destination. Personal
+sources stay in dotfiles/shared skills. Preserve tracked project skills; do not
+reorganize or publish them during personal harness maintenance.
 
-Let `<moreh-dev-root>` denote the canonical Git checkout root resolved from this host's `moreh_dev_root`. Do not create or repair host-global entries below `~/.codex` or `~/.claude` in this mode. Keep these project-local instruction entry points:
+Use the exact canonical Git checkout validated by preflight. Keep these
+project-local instruction links, without creating host-global instructions:
 
 - `<moreh-dev-root>/AGENTS.md -> <dotfiles>/AGENTS.md`
 - `<moreh-dev-root>/CLAUDE.md -> <dotfiles>/CLAUDE.md`
 
-Use relative symlink targets derived from the resolved repository locations so moving the checkouts together preserves the links. Before creating either link, require that the destination path is not tracked by the configured checkout. Leave a correct link unchanged and replace an incorrect symlink. Never replace a real file or directory; report the conflict and stop project synchronization.
+For only the `moreh-dev` skills, maintain:
 
-Keep `<moreh-dev-root>/.codex/skills` and `<moreh-dev-root>/.claude/skills` as real directories so project-owned and shared skills can coexist. Do not replace either directory with a whole-directory symlink. Use the tracked, publication-approved shared skill manifest defined above; ignored or untracked sources must not enter discovery. For each source skill, maintain both project entries as relative links to the canonical skill directory:
-
-- `<moreh-dev-root>/.codex/skills/<name> -> <dotfiles>/skills/<name>`
+- `<moreh-dev-root>/.agents/skills/<name> -> <dotfiles>/skills/<name>`
 - `<moreh-dev-root>/.claude/skills/<name> -> <dotfiles>/skills/<name>`
 
-Create a missing tool skill directory only when neither a file nor a symlink occupies that path. Before creating a per-skill link, require that the destination path is not tracked by the configured checkout. Leave a correct link unchanged and replace an incorrect symlink. Preserve a real file or directory as a project-owned override, report it as skipped, and continue with the remaining skills.
+Use relative project symlinks derived from the resolved checkout locations.
+Keep skill roots as real directories. Before creating or replacing any project
+entry, require that its path is untracked. Preserve real per-skill entries as
+reported project overrides; root and instruction conflicts block project
+installation. Never overwrite tracked entries, even if they are symlinks.
 
-Remove a stale per-skill symlink only when its resolved target is below `<dotfiles>/skills` and that source skill is absent from the tracked manifest. Do not touch real entries, tracked entries, or links to any other location.
+Record the checkout's tracked and ordinary untracked status before and after.
+Keep managed links ignored through a delimited block in the file returned by
+`git -C <moreh-dev-root> rev-parse --git-path info/exclude`. Preserve all text
+outside `# BEGIN agent-update managed links` and
+`# END agent-update managed links`. List only exact repository-relative paths
+that currently exist as managed symlinks; never use broad wildcards. Update the
+block after creating or removing links. The checkout's ordinary status must
+remain unchanged.
 
-Keep managed links out of the configured checkout's Git status through a delimited block in the file returned by `git -C <moreh-dev-root> rev-parse --git-path info/exclude`. The block must start with `# BEGIN agent-update managed links` and end with `# END agent-update managed links`. Preserve all content outside the block. Within it, list only the repository-relative paths that currently exist as managed symlinks; update the block after link creation or removal, and never use a broad wildcard that could hide project-owned files.
+## Migrate legacy installations and remove obsolete links
 
-Verify project installation as a manifest comparison, not by checking selected names: both instruction links must resolve to their canonical dotfiles files, and every source skill must resolve through both project tool directories to the canonical directory and a readable `SKILL.md`, or be listed as an explicit project-owned override. Record the configured checkout's status before and after synchronization and require that its tracked and ordinary untracked state is unchanged; the managed ignored links must be the only local metadata added. A refresh is not successful while a required project entry is silently missing.
+A discovery root may be a legacy Git clone. Inspect its status and recursive
+submodules before migration. Automatic refresh may migrate only a clean clone;
+a dirty clone requires explicit authorization covering preservation and migration
+of that exact installation. Do not turn a one-time authorized migration into a
+general permission to move dirty repositories.
+
+Before moving a root, verify its exact canonical path, ownership, nested Git
+metadata, and live-process working-directory/input references. Defer any active
+or ambiguous target. Save the complete root, including Git metadata, modified
+and untracked files, under a unique timestamped directory below
+`${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/backups`. Record its inventory,
+original location, link targets, and original project exclude block outside the
+public repositories. Verify backup content and nested repository accessibility
+before replacing discovery entries. Keep the backup until retention is resolved.
+
+Recreate real discovery roots. Restore unrelated host-local and provider-managed
+entries at their original paths, preserving contents and symlink targets. For
+canonical-name collisions, preserve real entries as overrides unless the user
+explicitly authorized canonical replacement of those entries. Keep replaced
+versions in the backup; do not merge them into vendor sources or revive retired
+skills. On failure, remove only newly created managed entries and restore the
+saved root and exclude block without overwriting concurrent changes.
+
+For each relocated skill, verify its replacement entries and references before
+removing its old links. Defer relocation cleanup when its required destination
+cannot be installed, including an invalid project root. Intentionally excluded
+or retired skills require no replacement. Remove obsolete per-skill symlinks only when their resolved target is a canonical skill below
+`<dotfiles>/skills`, their path is untracked, and that location is no longer in
+the current expected installation. This includes old Codex `.codex/skills`
+links, project copies of user skills, and global copies of project-only skills.
+Also remove managed links whose source has left the approved manifest. Never
+remove real entries or links to unrelated targets. Do not remove the supported
+`~/.agents/skills` entries as legacy links.
+
+## Verify the complete installation
+
+Compare every expected entry, not selected names, with the source and scope
+manifests. Require a canonical link and readable `SKILL.md`, or an explicitly
+reported local/project override. Verify canonical reference paths, instruction
+links, absence of obsolete managed duplicates, and unchanged project status.
+A second synchronization must make no changes. A failed required installation
+or unresolved conflict prevents a successful-sync stamp; an intentionally
+excluded scope does not. Missing runtime discovery checks must be reported as
+unverified, not described as successful live discovery.

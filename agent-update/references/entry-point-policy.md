@@ -2,12 +2,25 @@
 
 This file is the canonical shared guidance for Codex and Claude. The concrete entry-point layout is a per-host choice, not fixed in this document: it is recorded in `agent-file-sync.local.yaml` at the dotfiles root, a host-local file that is gitignored and never committed, based on the template in the tracked `agent-file-sync.example.yaml`. In `moreh-dev` mode, the same file records `moreh_dev_root`, the host-specific Git checkout root that receives the entry points. Because the file never syncs through git, no agent-update run on any host can read, set, or overwrite another host's mode or target; each host's choice exists only on that host, made there directly.
 
-Two modes exist:
+Both modes install `user` skills from the canonical
+`skills/.installation-policy.json` at `~/.agents/skills/<name>` for Codex and
+`~/.claude/skills/<name>` for Claude. Keep real roots and individual links.
+Publication approval and installation scope are separate requirements.
 
-- `host-global`: `~/.codex/AGENTS.md` and `~/.claude/CLAUDE.md` are symlinks to the corresponding dotfiles files, and shared skills are exposed through per-skill links at `~/.codex/skills/<name>` and `~/.claude/skills/<name>`.
-- `moreh-dev`: the Git checkout configured by `moreh_dev_root` carries the root `AGENTS.md`/`CLAUDE.md` links and `.codex/skills/<name>`/`.claude/skills/<name>` links instead; no host-global entries under `~/.codex` or `~/.claude` are made. A relative `moreh_dev_root` is resolved from the dotfiles root; an absolute path is used as written.
+- `host-global`: keep instruction links at `~/.codex/AGENTS.md` and
+  `~/.claude/CLAUDE.md`. Exclude `moreh-dev` skills from global installation.
+- `moreh-dev`: keep instruction links at the configured checkout's
+  `AGENTS.md`/`CLAUDE.md`. Install only `moreh-dev` skills in its
+  `.agents/skills/<name>` and `.claude/skills/<name>` directories. User skills
+  remain available through their global installation; do not duplicate them
+  in the checkout or add host-global instructions.
 
-If the current host has no configured mode, or selects `moreh-dev` without a valid `moreh_dev_root`, `agent-update` must stop and ask rather than guess, search for a checkout, or apply a default.
+An absent or invalid mode blocks installation. An invalid `moreh_dev_root`
+blocks project synchronization while user-scope installation continues for a
+valid mode. Never infer a mode or search for a checkout; withhold the successful
+refresh stamp when required project installation is blocked. The
+[installation rules](installation.md) own conflict handling, canonical reference
+resolution, legacy migration, and complete manifest verification.
 
 At the start of the first user task in each new session, use the `agent-update` skill for its daily refresh. The skill skips network and repository work after a successful refresh on the same local calendar day, but always verifies and repairs the current host's configured entry points and skill links. If it pulls or reconciles changed instructions, re-read the updated AGENTS.md and skill files before continuing.
 

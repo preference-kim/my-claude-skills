@@ -1,0 +1,12 @@
+{
+  "agent-handoff": "user",
+  "agent-update": "user",
+  "gh-review-other-pr": "user",
+  "gh-review-own-pr": "user",
+  "gh-stack": "user",
+  "humanizer": "user",
+  "skill-maker": "user",
+  "stop-bullshit": "user",
+  "tt-device-investigation": "moreh-dev",
+  "write-technical-pr": "user"
+}

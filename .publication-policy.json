@@ -3,6 +3,7 @@
   "paths": [
     ".gitignore",
     ".gitmodules",
+    ".installation-policy.json",
     ".publication-policy.json",
     "LICENSE",
     "README.md",

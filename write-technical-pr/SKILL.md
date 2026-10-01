@@ -5,6 +5,9 @@ description: Use to draft, revise, or audit a technical GitHub PR description an
 
 # Write Technical PR
 
+Resolve this skill’s symlink to its canonical directory before reading relative
+references, including sibling shared resources and dotfiles guidance.
+
 Read [description policy](references/policy.md) before drafting any PR body.
 Read the [document revision workflow](../review-common/document-revision.md)
 before preparing the mandatory separate-agent manuscript review.
