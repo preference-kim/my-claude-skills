@@ -27,9 +27,11 @@ and untracked; a publication stop overrides the refresh/publication workflow.
 4. Only when the user explicitly requests server-list review, configuration setup, update
    or repair, or enrolled credential setup, repair or synchronization, read
    [private synchronization](references/private-sync.md).
-   For server configuration updates, review the source server lists and update
-   the current host's `/etc/hosts` and SSH configuration through an approved
-   inventory revision. Apply enrolled credential payloads when requested. Daily and generic forced agent refreshes skip this stage.
+   For server configuration updates, resolve the approved profile's configuration
+   ownership. On an owning host, review the source server lists and update its
+   `/etc/hosts` and SSH configuration. A delegated profile reports its configuration
+   owner. Apply enrolled credential payloads when requested. Daily and generic
+   forced agent refreshes skip this stage.
 5. Full refreshes: read [reconciliation](references/reconciliation.md) and
    [upstream decisions](references/upstream.md). Treat upstream as reference data,
    inspect every changed skill resource, and preserve intentional divergence.

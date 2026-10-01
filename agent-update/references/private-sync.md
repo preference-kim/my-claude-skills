@@ -2,7 +2,7 @@
 
 For an explicit server configuration update, review the latest server lists from
 the private inventory's sources, reconcile changes, and update the current host's
-`/etc/hosts` and SSH configuration through the reviewed inventory workflow below.
+owned `/etc/hosts` and SSH configuration through the reviewed inventory workflow below.
 Resolve its registration at `~/.config/agent-update/private-sync.json`; use device
 enrollment when setup is requested and registration is absent. An update on an
 unenrolled host reports that setup is required before repository access. Fetch
@@ -77,6 +77,9 @@ Credential enrollment is independent:
 setting up inventory alone does not enroll HF or GitHub, and `hf_identity` is
 required only for an explicitly enrolled/requested HF workflow.
 
+The following alias policies apply to owning profiles. Delegated profiles preserve
+their existing configuration.
+
 - `development-server`: retain existing deprecated IP aliases for shared users
   in a separate `# BEGIN Legacy aliases - will be deprecated` /
   `# END Legacy aliases - will be deprecated` block. Verify that every retained
@@ -100,10 +103,22 @@ protocol below. Private configuration updates remain explicitly requested action
 
 ## Apply an approved inventory
 
-Require `approval.status: approved` inside the inventory as well. Require the
-selected profile's `expected_hostname`, `account` and `device_role` to match the
-current host/account and registration; reject even a same-role profile belonging
-to another device. Each profile's `hosts_scope.managed_node_names` is the exact
+Require `approval.status: approved` inside the inventory as well. For both owning
+and delegated profiles, validate the selected profile's hostname, account and device
+role against the current host and registration with
+`<dotfiles>/scripts/validate-private-profile.py` before reporting success or planning files.
+
+Resolve configuration ownership before source review or file planning. A profile
+with `configuration_owner` delegates its hosts and SSH maintenance to that profile.
+The validator reports `applies_here: false`: report the owner and finish this
+configuration stage with the current host's files preserved. Its `files` and
+`ssh_equivalence` are empty; hosts scope, preserved-block and removal plans belong
+to the owner. Require an existing owner with the same account and device role,
+its own hosts plan, and no further delegation. Apply configuration plans on their
+owning host. Credential enrollment and shared-home access remain independent of
+this ownership.
+
+An owning profile's `hosts_scope.managed_node_names` is the exact
 list of canonical node IDs selected from inventory `nodes`; do not infer scope
 from role or a label. `deprecated_alias_policy` must be `separate-block` for a
 development server and `omit` for a personal device. `preserved_hosts_blocks`
@@ -156,7 +171,7 @@ entries and localhost. Hosts and cloud-init writes require root authorization.
 Probe with `sudo -n true`
 to avoid an unattended password prompt. If it fails,
 leave a protected candidate and report that file as pending; do not change sudo
-policy. Shared-home SSH file plans must agree across its registered profiles and use one
+policy. Shared-home SSH file plans must agree across its registered owning profiles and use one
 writer per home, as do HF files. Inspect `/etc/hosts`
 on the current physical host independently of its home mount.
 
