@@ -43,6 +43,7 @@
     "write-technical-pr/SKILL.md",
     "write-technical-pr/agents/openai.yaml",
     "write-technical-pr/references/evidence.md",
-    "write-technical-pr/references/policy.md"
+    "write-technical-pr/references/policy.md",
+    "agent-update/references/private-sync.md"
   ]
 }
