@@ -1,21 +1,14 @@
 ## Synchronize this host
 
-Run this protocol only when the user explicitly requests setup, synchronization
-or repair of server configuration or enrolled credentials. Setup uses the device
-enrollment path below; ordinary synchronization requires an existing registration
-and approval.
-Daily refreshes, generic `agent-update` requests, link repair and instruction edits
-do not activate it: skip private
-repository fetches, decryption and payload application. A previous enrollment or
-approved inventory revision is not a standing request to synchronize. Skipping
-this unrequested stage does not block public refresh success.
-
-For an explicit request, use its target and payload scope, then check
-`~/.config/agent-update/private-sync.json`. If absent, report that private sync is
-not enrolled; do not infer targets or borrow credentials. Fetch again regardless
-of the daily refresh stamp. Running this skill on one host updates that host; a
-fleet run requires explicit target scope and reports each target separately.
-Reviewing inventory sources alone does not authorize deployment.
+For an explicit server configuration update, review the latest server lists from
+the private inventory's sources, reconcile changes, and update the current host's
+`/etc/hosts` and SSH configuration through the reviewed inventory workflow below.
+Resolve its registration at `~/.config/agent-update/private-sync.json`; use device
+enrollment when setup is requested and registration is absent. An update on an
+unenrolled host reports that setup is required before repository access. Fetch
+the private repository again regardless of the daily refresh stamp. Credential setup, repair
+and synchronization apply the explicitly requested enrolled payloads.
+Daily and generic agent refreshes use the public refresh stages.
 
 On an enrolled host, a draft, pending, conflicting or failed requested payload
 blocks synchronization success. If synchronization was requested together with
@@ -85,10 +78,10 @@ setting up inventory alone does not enroll HF or GitHub, and `hf_identity` is
 required only for an explicitly enrolled/requested HF workflow.
 
 - `development-server`: retain existing deprecated IP aliases for shared users
-  in a separate `# BEGIN agent-update: will be deprecated` /
-  `# END agent-update: will be deprecated` block. Verify that every retained
-  deprecated alias still resolves to its original address. Keep canonical entries in the managed block and explicitly preserved
-  operational blocks. Preserve those operational blocks verbatim; put additional
+  in a separate `# BEGIN Legacy aliases - will be deprecated` /
+  `# END Legacy aliases - will be deprecated` block. Verify that every retained
+  deprecated alias still resolves to its original address. Keep canonical entries
+  in generated blocks and explicitly preserved operational blocks. Preserve those operational blocks verbatim; put additional
   names outside them without duplicate managed names. A deprecation label does
   not remove aliases or schedule their deletion. Do not change a user's SSH
   aliases merely because shared hosts entries are being reorganized.
@@ -103,7 +96,7 @@ required only for an explicitly enrolled/requested HF workflow.
 Role and hosts scope are separate: the private profile also defines which nodes
 belong on that device. During source review, preserve both dimensions when adding
 nodes. Use the existing backup, conflict, root authorization and verification
-protocol below. No setup or role change activates future daily private sync.
+protocol below. Private configuration updates remain explicitly requested actions.
 
 ## Apply an approved inventory
 
@@ -117,6 +110,12 @@ development server and `omit` for a personal device. `preserved_hosts_blocks`
 contains literal text blocks, not identifiers. Verify each block byte-for-byte
 and check its names/IPs against the selected nodes. An incompatible IP change is
 a conflict requiring a reviewed block revision, not a second definition.
+The profile's ordered `hosts_scope.blocks` assigns each selected node to one
+operational block. Render matching `# BEGIN <title>` / `# END <title>` markers,
+with the approved private titles and node order. Use cluster subsections where
+specified, omit empty blocks, and keep preserved operational blocks verbatim.
+Names already defined in those preserved blocks appear there once. Keep local
+OS and site-specific entries outside generated blocks.
 Canonical `aliases` and `deprecated_aliases` must be disjoint and have no
 conflicting definitions across nodes or files. Personal removals must also appear
 in the approved profile's `authorized_alias_removals`. Run
@@ -124,7 +123,8 @@ in the approved profile's `authorized_alias_removals`. Run
 registration on stdin before inventory application. This read-only check validates
 device binding and hosts layout; it does not replace approval or backup checks. Each `files` item supplies the reviewed `before`
 and desired `after`; paths are restricted to `/etc/hosts`, `~/.ssh/config` and
-`~/.ssh/moreh_cluster.conf`. Inspect the existing path, symlinks, ownership and
+`~/.ssh/moreh_cluster.conf`, plus an explicitly planned
+`/etc/cloud/cloud.cfg.d/99-moreh-preserve-hosts.cfg`. Inspect the existing path, symlinks, ownership and
 mount first. Preserve existing include structure, aliases, routes, identity files,
 host-key policy and local overrides. A naming change must not implicitly switch
 from a gateway to a direct route or replace a dedicated cluster key.
@@ -146,17 +146,27 @@ an atomic replacement, preserving the intended owner and mode. Use
 `<dotfiles>/scripts/replace-managed-file.py` with the reviewed file item on stdin
 after taking the backup. It explicitly sets the final mode despite a restrictive
 umask and checks the baseline again before replacement. It requires an existing
-regular file; a first installation needs a separately reviewed creation step.
+regular file for hosts and SSH; the dedicated cloud-init drop-in supports reviewed
+first creation with a null baseline and atomic rejection of concurrent creation.
 Do not replace
 symlinks or multiply linked files without a reviewed plan for their real target.
 
 For `/etc/hosts`, validate addresses and unique managed names, preserve unrelated
-entries and localhost, and require root authorization. Probe with `sudo -n true`
+entries and localhost. Hosts and cloud-init writes require root authorization.
+Probe with `sudo -n true`
 to avoid an unattended password prompt. If it fails,
 leave a protected candidate and report that file as pending; do not change sudo
-policy. Shared-home SSH/HF files have one writer per home, but `/etc/hosts` and
-host results are separate for each physical host. Do not treat source inventory
-nodes as implicitly registered deployment targets.
+policy. Shared-home SSH file plans must agree across its registered profiles and use one
+writer per home, as do HF files. Inspect `/etc/hosts`
+on the current physical host independently of its home mount.
+
+Check whether a boot-time manager regenerates `/etc/hosts`. For cloud-init,
+inspect the installed configuration merge and its datasource overrides. An approved
+preservation plan may install `manage_etc_hosts: false` in the dedicated drop-in
+above, owned by root with mode 0644. Treat an absent drop-in as a null baseline.
+Back up any existing file, check its baseline,
+and verify the effective merged value without running initialization modules or
+rebooting. Report configuration verification separately from a reboot test.
 
 Validate candidates with `ssh -G` before applying. Compare every retained literal
 alias's effective route and key/host-key options before and after; record explicitly
@@ -263,17 +273,30 @@ recovery. Report token-scope rejection as a payload error. Never log out or revo
 shared token to repair one host. Rotation requires updating the approved private
 payload, then verifying authorized members before revoking the previous credential.
 
-## Review sources or enroll hosts separately
+## Review server-list changes
 
-Routine synchronization never scrapes upstream information or approves a draft.
-When the user requests inventory review, inspect the source URLs and revisions
-stored privately, reconcile disagreements using the documented authority, and
-prepare per-host before/after plans. Explain naming, address and policy changes
-and validate them before approval. Approval must be covered by the user's stated
-scope; seek a decision for new targets or route/key changes outside it. Encrypt
-the reviewed inventory to its private recipient list and bind approval to the
-new ciphertext digest. Commit and publish the private revision before deployment.
-Keep the HF approval unchanged when only the inventory changes, and vice versa.
+Read the source URLs and recorded revisions from the private inventory. Inspect
+current source content, resolve disagreements using the documented authority, and
+prepare the current host's hosts and SSH before/after plan. Preserve its registered
+role, node scope, operational blocks, routes and key policies. Classify names as
+canonical or deprecated from reviewed evidence; retain shared compatibility aliases
+according to the role policy above. Describe address, naming and policy changes
+with their source evidence before approving the plan. When reorganizing existing generated blocks, include their
+marker migration in the plan and verify preserved alias mappings. When no source
+change is found, still compare the current local files with the approved profile and verify their configuration.
+
+Complete source review before deployment. The user's configuration-update request
+covers changes within its established scope; ask about unresolved source conflicts
+or additional access and route/key changes. A source-review-only request produces
+a candidate for review. A host with read-only private repository access keeps a
+protected candidate for an authorized maintainer to publish and reports publication
+as pending. Unavailable sources leave source review unverified; report that limit
+separately from any verification of the published approved profile. On the maintainer,
+encrypt the reviewed inventory to its private recipient list, bind approval to the
+ciphertext digest, and publish the private revision before applying it. Leave
+independent credential payloads and approvals unchanged during an inventory update.
+
+## Enroll a device or credential group
 
 Enrollment requires explicit scope. For host-local enrollment, generate identities
 on the host and register only public keys. Use host-local identities by default, or an
