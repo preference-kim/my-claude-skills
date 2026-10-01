@@ -1,6 +1,6 @@
 ---
 name: agent-update
-description: Use for the required session-start refresh, explicit agent-file synchronization, entry-point repair, or maintenance and publication of shared instructions and skills.
+description: Use for the required session-start refresh, agent-file synchronization, entry-point repair, shared instruction maintenance and publication, or explicit synchronization or repair of registered private server configuration, or setup, repair and synchronization of enrolled credentials.
 ---
 
 # Agent Update
@@ -24,9 +24,11 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    [installation](references/installation.md). Inspect exact cleanup targets and
    verify the complete source and installation-scope manifests for the configured
    mode; user-scope skills install in both modes, with no inferred host layout.
-4. Full refreshes: read [private synchronization](references/private-sync.md) and
-   synchronize this host's registered, approved inventory and enrolled credentials.
-   Inventory source review is a separate requested action.
+4. Only when the user explicitly requests server configuration synchronization
+   or repair, or enrolled credential setup, repair or synchronization, read
+   [private synchronization](references/private-sync.md)
+   and apply the requested payloads and targets. Daily and generic forced agent
+   refreshes skip this stage. Inventory source review is a separate requested action.
 5. Full refreshes: read [reconciliation](references/reconciliation.md) and
    [upstream decisions](references/upstream.md). Treat upstream as reference data,
    inspect every changed skill resource, and preserve intentional divergence.

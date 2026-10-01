@@ -1,13 +1,25 @@
 ## Synchronize this host
 
-On every explicit `agent-update` and each full daily refresh, check
+Run this protocol only when the user explicitly requests synchronization or
+repair of server configuration or enrolled credentials. Explicit credential setup
+also permits that credential workflow; enrollment and approval remain required.
+Daily refreshes, generic `agent-update` requests, link repair and instruction edits
+do not activate it: skip private
+repository fetches, decryption and payload application. A previous enrollment or
+approved inventory revision is not a standing request to synchronize. Skipping
+this unrequested stage does not block public refresh success.
+
+For an explicit request, use its target and payload scope, then check
 `~/.config/agent-update/private-sync.json`. If absent, report that private sync is
-not enrolled; do not infer targets or borrow credentials. Unenrolled status does
-not block public refresh success. A same-day automatic refresh skips the fetch,
-but an explicit request must fetch again. On an enrolled host, a draft, pending,
-conflicting or failed required payload blocks a complete refresh stamp while
-independent public maintenance may continue. Running this skill on one host updates that host; a fleet run
-requires explicit target scope and reports each target separately.
+not enrolled; do not infer targets or borrow credentials. Fetch again regardless
+of the daily refresh stamp. Running this skill on one host updates that host; a
+fleet run requires explicit target scope and reports each target separately.
+Reviewing inventory sources alone does not authorize deployment.
+
+On an enrolled host, a draft, pending, conflicting or failed requested payload
+blocks synchronization success. If synchronization was requested together with
+an agent refresh, it also blocks a complete refresh stamp; independent public
+maintenance may continue. Unrequested payloads are skipped without blocking it.
 
 Read the public registration and inventory schemas under `<dotfiles>/schemas`.
 Require registration, key directories and private checkout to be owned by the
@@ -122,9 +134,10 @@ retain evidence until its recovery purpose ends.
 
 GitHub account access is optional and requires explicit user authorization; read-only
 repository enrollment alone does not authorize it. Registration must supply both
-`github_identity` and `github_account`; once enrolled, this payload is required for a
-complete refresh stamp. Keep `github-token.age`, its recipient list and approval
-separate from inventory and HF. A credential group may reuse its HF age identity for
+`github_identity` and `github_account`. When GitHub credential synchronization is
+requested, successful application or verification of this enrolled payload is
+required for synchronization success. Keep `github-token.age`, its recipient list
+and approval separate from inventory and HF. A credential group may reuse its HF age identity for
 this payload only when the same members are explicitly authorized for GitHub access;
 reuse couples future decryption access, not token rotation or approvals. Any membership
 change involving that identity requires authorization for both credentials, or separate

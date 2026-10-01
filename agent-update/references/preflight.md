@@ -1,6 +1,8 @@
 ## Resolve the repositories
 
-Resolve paths from this skill rather than assuming where dotfiles was cloned:
+Resolve paths from this skill rather than assuming where dotfiles was cloned.
+Private-only synchronization uses steps 1–3; layout validation, installation and
+upstream work in the remaining steps apply to agent-file refresh or installation:
 
 1. Resolve this skill's real path and run `git rev-parse --show-toplevel` from it to find the skills repository.
 2. Run `git rev-parse --show-toplevel` from the skills repository's parent to find the dotfiles repository.
@@ -12,9 +14,10 @@ Resolve paths from this skill rather than assuming where dotfiles was cloned:
 ## Choose the mode
 
 - **Daily refresh:** When the canonical AGENTS requests the session-start refresh, skip network and repository work if `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/last-successful-sync` contains today's local date. Still clean completed workspace artifacts and verify and repair the current host's configured entry points and complete skill manifest. Otherwise run the full refresh.
-- **Forced refresh:** For `/agent-update`, `$agent-update`, or a direct refresh request, ignore the date stamp and run the full refresh.
+- **Forced refresh:** For `/agent-update`, `$agent-update`, or a direct agent refresh request, ignore the date stamp and run the full agent-file and CLI refresh. This does not activate private server or credential synchronization.
 - **Requested edit:** When the user supplies update text, refresh first, then apply that request to the canonical AGENTS or shared skills before validation and publication.
 - **Link repair:** When asked to install or repair shared agent files, run the current host's symlink checks even if today's refresh already succeeded.
+- **Private synchronization only:** For an explicit request to synchronize or repair registered server configuration, or set up, repair or synchronize enrolled credentials, resolve only the canonical repository paths in steps 1–3 above and read `private-sync.md`. Run only its requested payloads and targets under its writer-lock and approval rules. This mode is not an agent refresh: skip public agent-file/CLI updates, cleanup, installation/manifest verification and upstream reconciliation, and leave the daily refresh stamp unchanged. Run those stages only if the user also requests an agent refresh.
 
 ## Lock and preflight
 
