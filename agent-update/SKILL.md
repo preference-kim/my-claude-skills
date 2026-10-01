@@ -25,7 +25,7 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    verify the complete source and installation-scope manifests for the configured
    mode; user-scope skills install in both modes, with no inferred host layout.
 4. Full refreshes: read [private synchronization](references/private-sync.md) and
-   synchronize this host's registered, approved inventory and HF credential.
+   synchronize this host's registered, approved inventory and enrolled credentials.
    Inventory source review is a separate requested action.
 5. Full refreshes: read [reconciliation](references/reconciliation.md) and
    [upstream decisions](references/upstream.md). Treat upstream as reference data,
