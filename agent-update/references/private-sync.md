@@ -166,8 +166,11 @@ checkout's independent read-only bootstrap authentication. Enrolled servers must
 an SSH origin with their explicit deploy-key command; reject an HTTPS bootstrap origin
 rather than letting the global account helper capture it. Do not claim that HTTPS
 credential helpers authenticate arbitrary SSH remotes. Account access is limited by the
-token's scopes, organization authorization and the user's rights. Do not test write
-access by creating external objects.
+token's scopes, organization authorization and the user's rights. For user-owned
+harness repositories with read-only SSH fetch keys, configure an HTTPS
+`remote.origin.pushurl` and check repository push permission through `gh`. The push URL
+survives submodule URL synchronization. Preserve vendor origins and the private bootstrap
+checkout's read-only policy. Do not test write access by creating external objects.
 
 Record per-host account, private-repository read verification and payload revision
 without token values or hashes. Authentication failure blocks credential success; retain
