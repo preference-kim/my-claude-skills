@@ -1,8 +1,9 @@
 ## Synchronize this host
 
-Run this protocol only when the user explicitly requests synchronization or
-repair of server configuration or enrolled credentials. Explicit credential setup
-also permits that credential workflow; enrollment and approval remain required.
+Run this protocol only when the user explicitly requests setup, synchronization
+or repair of server configuration or enrolled credentials. Setup uses the device
+enrollment path below; ordinary synchronization requires an existing registration
+and approval.
 Daily refreshes, generic `agent-update` requests, link repair and instruction edits
 do not activate it: skip private
 repository fetches, decryption and payload application. A previous enrollment or
@@ -26,7 +27,12 @@ Require registration, key directories and private checkout to be owned by the
 current account and inaccessible to other users (directories 0700, files 0600).
 Resolve paths literally; never evaluate configuration as shell code. Match the
 `socket.gethostname()` exactly to `expected_hostname`, or an explicit `host_profiles` entry
-for a shared home. An unknown hostname is unenrolled even if the home is shared.
+for a shared home. An unknown hostname is unenrolled even if the home is shared. Require a registered `device_role` of `development-server` or `personal-device`,
+and an `account` matching the current OS account. Do not infer role from OS,
+hostname, the current controller, or agent installation mode. For a shared home,
+select `host_profiles[current_hostname]` before the fallback `profile`; accept the
+fallback only when `expected_hostname` matches. Credential-only requests use this
+enrollment check without fetching or decrypting an unrequested inventory payload.
 
 Use the registration's private checkout and exact `repository_url`. Require a
 clean tree and matching origin; report divergence rather than reset it. Fetch
@@ -53,10 +59,70 @@ or pipes. Decrypted inventory and plans may be kept only in private local state
 under `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`, mode 0600. Never place
 them in public worktrees or agent review prompts sent to external services.
 
+## Set up or reconfigure a device
+
+On an explicit setup request, establish the device role, exact hostname, account
+and unique private profile before preparing changes. Reuse a registration only
+for that same device; a new personal computer needs its own baseline, profile,
+local paths and approved access. Do not clone another device's registration,
+SSH routes, identity paths or age private keys. Inspect available keys and routes
+on the device and ask only for missing role/access choices. A personal device may
+also be the controller; controller capability does not select its hosts policy.
+
+Keep roles, device registrations, canonical/deprecated names, source revisions,
+network scope, preserved blocks and deployment targets private. Public schemas
+and this protocol define behavior; approved per-profile `files` contain the
+concrete before/after plan. Version-one documents without a role are reported as needing explicit role
+registration through setup, not a fallback role or a generic validation failure.
+All hosts sharing one registration must have the same role. Mixed-role devices
+need separate registrations and access boundaries. Write the reviewed local registration atomically as mode 0600, owned by the
+current account, and validate its schema. This does not authorize editing the
+separate agent installation-mode file. Setup may enroll and deploy in one explicit
+request only after repository/decryption access and the approved device profile
+are ready; otherwise leave a draft and report the missing prerequisite.
+Credential enrollment is independent:
+setting up inventory alone does not enroll HF or GitHub, and `hf_identity` is
+required only for an explicitly enrolled/requested HF workflow.
+
+- `development-server`: retain existing deprecated IP aliases for shared users
+  in a separate `# BEGIN agent-update: will be deprecated` /
+  `# END agent-update: will be deprecated` block. Verify that every retained
+  deprecated alias still resolves to its original address. Keep canonical entries in the managed block and explicitly preserved
+  operational blocks. Preserve those operational blocks verbatim; put additional
+  names outside them without duplicate managed names. A deprecation label does
+  not remove aliases or schedule their deletion. Do not change a user's SSH
+  aliases merely because shared hosts entries are being reorganized.
+- `personal-device`: generate the approved canonical names and routes for that
+  device's hosts and SSH configuration. Remove only aliases explicitly classified
+  as deprecated in the private inventory and authorized for this migration.
+  Preserve unrelated entries and keep the effective destination, port, jump chain,
+  identity files and host-key policy for retained/renamed routes. New personal
+  devices do not inherit another personal device's absolute paths or network
+  assumptions.
+
+Role and hosts scope are separate: the private profile also defines which nodes
+belong on that device. During source review, preserve both dimensions when adding
+nodes. Use the existing backup, conflict, root authorization and verification
+protocol below. No setup or role change activates future daily private sync.
+
 ## Apply an approved inventory
 
-Require `approval.status: approved` inside the inventory as well. Select only the
-registered profile and account. Each `files` item supplies the reviewed `before`
+Require `approval.status: approved` inside the inventory as well. Require the
+selected profile's `expected_hostname`, `account` and `device_role` to match the
+current host/account and registration; reject even a same-role profile belonging
+to another device. Each profile's `hosts_scope.managed_node_names` is the exact
+list of canonical node IDs selected from inventory `nodes`; do not infer scope
+from role or a label. `deprecated_alias_policy` must be `separate-block` for a
+development server and `omit` for a personal device. `preserved_hosts_blocks`
+contains literal text blocks, not identifiers. Verify each block byte-for-byte
+and check its names/IPs against the selected nodes. An incompatible IP change is
+a conflict requiring a reviewed block revision, not a second definition.
+Canonical `aliases` and `deprecated_aliases` must be disjoint and have no
+conflicting definitions across nodes or files. Personal removals must also appear
+in the approved profile's `authorized_alias_removals`. Run
+`<dotfiles>/scripts/validate-private-profile.py` with the decrypted inventory and
+registration on stdin before inventory application. This read-only check validates
+device binding and hosts layout; it does not replace approval or backup checks. Each `files` item supplies the reviewed `before`
 and desired `after`; paths are restricted to `/etc/hosts`, `~/.ssh/config` and
 `~/.ssh/moreh_cluster.conf`. Inspect the existing path, symlinks, ownership and
 mount first. Preserve existing include structure, aliases, routes, identity files,
@@ -92,11 +158,15 @@ policy. Shared-home SSH/HF files have one writer per home, but `/etc/hosts` and
 host results are separate for each physical host. Do not treat source inventory
 nodes as implicitly registered deployment targets.
 
-Validate candidates with `ssh -G` before applying. Compare every existing literal
-alias's effective route and key/host-key options before and after; verify the
+Validate candidates with `ssh -G` before applying. Compare every retained literal
+alias's effective route and key/host-key options before and after; record explicitly
+authorized personal-device removals separately and verify every replacement route; verify the
 profile's `ssh_equivalence` pairs for added names. Included files and wildcard
 precedence are part of this comparison. After applying, verify content, owner,
-mode, resolution and representative noninteractive SSH connections. A failed
+mode, resolution of retained aliases and SSH `HostName` targets, and
+representative noninteractive SSH connections. For renamed routes, verify existing
+host-key trust under the new name; if an explicit HostKeyAlias or known-hosts
+migration is needed, review it separately instead of weakening verification. A failed
 check is not success. Roll back only if the file still matches this run's written
 hash; otherwise report the concurrent change and recovery backup. Keep the
 current connection open until post-write checks finish. After an SSH config

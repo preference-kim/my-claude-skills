@@ -1,6 +1,6 @@
 ---
 name: agent-update
-description: Use for the required session-start refresh, agent-file synchronization, entry-point repair, shared instruction maintenance and publication, or explicit synchronization or repair of registered private server configuration, or setup, repair and synchronization of enrolled credentials.
+description: Use for the required session-start refresh, agent-file synchronization, entry-point repair, shared instruction maintenance and publication, or explicit setup, synchronization or repair of private server configuration, or setup, repair and synchronization of enrolled credentials.
 ---
 
 # Agent Update
@@ -24,7 +24,7 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    [installation](references/installation.md). Inspect exact cleanup targets and
    verify the complete source and installation-scope manifests for the configured
    mode; user-scope skills install in both modes, with no inferred host layout.
-4. Only when the user explicitly requests server configuration synchronization
+4. Only when the user explicitly requests server configuration setup, synchronization
    or repair, or enrolled credential setup, repair or synchronization, read
    [private synchronization](references/private-sync.md)
    and apply the requested payloads and targets. Daily and generic forced agent
