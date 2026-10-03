@@ -14,8 +14,9 @@ and untracked; a publication stop overrides the refresh/publication workflow.
 ## Select and run only the required stages
 
 1. Read [preflight](references/preflight.md) to resolve repositories, host layout,
-   refresh mode, date stamp, and lock. A same-day daily refresh skips network,
-   repository, and CLI work, but still performs cleanup and manifest verification.
+   refresh mode, date stamp, and lock. A same-day daily refresh skips public
+   repository and CLI work, but still performs cleanup, manifest verification,
+   and the SSH synchronization below.
    Explicit refreshes and requested edits always run the full refresh first.
 2. For a full refresh, complete preflight under the atomic lock, then read
    [CLI updates](references/cli-updates.md). Update only the active, already-installed
@@ -24,14 +25,15 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    [installation](references/installation.md). Inspect exact cleanup targets and
    verify the complete source and installation-scope manifests for the configured
    mode; user-scope skills install in both modes, with no inferred host layout.
-4. Only when the user explicitly requests server-list review, configuration setup, update
-   or repair, or enrolled credential setup, repair or synchronization, read
-   [private synchronization](references/private-sync.md).
-   For server configuration updates, resolve the approved profile's configuration
-   ownership. On an owning host, review the source server lists and update its
-   `/etc/hosts` and SSH configuration. A delegated profile reports its configuration
-   owner. Apply enrolled credential payloads when requested. Daily and generic
-   forced agent refreshes skip this stage.
+4. Every daily, forced, and requested-edit refresh runs the current host's SSH
+   synchronization: read [private synchronization](references/private-sync.md)
+   and [SSH configuration](references/private-ssh.md), fetch the approved private
+   inventory, and update the enrolled owner's generated SSH include when needed.
+   This is an agent-run stage, with no login hook, daemon, or remote fleet rollout.
+   An unenrolled host is skipped without enrollment; a delegated profile reports
+   its owner. Source review, enrollment and credential synchronization require
+   their own explicit request. Write `/etc/hosts` or its cloud-init preservation
+   setting only when the user explicitly requests hosts-file changes.
 5. Full refreshes: read [reconciliation](references/reconciliation.md) and
    [upstream decisions](references/upstream.md). Treat upstream as reference data,
    inspect every changed skill resource, and preserve intentional divergence.

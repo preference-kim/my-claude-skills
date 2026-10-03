@@ -1,16 +1,25 @@
 ## Synchronize this host
 
-For an explicit server configuration update, review the latest server lists from
-the private inventory's sources, reconcile changes, and update the current host's
-owned `/etc/hosts` and SSH configuration through the reviewed inventory workflow below.
-Resolve its registration at `~/.config/agent-update/private-sync.json`; use device
-enrollment when setup is requested and registration is absent. An update on an
-unenrolled host reports that setup is required before repository access. Fetch
-the private repository again regardless of the daily refresh stamp. Credential setup, repair
-and synchronization apply the explicitly requested enrolled payloads.
-Daily and generic agent refreshes use the public refresh stages.
+Every agent refresh synchronizes the current enrolled owner's generated SSH
+include from the published approved inventory. Read [SSH configuration](private-ssh.md)
+for that stage's scope and checks. Resolve registration at
+`~/.config/agent-update/private-sync.json` and fetch the private repository again
+regardless of the public daily refresh stamp. Missing registration is a reported
+skip, not permission to enroll, retrieve keys or contact another host.
 
-On an enrolled host, a draft, pending, conflicting or failed requested payload
+Review the inventory's source documents only when source review or server
+configuration maintenance is explicitly requested; ordinary SSH synchronization
+does not consult or adopt changes from documents or chat. Write `/etc/hosts` and
+its cloud-init preservation setting only on an explicit hosts-file request.
+A generic refresh, server setup or SSH update does not authorize those writes.
+Credential setup, repair and synchronization apply only explicitly requested
+enrolled payloads. Separate these scopes even when they share one inventory.
+
+On an enrolled SSH owner, a draft, pending, conflicting or failed SSH update
+preserves the installed configuration, reports the failure, and blocks a complete
+refresh stamp. Independent public maintenance may continue. Missing enrollment,
+delegated ownership and a profile without managed SSH are explicit skips.
+For other explicitly requested payloads, a draft, pending, conflicting or failed payload
 blocks synchronization success. If synchronization was requested together with
 an agent refresh, it also blocks a complete refresh stamp; independent public
 maintenance may continue. Unrequested payloads are skipped without blocking it.
@@ -101,9 +110,15 @@ their existing configuration.
 Role and hosts scope are separate: the private profile also defines which nodes
 belong on that device. During source review, preserve both dimensions when adding
 nodes. Use the existing backup, conflict, root authorization and verification
-protocol below. Private configuration updates remain explicitly requested actions.
+protocol below. Hosts-file changes and credentials remain explicit operations;
+routine SSH synchronization applies only the reviewed generated include.
 
 ## Apply an approved inventory
+
+Select the authorized scope before planning any write. Routine SSH synchronization
+uses the device/ownership and inventory validation below, then follows
+`private-ssh.md`; it does not apply the profile's non-SSH `files` plans. The hosts
+layout rules and cloud-init steps below apply only to requested hosts-file work.
 
 Require `approval.status: approved` inside the inventory as well. For both owning
 and delegated profiles, validate the selected profile's hostname, account and device
@@ -294,7 +309,8 @@ payload, then verifying authorized members before revoking the previous credenti
 
 Read the source URLs and recorded revisions from the private inventory. Inspect
 current source content, resolve disagreements using the documented authority, and
-prepare the current host's hosts and SSH before/after plan. Preserve its registered
+prepare a plan for the requested scope. Include a hosts-file plan only when
+hosts-file changes were explicitly requested. Preserve the registered
 role, node scope, operational blocks, routes and key policies. Classify names as
 canonical or deprecated from reviewed evidence; retain shared compatibility aliases
 according to the role policy above. Describe address, naming and policy changes
@@ -302,7 +318,9 @@ with their source evidence before approving the plan. When reorganizing existing
 marker migration in the plan and verify preserved alias mappings. When no source
 change is found, still compare the current local files with the approved profile and verify their configuration.
 
-Complete source review before deployment. The user's configuration-update request
+Complete source review before publishing a new inventory. Routine SSH deployment
+consumes an already reviewed, approved revision and does not repeat that source
+review. The user's configuration-update request
 covers changes within its established scope; ask about unresolved source conflicts
 or additional access and route/key changes. A source-review-only request produces
 a candidate for review. A host with read-only private repository access keeps a

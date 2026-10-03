@@ -1,6 +1,6 @@
 ## Keep agent command-line tools current
 
-During every full daily, forced, or requested refresh, update each installed `claude`, `codex`, and `gh` command to the latest release available through its verified installation channel. Perform these checks and updates while holding the agent-update lock, after repository preflight. A same-day daily refresh that skips network and repository work may skip these checks; a forced or requested refresh never skips them.
+During every full daily, forced, or requested refresh, update each installed `claude`, `codex`, and `gh` command to the latest release available through its verified installation channel. Perform these checks and updates while holding the agent-update lock, after repository preflight. A same-day daily refresh may skip public repository and CLI checks; a forced or requested refresh never skips them. This exception does not skip the independent private SSH stage.
 
 For every command:
 

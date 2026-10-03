@@ -1,6 +1,6 @@
 ## Clean completed workspace artifacts
 
-Perform this cleanup during every daily, forced, or requested refresh, including a same-day daily refresh that skips network and repository work.
+Perform this cleanup during every daily, forced, or requested refresh, including a same-day daily refresh that skips public repository and CLI work.
 
 1. Inspect the home-directory top level and known reviewer temporary/cache roots for abandoned review outputs, temporary directories, diagnostic scratch, and other agent-created transient artifacts. Also identify completed experiment outputs or datasets whose producing session no longer needs them.
 2. Enumerate every cleanup target as an exact canonical path. Before deletion, require that each target is owned by the current user, is not a symlink, is not a Git repository or worktree, is not referenced by a live process, and is not a credential or configuration directory, shared default asset, active input, or evidence still needed to reproduce a current conclusion. Never delete through a broad home-directory glob, follow a symlink, or infer ownership for an ambiguous path.

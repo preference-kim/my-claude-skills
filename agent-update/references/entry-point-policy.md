@@ -22,7 +22,7 @@ refresh stamp when required project installation is blocked. The
 [installation rules](installation.md) own conflict handling, canonical reference
 resolution, legacy migration, and complete manifest verification.
 
-At the start of the first user task in each new session, use the `agent-update` skill for its daily refresh. The skill skips network and repository work after a successful refresh on the same local calendar day, but always verifies and repairs the current host's configured entry points and skill links. If it pulls or reconciles changed instructions, re-read the updated AGENTS.md and skill files before continuing.
+At the start of the first user task in each new session, use the `agent-update` skill for its daily refresh. After a successful refresh on the same local calendar day, it skips public repository and CLI work but still verifies and repairs the current host's configured entry points and skill links and synchronizes approved SSH configuration. That SSH stage fetches the private inventory and checks local drift on every refresh; it never writes hosts files without an explicit hosts-file request. If it pulls or reconciles changed instructions, re-read the updated AGENTS.md and skill files before continuing.
 
 Each full refresh also keeps installed Claude Code CLI, Codex CLI, and GitHub CLI commands on the latest release available through their verified existing installation channels. It updates only the active installation and its named package, never installs a missing command or performs a package-manager-wide upgrade, and withholds the successful-sync stamp when a command is known to be outdated but cannot be updated or verified.
 
