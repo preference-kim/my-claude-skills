@@ -64,8 +64,10 @@ also be the controller; controller capability does not select its hosts policy.
 
 Keep roles, device registrations, canonical/deprecated names, source revisions,
 network scope, preserved blocks and deployment targets private. Public schemas
-and this protocol define behavior; approved per-profile `files` contain the
-concrete before/after plan. Version-one documents without a role are reported as needing explicit role
+and this protocol define behavior. Version-two inventories use the shared SSH
+catalog described in [SSH configuration](private-ssh.md); read it before reviewing,
+changing or deploying SSH settings. Never store whole SSH files in per-device
+profiles. Non-SSH `files` retain their reviewed before/after plans. Version-one documents without a role are reported as needing explicit role
 registration through setup, not a fallback role or a generic validation failure.
 All hosts sharing one registration must have the same role. Mixed-role devices
 need separate registrations and access boundaries. Write the reviewed local registration atomically as mode 0600, owned by the
@@ -136,9 +138,8 @@ conflicting definitions across nodes or files. Personal removals must also appea
 in the approved profile's `authorized_alias_removals`. Run
 `<dotfiles>/scripts/validate-private-profile.py` with the decrypted inventory and
 registration on stdin before inventory application. This read-only check validates
-device binding and hosts layout; it does not replace approval or backup checks. Each `files` item supplies the reviewed `before`
-and desired `after`; paths are restricted to `/etc/hosts`, `~/.ssh/config` and
-`~/.ssh/moreh_cluster.conf`, plus an explicitly planned
+device binding and hosts layout; it does not replace approval or backup checks. Each non-SSH `files` item supplies the reviewed `before`
+and desired `after`; paths are restricted to `/etc/hosts` and an explicitly planned
 `/etc/cloud/cloud.cfg.d/99-moreh-preserve-hosts.cfg`. Inspect the existing path, symlinks, ownership and
 mount first. Preserve existing include structure, aliases, routes, identity files,
 host-key policy and local overrides. A naming change must not implicitly switch
@@ -161,8 +162,9 @@ an atomic replacement, preserving the intended owner and mode. Use
 `<dotfiles>/scripts/replace-managed-file.py` with the reviewed file item on stdin
 after taking the backup. It explicitly sets the final mode despite a restrictive
 umask and checks the baseline again before replacement. It requires an existing
-regular file for hosts and SSH; the dedicated cloud-init drop-in supports reviewed
-first creation with a null baseline and atomic rejection of concurrent creation.
+regular hosts file and SSH entry point. The generated SSH include and dedicated
+cloud-init drop-in support reviewed first creation with a null baseline and
+atomic rejection of concurrent creation.
 Do not replace
 symlinks or multiply linked files without a reviewed plan for their real target.
 

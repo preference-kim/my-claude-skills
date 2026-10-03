@@ -44,6 +44,7 @@
     "write-technical-pr/agents/openai.yaml",
     "write-technical-pr/references/evidence.md",
     "write-technical-pr/references/policy.md",
-    "agent-update/references/private-sync.md"
+    "agent-update/references/private-sync.md",
+    "agent-update/references/private-ssh.md"
   ]
 }
