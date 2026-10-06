@@ -25,9 +25,12 @@ body before revising so concurrent or integration-owned content is not overwritt
 Preserve an explicitly requested structure when semantically valid; reshape stale
 sections instead of appending patch notes.
 
-Use the description policy's language and draft-confirmation rules. Present the
-initial manuscript with its proposed language before publishing; an explicit
-language request or prior approval settles that choice. The default is an English
+Use the description policy's English-first drafting, final-language, and
+draft-confirmation rules. Draft with
+[SimpleEnglish](../simple-english/skills/simple-english/SKILL.md), then prepare
+the requested final language before manuscript review. Present that manuscript
+with its proposed language before publishing; an explicit language request or
+prior approval settles that choice. The default is an English
 body preceded by `## Korean Summary` in Korean. A requested single-language body
 uses that language for explanatory prose without duplicate translation. Follow
 the description policy's English conventions for titles, headings, technical

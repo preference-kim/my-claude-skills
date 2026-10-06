@@ -16,6 +16,11 @@ invoking this skill or delegating again.
 
 ## Draft the handoff and opening prompt
 
+Read [SimpleEnglish](../simple-english/skills/simple-english/SKILL.md) before
+drafting the handoff and opening prompt. Apply it while drafting; preserve the
+requested delivery language and the content contract. The independent humanizer
+and stop-bullshit review below still applies.
+
 Reconstruct the task from the user's requirements, established plan, current
 implementation, and relevant evidence. Inspect an existing handoff before replacing
 it. Write a complete draft with the five required sections: task overview, existing

@@ -2,6 +2,13 @@
 
 ## Language and publication
 
+- Draft every new or substantively revised description in English with
+  [SimpleEnglish](../../simple-english/skills/simple-english/SKILL.md), even when
+  the final description will be Korean. Then prepare the manuscript in the
+  final language and structure below before the independent humanizer and
+  stop-bullshit review. Preserve the evidence, qualifications, and technical
+  meaning during translation. The English working draft is not an additional
+  section in the delivered description.
 - Default to an English body with a summary written in Korean under
   `## Korean Summary` at the top. Present the initial manuscript and proposed
   language before publishing. Follow an explicit

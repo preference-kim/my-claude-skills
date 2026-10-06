@@ -6,9 +6,17 @@ invalid mode blocks all installation; do not infer one. A missing or invalid
 report the project failure, and withhold the successful-sync stamp.
 
 Build the source manifest from Git-tracked top-level `*/SKILL.md` files and
-explicitly configured top-level gitlinks whose initialized submodules contain
-`SKILL.md`. Require each source path or gitlink in `.publication-policy.json`.
+explicitly configured top-level gitlinks. For a gitlink, resolve its optional
+`skill-path` in `.gitmodules` from the submodule root; the default is `.`.
+Require an initialized submodule and a readable `SKILL.md` at that source.
+Reject absolute paths and paths that resolve outside the submodule. Keep the
+top-level directory name as the manifest key and require it to match the skill
+name. Require each source file or gitlink in `.publication-policy.json`.
 Never enumerate ignored or untracked sources into this manifest.
+
+`simple-english` uses `skill-path = skills/simple-english`. Keep its upstream
+files unchanged and install only that skill directory. Its plugin, session hooks,
+and output style are separate upstream capabilities, not part of skill installation.
 
 Read `<skills>/.installation-policy.json` as the single installation-scope map:
 each key is an exact source skill directory name and each value is `user` or
@@ -26,8 +34,12 @@ installation root or require a Moreh checkout for user-scope references.
 Keep `~/.agents/skills` (Codex) and `~/.claude/skills` (Claude) as real directories.
 For every `user` skill, maintain these individual symlinks:
 
-- `~/.agents/skills/<name> -> <dotfiles>/skills/<name>`
-- `~/.claude/skills/<name> -> <dotfiles>/skills/<name>`
+- `~/.agents/skills/<name> -> <resolved-source-directory>`
+- `~/.claude/skills/<name> -> <resolved-source-directory>`
+
+The resolved source is `<dotfiles>/skills/<name>`, or its declared `skill-path`
+for a vendor submodule. For SimpleEnglish it is
+`<dotfiles>/skills/simple-english/skills/simple-english`.
 
 Do this in both `host-global` and `moreh-dev`. Do not create duplicate project
 entries for these skills. Do not clone the skills repository into a discovery
@@ -69,8 +81,8 @@ project-local instruction links, without creating host-global instructions:
 
 For only the `moreh-dev` skills, maintain:
 
-- `<moreh-dev-root>/.agents/skills/<name> -> <dotfiles>/skills/<name>`
-- `<moreh-dev-root>/.claude/skills/<name> -> <dotfiles>/skills/<name>`
+- `<moreh-dev-root>/.agents/skills/<name> -> <resolved-source-directory>`
+- `<moreh-dev-root>/.claude/skills/<name> -> <resolved-source-directory>`
 
 Use relative project symlinks derived from the resolved checkout locations.
 Keep skill roots as real directories. Before creating or replacing any project

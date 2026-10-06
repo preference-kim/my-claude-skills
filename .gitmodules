@@ -5,3 +5,8 @@
 	path = stop-bullshit
 	url = git@github.com:preference-kim/stop-bullshit.git
 	branch = main
+[submodule "simple-english"]
+	path = simple-english
+	url = https://github.com/AminBlg/SimpleEnglish.git
+	branch = main
+	skill-path = skills/simple-english
