@@ -50,8 +50,8 @@ does not hold the public daily stamp.
 4. Choose the path from the installed state, checking drift on every run even
    when the private revision has not changed. If the records disagree with each
    other, report a conflict.
-   - No success record: follow Missing records when the generated include exists
-     and `~/.ssh/config` loads it; otherwise follow [First setup](#first-setup).
+   - No success record: follow [First setup](#first-setup), whether or not an
+     include already exists.
    - Current: the installed include equals the rendering and `render_sha256`.
      Verify mode, the active Include and SSH syntax, record the revision and retry
      any `unverified_routes`. Make no other cluster connection probes.
@@ -59,11 +59,6 @@ does not hold the public daily stamp.
      rendering differs. Continue with step 5.
    - Conflict: the installed include differs from `last-verified-rendering`, or
      the Include was moved or removed after setup. Preserve the files.
-   - Missing records, after an interrupted write: write records only when the
-     installed include equals the rendering, the personal rules hide no
-     different value (see the effective-configuration checks), and the
-     verification of step 6 passes. Rebuild `unverified_routes` from its probes. Otherwise report
-     a conflict and never record those bytes.
 
    On the Current and Update paths, inspect the diff when `~/.ssh/config` differs
    from `last-verified-config`. Advance the record for edits that leave managed
@@ -107,19 +102,31 @@ publish its inventory.
 
 ## First setup
 
-A host enrolled before the generated include existed usually holds its managed
-routes inline in `~/.ssh/config`, written from the profile's version-one
-snapshot. First setup moves them into the generated include in the same refresh.
+A host without a success record may hold its managed routes inline in
+`~/.ssh/config`, may already have an include from its version-one snapshot, an
+earlier deployment or an interrupted write, or may have neither. First setup
+brings any of these states to the current rendering in the same refresh, then
+writes the records.
 
-1. Read the snapshot: this profile's `~/.ssh/config` plan in the last approved
-   version-one inventory revision of the private repository, under the same
-   approval-digest checks. A host without one has no proven managed copies.
-2. A personal `Host` stanza is a managed copy when the candidate defines all of
+1. Read the snapshot: this profile's `~/.ssh/config` and
+   `~/.ssh/moreh_cluster.conf` plans in the last approved version-one inventory
+   revision of the private repository, under the same approval-digest checks.
+   A host without one has no proven managed copies.
+2. An existing include is managed when it equals the current rendering, the
+   rendering of an earlier approved revision, or the snapshot's include plan; it
+   is the previous include for the checks below. An include that matches none
+   of these is a conflict when `~/.ssh/config` loads it; otherwise step 6
+   replaces it.
+3. A personal `Host` stanza is a managed copy when the candidate defines all of
    its names and the stanza appears unchanged in the snapshot. Equal effective
    options alone do not prove ownership; keep every other stanza.
-3. Build the candidate `~/.ssh/config`: remove the managed copies and the comment
-   or blank lines that sit only between them, keep every other byte, and put this block at the start of the file unless a correctly
-   scoped block already exists. The first `Host *` gives the Include global
+4. Build the candidate `~/.ssh/config`: remove the managed copies and the comment
+   or blank lines that sit only between them, and keep every other byte. An
+   existing Include of the include path is correctly scoped when it applies to
+   every host (under `Host *` or before any `Host` or `Match` line) and a
+   `Host *` line separates it from following personal options. Keep such an
+   Include in place. Otherwise put this block at the start of the file, replacing
+   an incorrectly scoped Include. The first `Host *` gives the Include global
    scope; the second returns the following personal rules to their own scope.
 
    ```
@@ -128,19 +135,20 @@ snapshot. First setup moves them into the generated include in the same refresh.
    Host *
    ```
 
-4. Apply the effective-configuration checks. If a personal rule would be
+5. Apply the effective-configuration checks. If a personal rule would be
    defeated, dropped or hidden, report a conflict that names it and the
    resolution (edit or remove the rule, or change the inventory through explicit
    maintenance), and write nothing.
-5. Install through routine steps 5 to 7 in this order: probe affected existing
-   routes, take the lock and backup, create the include, register host keys with
-   `ssh -F` and a protected temporary copy of the candidate `~/.ssh/config` so
-   registration follows the new routes, then replace `~/.ssh/config`. Before
-   creating the include, make sure that no Include pattern already loads
-   its path, other than an existing managed block. Back up and replace an include
-   file that `~/.ssh/config` does not load. For the `~/.ssh/config` write, pass
-   the bytes the candidate was built from as the expected prior content; this
-   guards against concurrent edits and is not a verified baseline.
+6. Install through routine steps 5 to 7 in this order: probe affected existing
+   routes, take the lock and backup, write the include if it differs from the
+   rendering, register host keys with `ssh -F` and a protected temporary copy of
+   the candidate `~/.ssh/config` so registration follows the new routes, then
+   replace `~/.ssh/config` if it changed. Before creating a new include, make
+   sure that no Include pattern other than the one kept or placed in step 4
+   already loads its path; if one does, report a conflict and write nothing. For
+   each write, pass the target's bytes as read when the candidate was prepared
+   (none for an absent include) as the expected prior content; this guards
+   against concurrent edits and does not prove ownership.
 
 ## Source and rendering
 
