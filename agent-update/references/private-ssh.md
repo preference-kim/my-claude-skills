@@ -53,8 +53,10 @@ SSH into other hosts to update them.
    delta authorizes synchronization within existing enrollment; do not request
    confirmation again. Preserve unrelated personal rules and stop on overlapping
    local overrides, unresolved dependencies or unsupported client options.
-   New or changed routes must carry an explicit IP or resolvable DNS `HostName`
-   for the destination and its jump helpers; do not depend on a hosts-file write.
+   Identify connection routes from the approved catalog and source review, using
+   the distinction below. New or changed routes must carry an explicit IP or
+   resolvable DNS `HostName` for the destination and its jump helpers; do not
+   depend on a hosts-file write.
 6. Under the shared-home writer lock, save the prior include and metadata in a
    unique protected backup, recheck the baseline, then use
    `scripts/replace-managed-file.py` to replace only the generated include.
@@ -98,11 +100,27 @@ literal paths and the renderer quotes spaces and comment characters. A
 spaces in that list. Catalog identifiers and helper aliases must be literal names.
 
 Review an edited shared rule for every consuming context, including consumers
-not currently reachable. Render every owning SSH profile before publication.
+not currently reachable. Render every owning SSH profile before publication and
+verify that every declared connection alias has its intended effective route.
 Require identical output for owners sharing a home. The same destination's
 address or reverse port must be defined once; contexts choose how to reach it.
 Do not copy rendered output back into the inventory. Preserve unrelated hosts,
 credential payloads, registration and access scope during an SSH-only change.
+
+A `Host` pattern can select authentication policy without defining a connection
+route. A rule containing only key, agent or host-key options does not promise
+that every matched physical hostname resolves. Determine the intended connection
+aliases from the approved route rules and reviewed source, not from every emitted
+`Host` token. A declared alias remains a required route if its `HostName` was
+accidentally omitted; do not reclassify it to bypass a failed check.
+
+Compare effective authentication options for all affected names. Apply destination
+resolution and connection probes to declared routes and their jump dependencies.
+Determine affected routes from their complete effective configuration before and
+after the update; a shared authentication change can affect an existing route.
+An unresolved name matched only by authentication policy does not block deployment
+of valid routes. Do not invent a route or change DNS or hosts files for that name.
+If the catalog and source disagree about a name's role, report the conflict.
 
 ## Host-key verification
 
