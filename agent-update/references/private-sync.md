@@ -1,8 +1,8 @@
 ## Synchronize this host
 
 Every agent refresh synchronizes the current enrolled owner's generated SSH
-include from the published approved inventory. Read [SSH configuration](private-ssh.md)
-for that stage's scope and checks. Resolve registration at
+include from the published approved inventory, including its first setup. Read
+[SSH configuration](private-ssh.md) for that stage's scope and checks. Resolve registration at
 `~/.config/agent-update/private-sync.json` and fetch the private repository again
 regardless of the public daily refresh stamp. Missing registration is a reported
 skip, not permission to enroll, retrieve keys or contact another host.
@@ -15,10 +15,10 @@ A generic refresh, server setup or SSH update does not authorize those writes.
 Credential setup, repair and synchronization apply only explicitly requested
 enrolled payloads. Separate these scopes even when they share one inventory.
 
-On an enrolled SSH owner, a draft, pending, conflicting or failed SSH update
-preserves the installed configuration, reports the failure, and blocks a complete
-refresh stamp. Independent public maintenance may continue. Missing enrollment,
-delegated ownership and a profile without managed SSH are explicit skips.
+On an enrolled SSH owner, a conflicting or failed SSH update preserves the
+installed configuration and is reported with the refresh; it does not hold the
+public refresh stamp. Missing enrollment, delegated ownership and a profile
+without managed SSH are explicit skips.
 For other explicitly requested payloads, a draft, pending, conflicting or failed payload
 blocks synchronization success. If synchronization was requested together with
 an agent refresh, it also blocks a complete refresh stamp; independent public
@@ -111,7 +111,8 @@ Role and hosts scope are separate: the private profile also defines which nodes
 belong on that device. During source review, preserve both dimensions when adding
 nodes. Use the existing backup, conflict, root authorization and verification
 protocol below. Hosts-file changes and credentials remain explicit operations;
-routine SSH synchronization applies only the reviewed generated include.
+routine SSH synchronization applies only the generated include, its Include block
+and the first-setup removal of managed copies defined in `private-ssh.md`.
 
 ## Apply an approved inventory
 

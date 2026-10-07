@@ -28,8 +28,9 @@ and untracked; a publication stop overrides the refresh/publication workflow.
 4. Every daily, forced, and requested-edit refresh runs the current host's SSH
    synchronization: read [private synchronization](references/private-sync.md)
    and [SSH configuration](references/private-ssh.md), fetch the approved private
-   inventory, and update the enrolled owner's generated SSH include when needed.
+   inventory, and set up or update the enrolled owner's generated SSH include.
    This is an agent-run stage, with no login hook, daemon, or remote fleet rollout.
+   It ends with a one-line outcome and never holds the rest of the refresh.
    An unenrolled host is skipped without enrollment; a delegated profile reports
    its owner. Source review, enrollment and credential synchronization require
    their own explicit request. Write `/etc/hosts` or its cloud-init preservation
