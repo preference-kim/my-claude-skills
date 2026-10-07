@@ -206,10 +206,10 @@ authorized personal-device removals separately and verify every replacement rout
 profile's `ssh_equivalence` pairs for added names. Included files and wildcard
 precedence are part of this comparison. After applying, verify content, owner,
 mode, resolution of retained aliases and SSH `HostName` targets, and
-representative noninteractive SSH connections. For renamed routes, verify existing
-host-key trust under the new name; if an explicit HostKeyAlias or known-hosts
-migration is needed, review it separately instead of weakening verification. A failed
-check is not success. Roll back only if the file still matches this run's written
+representative noninteractive SSH connections. Before connection probes, follow
+[Host-key verification](private-ssh.md#host-key-verification) for existing trust,
+first-contact registration and key mismatches. A failed check is not success.
+Roll back only if the file still matches this run's written
 hash; otherwise report the concurrent change and recovery backup. Keep the
 current connection open until post-write checks finish. After an SSH config
 change, verify private repository access again with its dedicated SSH settings.
