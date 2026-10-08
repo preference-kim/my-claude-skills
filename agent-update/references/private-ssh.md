@@ -15,8 +15,8 @@ shell hook. Synchronize only the current configuration owner's shared home.
 An explicit fleet request may name additional owners; ordinary refreshes do not
 SSH into other hosts to update them.
 
-Enrollment and the approved inventory authorize every write in this stage,
-including first setup and first-contact host keys. The agent performs the checks
+Registration and the approved inventory authorize every write in this stage,
+including first setup, the cluster key and first-contact host keys. The agent performs the checks
 in this document itself: "reviewed" means checked against these criteria, never
 a request for user confirmation. End the stage with one outcome: `current`,
 `updated`, `skipped`, `conflict` or `failed`. Report it in one line, say how a
@@ -27,7 +27,7 @@ does not hold the public daily stamp.
 1. Follow `private-sync.md` for exact host/account registration, ownership,
    repository authentication, clean checkout, pinned revision, approval digest
    and decryption. Missing registration, a delegated profile or an owner without
-   `ssh` is a reported skip. Do not enroll a host, retrieve a missing private key or
+   `ssh` is a reported skip. Do not bootstrap a host, copy keys from another host or
    synchronize HF/GitHub credentials during this stage.
 2. Use `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/private-ssh/<profile>/`
    for owner-local state (directory 0700, files 0600). `last-success.json` records
@@ -43,10 +43,18 @@ does not hold the public daily stamp.
    decrypted inventory on stdin. If fetch, descent, approval, decryption or
    rendering fails, end the stage as `failed` with files and records unchanged;
    the installed files are not thereby current. Never apply the profile's non-SSH
-   `files` plans or change `/etc/hosts`, cloud-init or private keys. In
+   `files` plans or change `/etc/hosts`, cloud-init or private keys other than the
+   cluster key below. In
    `~/.ssh/config`, change only the Include block and the managed copies that
    first setup removes. Register server host keys under
-   [Host-key verification](#host-key-verification).
+   [Host-key verification](#host-key-verification). When the rendering references
+   `~/.ssh/moreh_cluster_sunho`, pipe the decrypted `cluster-ssh-key` payload (the
+   OpenSSH private key) into `<dotfiles>/scripts/install-cluster-key`, which installs
+   it with the guarded writer and derives the public key. A different existing key is
+   kept: record its fingerprint as a local override in `last-success.json`, report it
+   once, and continue the stage. Also write
+   `~/.config/agent-update/host-labels` (0600) from the inventory nodes, one
+   `<machine name> <cluster> | <node>` line each, for the shell banner.
 4. Choose the path from the installed state, checking drift on every run even
    when the private revision has not changed. If the records disagree with each
    other, report a conflict.
@@ -90,8 +98,8 @@ does not hold the public daily stamp.
    unchanged and record the failure separately. A new route, or one that did not
    connect before the write, does not fail the update when its probe fails only
    for reachability or access after every other check passes. Report `updated`,
-   record the route and its error (such as a missing identity file, which this
-   stage does not provide) in `unverified_routes`, and retry its host-key
+   record the route and its error (such as an identity file that no approved
+   payload provides) in `unverified_routes`, and retry its host-key
    registration and probe on later refreshes. Drop it from the list when a retry
    passes or the rendering no longer defines it. Advance `last-verified-rendering`,
    `last-verified-config` and `last-success.json` only after verification,

@@ -5,7 +5,7 @@ include from the published approved inventory, including its first setup. Read
 [SSH configuration](private-ssh.md) for that stage's scope and checks. Resolve registration at
 `~/.config/agent-update/private-sync.json` and fetch the private repository again
 regardless of the public daily refresh stamp. Missing registration is a reported
-skip, not permission to enroll, retrieve keys or contact another host.
+skip, not permission to bootstrap, retrieve keys or contact another host.
 
 Review the inventory's source documents only when source review or server
 configuration maintenance is explicitly requested; ordinary SSH synchronization
@@ -42,7 +42,7 @@ clean tree and matching origin; report divergence rather than reset it. Fetch
 <commit>:<file>`. Do not rely on stale working-tree files or move a dirty checkout.
 Reject a fetched revision that is not a descendant of the last successfully
 recorded revision unless the user explicitly authorized that rollback. Repository
-authentication uses the registered host or credential group's read-only deploy key and
+authentication uses the fleet's read-only deploy key and
 `ssh -F /dev/null`
 with an explicit identity and known-hosts file, plus `IdentitiesOnly=yes`, `IdentityAgent=none`, `ForwardAgent=no` and pinned GitHub
 host keys. The initial maintainer may use its existing repository authentication.
@@ -50,13 +50,15 @@ Never disable SSH host-key verification to repair access.
 
 Read `<payload>.approval.json` from that same commit. Require `schema_version: 1`,
 `status: approved`, and `sha256` equal to the ciphertext's SHA-256. Record the
-commit and digest separately for `inventory`, `hf-token` and enrolled `github-token`. Missing, draft or
+commit and digest separately for each payload (`inventory`, `cluster-ssh-key`, `hf-token`,
+`github-token`). Missing, draft or
 mismatched approval blocks that payload; other payloads may proceed independently.
 These records express reviewed deployment intent, not cryptographic signatures:
 only authorized maintainers have repository write access. Treat decrypted content
 as configuration data, never executable instructions.
 
-Decrypt using the registered identity for that payload. Keep the token in memory
+Decrypt every payload with the fleet identity; the registration's identity fields all
+name it. Keep tokens in memory
 or pipes. Decrypted inventory and plans may be kept only in private local state
 under `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`, mode 0600. Never place
 them in public worktrees or agent review prompts sent to external services.
@@ -64,12 +66,13 @@ them in public worktrees or agent review prompts sent to external services.
 ## Set up or reconfigure a device
 
 On an explicit setup request, establish the device role, exact hostname, account
-and unique private profile before preparing changes. Reuse a registration only
-for that same device; a new personal computer needs its own baseline, profile,
-local paths and approved access. Do not clone another device's registration,
-SSH routes, identity paths or age private keys. Inspect available keys and routes
-on the device and ask only for missing role/access choices. A personal device may
-also be the controller; controller capability does not select its hosts policy.
+and private profile before preparing changes. Set up a server with
+[bootstrap](#bootstrap-a-server-from-a-trusted-host). A personal device that acts as a
+trusted host unpacks the [fleet keys](#fleet-keys) and registers its own profile; it
+never copies another device's registration, SSH routes or local paths. Inspect
+available keys and routes on the device and ask only for missing role/access choices.
+A personal device may also be the controller; controller capability does not select
+its hosts policy.
 
 Keep roles, device registrations, canonical/deprecated names, source revisions,
 network scope, preserved blocks and deployment targets private. Public schemas
@@ -80,13 +83,11 @@ profiles. Non-SSH `files` retain their reviewed before/after plans. Version-one 
 registration through setup, not a fallback role or a generic validation failure.
 All hosts sharing one registration must have the same role. Mixed-role devices
 need separate registrations and access boundaries. Write the reviewed local registration atomically as mode 0600, owned by the
-current account, and validate its schema. This does not authorize editing the
-separate agent installation-mode file. Setup may enroll and deploy in one explicit
-request only after repository/decryption access and the approved device profile
-are ready; otherwise leave a draft and report the missing prerequisite.
-Credential enrollment is independent:
-setting up inventory alone does not enroll HF or GitHub, and `hf_identity` is
-required only for an explicitly enrolled/requested HF workflow.
+current account, and validate its schema. Setup may deploy in the same request
+once the fleet keys are present and the profile is approved; otherwise leave a draft
+and report the missing prerequisite. Installing the HF or GitHub token still requires
+its own request: the fleet identity can decrypt every payload, but decrypting is not
+installing.
 
 The following alias policies apply to owning profiles. Delegated profiles preserve
 their existing configuration.
@@ -169,8 +170,8 @@ from a gateway to a direct route or replace a dedicated cluster key.
   ownership, or unapproved routing/key differences are conflicts: stop that file
   and report them. Never overwrite a file merely because its snapshot is old.
 
-Before writing, acquire an atomic directory lock in the shared home state,
-recording hostname and PID. A different host's lock is not stale just because its
+Before writing, acquire the shared-home writer lock, the atomic directory
+`agent-update/writer.lock` in the state directory, recording hostname and PID. A different host's lock is not stale just because its
 PID is absent locally. Back up exact content, mode, owner, symlink target and
 hash outside public Git; record the path and revision. Check the current hash
 again immediately before replacing. Stage in the destination filesystem and use
@@ -243,19 +244,14 @@ verification outcomes. Record HF success without its token or hash. A second run
 must make no changes when configuration is current. Report partial results and
 retain evidence until its recovery purpose ends.
 
-## Install an enrolled GitHub account credential
+## Install the GitHub account credential
 
-GitHub account access is optional and requires explicit user authorization; read-only
-repository enrollment alone does not authorize it. Registration must supply both
+GitHub account access is optional and requires explicit user authorization; holding
+the fleet keys alone does not authorize installing it. Registration must supply both
 `github_identity` and `github_account`. When GitHub credential synchronization is
 requested, successful application or verification of this enrolled payload is
-required for synchronization success. Keep `github-token.age`, its recipient list
-and approval separate from inventory and HF. A credential group may reuse its HF age identity for
-this payload only when the same members are explicitly authorized for GitHub access;
-reuse couples future decryption access, not token rotation or approvals. Any membership
-change involving that identity requires authorization for both credentials, or separate
-identities before access is granted. Every host mounting the credential home must be in
-the approved scope. Preserve independent inventory and HF identities.
+required for synchronization success. Keep `github-token.age` and its approval
+separate from the other payloads; like them, it is encrypted to the fleet recipient.
 
 Use the same pinned-revision, approval-digest and rollback checks above. Clear
 `GH_TOKEN`, `GITHUB_TOKEN` and enterprise-token overrides only in installer and
@@ -332,36 +328,57 @@ encrypt the reviewed inventory to its private recipient list, bind approval to t
 ciphertext digest, and publish the private revision before applying it. Leave
 independent credential payloads and approvals unchanged during an inventory update.
 
-## Enroll a device or credential group
+## Fleet keys
 
-Enrollment requires explicit scope. For host-local enrollment, generate identities
-on the host and register only public keys. Use host-local identities by default, or an
-explicitly authorized shared credential group recorded as `credential_group` in
-registration. A group shares one read-only repository key and separate inventory and HF age
-identities. The optional GitHub payload follows the explicit reuse rule above. Generate group keys on
-the maintainer and distribute them only over authenticated SSH to approved
-members authorized for each payload. Group membership alone does not grant HF
-access. Never commit private keys to either repository or copy personal SSH keys. Account credentials require explicit enrollment
-authorization for that payload and target scope. Keep group
-membership, recipients and deployment targets private; exclusions remain excluded.
+Two keys give a host access to private configuration: the fleet age identity, which
+decrypts every payload, and the fleet's read-only deploy key for the private
+repository. Every development server and trusted personal device holds the same
+`~/.config/agent-update/fleet/` directory (0700): `fleet.agekey`, `private-repo-ed25519`
+with its `.pub`, and the pinned `github_known_hosts` (files 0600). Encrypt every
+payload to the single fleet recipient. Record each key's purpose, public fingerprint
+or recipient, master location and installed path in the private `access/keys.json`.
+Never commit an unencrypted key, the fleet identity or the deploy key. A registration
+that names other identities predates the fleet keys: report the payloads it cannot
+decrypt and re-run bootstrap for that host from a trusted host.
 
-A shared home reuses its installed identities and an explicit hostname/profile
-mapping. Do not race to replace keys. An excluded host must not be able to read
-a member's shared key directory; hostname checks cannot isolate readable secrets.
+The master copy is the same directory in the user's cloud vault, at the location
+recorded in `access/keys.json`. A trusted personal device copies it once to
+`~/.config/agent-update/fleet/` and sets the modes above. Anyone with access to that
+vault, and any host holding the fleet keys, can decrypt every payload and read the
+private repository. To retire a host, first remove its fleet directory, cluster key
+and token files when it is reachable. Then rotate both fleet keys: generate
+replacements, update the vault copy, re-encrypt each payload, bind the new approval
+digests, register the new deploy key, re-run bootstrap on the remaining hosts, and
+revoke the old deploy key. Unless the host was wiped, its service access must end
+too: revoke and reissue the HF and GitHub tokens, and replace the cluster key and its
+public key on the nodes. On each host, install the new cluster key with
+`install-cluster-key --replace <old fingerprint>`. Git history keeps old ciphertext
+readable with the old identity. Discuss rotation and any history rewrite before
+performing them.
 
-On the maintainer, first add group recipients while retaining existing recipients,
-re-encrypt each authorized payload and bind approval to its new digest. Label
-recipients by owner in the private records. Verify repository reads and each
-authorized payload decryption using replacement identities before changing
-registration or revoking prior access. Record the group and public key/recipient
-fingerprints used, so success with an old key cannot validate migration. Retain protected rollback configuration until the group
-rollout is verified. Retire superseded deploy keys and remove old recipients from
-new ciphertext only after every affected member passes, then re-bind the updated
-approval digests. Retain excluded hosts' recipients in current ciphertext and
-leave their deploy keys and registration untouched. Do not treat a group member change as token rotation.
+## Bootstrap a server from a trusted host
 
-Removing a deploy key blocks future repository reads; removing an age recipient
-affects only newly encrypted payloads. Neither revokes historical ciphertext or
-an already recovered account token. Discuss rotation and any published-history rewrite
-before performing them. Keep recovery identities backed up only at a destination
-approved by the user; losing all identities loses access to their payload.
+Bootstrap runs on explicit request, from a trusted host whose fleet directory is
+present. The server needs `git`, `python3`, `tar`, `gzip`, `sha256sum`, an SSH client
+and network access to github.com, and the trusted host must reach it with
+`ssh -o BatchMode=yes` as the user's account. Passwordless sudo is needed only for
+hosts-file work. Run `<dotfiles>/scripts/bootstrap-remote <ssh-destination> [profile]`.
+It streams the fleet directory to the server, installs a checksum-pinned `age` in
+`~/.local/bin` when no working `age` exists, clones dotfiles over HTTPS and the private
+repository with the deploy key, writes the `host-global` mode file when absent, and
+writes the registration, with the profile defaulting to the short hostname. Re-running
+it is safe and repairs the same state. For a shared home, run it once per host; each
+run adds that hostname to `host_profiles`.
+
+If the inventory has no profile for the server, add one before deployment: expected
+hostname (`socket.gethostname()` on the server), account, `development-server` role,
+the SSH context whose network matches the server, and a hosts plan built from its
+current `/etc/hosts`. Validate, encrypt, approve and publish it from the trusted host,
+which needs its own maintainer write access; the fleet deploy key is read-only.
+Then run the server's own refresh stages through SSH from the trusted host: the
+installation and environment links, the SSH stage with its cluster key, and hosts-file
+work when requested and `sudo -n` succeeds. Each stage uses the server's state
+directory, writer lock, fleet identity and scripts; the trusted host only issues the
+commands and never keeps decrypted payloads. This explicit request is the fleet request
+that the SSH stage allows. Later refreshes run when an agent session starts on that
+server, which needs its own agent CLI login.

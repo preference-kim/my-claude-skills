@@ -99,6 +99,29 @@ that currently exist as managed symlinks; never use broad wildcards. Update the
 block after creating or removing links. The checkout's ordinary status must
 remain unchanged.
 
+## Install the shell and Git environment
+
+Link the tracked shell, Git and tmux settings from dotfiles on every refresh,
+in both modes. Each link is additive: create a missing startup file, add one line
+or entry, and never rewrite other lines.
+
+- The login shell's startup file must source the dotfiles fragment: `~/.bashrc`
+  sources `<dotfiles>/bash/bashrc` for bash, and `~/.zshrc` sources
+  `<dotfiles>/zsh/interactive.zsh` for zsh. Any existing line that sources that path
+  counts. Otherwise append `[ -r "<path>" ] && . "<path>"`.
+- `~/.gitconfig` must include `<dotfiles>/git/config`. If no include names it, insert
+  `[include]` with `path = <dotfiles>/git/config` at the start of the file, so the
+  file's own settings still take precedence. Report the global user name and email
+  before and after; a change means a local value was missing, not overridden.
+- Link `~/.tmux.conf` to `<dotfiles>/.tmux.conf` when it is absent or identical.
+  Keep a different real file as a reported local override.
+
+When `~/.bashrc` sources the former untracked `~/.config/moreh-dev/shell.bash`, back
+up both files under the agent-update `backups/` state directory. Replace that line
+with the dotfiles line, append the old file's lines that the tracked fragment lacks
+(such as personal aliases) to `~/.bashrc`, then remove `shell.bash`. Verify that a new
+interactive shell starts without errors.
+
 ## Migrate legacy installations and remove obsolete links
 
 A discovery root may be a legacy Git clone. Inspect its status and recursive

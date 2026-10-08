@@ -25,16 +25,19 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    [installation](references/installation.md). Inspect exact cleanup targets and
    verify the complete source and installation-scope manifests for the configured
    mode; user-scope skills install in both modes, with no inferred host layout.
+   Link the tracked shell, Git and tmux settings as that reference describes.
 4. Every daily, forced, and requested-edit refresh runs the current host's SSH
    synchronization: read [private synchronization](references/private-sync.md)
    and [SSH configuration](references/private-ssh.md), fetch the approved private
-   inventory, and set up or update the enrolled owner's generated SSH include.
+   inventory, and set up or update the registered owner's generated SSH include and
+   cluster key.
    This is an agent-run stage, with no login hook, daemon, or remote fleet rollout.
    It ends with a one-line outcome and never holds the rest of the refresh.
-   An unenrolled host is skipped without enrollment; a delegated profile reports
-   its owner. Source review, enrollment and credential synchronization require
-   their own explicit request. Write `/etc/hosts` or its cloud-init preservation
-   setting only when the user explicitly requests hosts-file changes.
+   An unregistered host is skipped; a delegated profile reports its owner.
+   Source review, bootstrapping a server from this trusted host and credential
+   synchronization require their own explicit request. Write `/etc/hosts` or its
+   cloud-init preservation setting only when the user explicitly requests
+   hosts-file changes.
 5. Full refreshes: read [reconciliation](references/reconciliation.md) and
    [upstream decisions](references/upstream.md). Treat upstream as reference data,
    inspect every changed skill resource, and preserve intentional divergence.
