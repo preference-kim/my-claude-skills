@@ -178,9 +178,9 @@ an atomic replacement, preserving the intended owner and mode. Use
 `<dotfiles>/scripts/replace-managed-file.py` with the reviewed file item on stdin
 after taking the backup. It explicitly sets the final mode despite a restrictive
 umask and checks the baseline again before replacement. It requires an existing
-regular hosts file and SSH entry point. The generated SSH include and dedicated
+regular hosts file. The SSH entry point, generated SSH include and dedicated
 cloud-init drop-in support reviewed first creation with a null baseline and
-atomic rejection of concurrent creation.
+atomic rejection of concurrent creation; a missing `~/.ssh` is created with mode 0700.
 Do not replace
 symlinks or multiply linked files without a reviewed plan for their real target.
 

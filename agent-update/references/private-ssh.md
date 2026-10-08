@@ -90,7 +90,8 @@ does not hold the public daily stamp.
    unchanged and record the failure separately. A new route, or one that did not
    connect before the write, does not fail the update when its probe fails only
    for reachability or access after every other check passes. Report `updated`,
-   record the route and its error in `unverified_routes`, and retry its host-key
+   record the route and its error (such as a missing identity file, which this
+   stage does not provide) in `unverified_routes`, and retry its host-key
    registration and probe on later refreshes. Drop it from the list when a retry
    passes or the rendering no longer defines it. Advance `last-verified-rendering`,
    `last-verified-config` and `last-success.json` only after verification,
@@ -104,9 +105,9 @@ publish its inventory.
 
 A host without a success record may hold its managed routes inline in
 `~/.ssh/config`, may already have an include from its version-one snapshot, an
-earlier deployment or an interrupted write, or may have neither. First setup
-brings any of these states to the current rendering in the same refresh, then
-writes the records.
+earlier deployment or an interrupted write, or may have neither, even without
+`~/.ssh/config` or `~/.ssh`. First setup brings any of these states to the current
+rendering in the same refresh, then writes the records.
 
 1. Read the snapshot: this profile's `~/.ssh/config` and
    `~/.ssh/moreh_cluster.conf` plans in the last approved version-one inventory
@@ -126,8 +127,9 @@ writes the records.
    every host (under `Host *` or before any `Host` or `Match` line) and a
    `Host *` line separates it from following personal options. Keep such an
    Include in place. Otherwise put this block at the start of the file, replacing
-   an incorrectly scoped Include. The first `Host *` gives the Include global
-   scope; the second returns the following personal rules to their own scope.
+   an incorrectly scoped Include; without `~/.ssh/config`, the block alone is the
+   candidate. The first `Host *` gives the Include global scope; the second
+   returns the following personal rules to their own scope.
 
    ```
    Host *
@@ -147,8 +149,9 @@ writes the records.
    sure that no Include pattern other than the one kept or placed in step 4
    already loads its path; if one does, report a conflict and write nothing. For
    each write, pass the target's bytes as read when the candidate was prepared
-   (none for an absent include) as the expected prior content; this guards
-   against concurrent edits and does not prove ownership.
+   (none for an absent file) as the expected prior content; this guards against
+   concurrent edits and does not prove ownership. The writer creates a missing
+   `~/.ssh` with mode 0700.
 
 ## Source and rendering
 
