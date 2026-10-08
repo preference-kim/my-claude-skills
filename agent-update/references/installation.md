@@ -99,16 +99,15 @@ that currently exist as managed symlinks; never use broad wildcards. Update the
 block after creating or removing links. The checkout's ordinary status must
 remain unchanged.
 
-## Install the shell and Git environment
+## Install the shell, Git and tmux environment
 
-Link the tracked shell, Git and tmux settings from dotfiles on every refresh,
-in both modes. Each link is additive: create a missing startup file, add one line
-or entry, and never rewrite other lines.
+Link the tracked settings from dotfiles in both modes. Each link is additive:
+create a missing startup file, add one line or entry, and never rewrite other
+lines. Check the links on every refresh and write only when one is missing.
+Later changes to the tracked files reach the host through the dotfiles pull.
 
-- The login shell's startup file must source the dotfiles fragment: `~/.bashrc`
-  sources `<dotfiles>/bash/bashrc` for bash, and `~/.zshrc` sources
-  `<dotfiles>/zsh/interactive.zsh` for zsh. Any existing line that sources that path
-  counts. Otherwise append `[ -r "<path>" ] && . "<path>"`.
+On every host:
+
 - `~/.gitconfig` must include `<dotfiles>/git/config`. If no include names it, insert
   `[include]` with `path = <dotfiles>/git/config` at the start of the file, so the
   file's own settings still take precedence. Report the effective user name and
@@ -117,11 +116,23 @@ or entry, and never rewrite other lines.
 - Link `~/.tmux.conf` to `<dotfiles>/.tmux.conf` when it is absent or identical.
   Keep a different real file as a reported local override.
 
-When `~/.bashrc` sources the former untracked `~/.config/moreh-dev/shell.bash`, back
-up both files under the agent-update `backups/` state directory. Replace that line
-with the dotfiles line, append the old file's lines that the tracked fragment lacks
-(such as personal aliases) to `~/.bashrc`, then remove `shell.bash`. Verify that a new
-interactive shell starts without errors.
+Link the shell settings only when the host's registration in
+`~/.config/agent-update/private-sync.json` has `device_role: development-server`.
+The shell fragment shows the server banner. A personal device, or a host without
+a registration, gets no shell link. Leave its startup files unchanged, including
+a line that already sources a dotfiles fragment.
+
+- The login shell's startup file must source the dotfiles fragment: `~/.bashrc`
+  sources `<dotfiles>/bash/bashrc` for bash, and `~/.zshrc` sources
+  `<dotfiles>/zsh/interactive.zsh` for zsh. Any existing line that sources that path
+  counts. Otherwise append `[ -r "<path>" ] && . "<path>"`.
+
+On a development server, when `~/.bashrc` sources the former untracked
+`~/.config/moreh-dev/shell.bash`, back up both files under the agent-update
+`backups/` state directory. Replace that line with the dotfiles line, append the
+old file's lines that the tracked fragment lacks (such as personal aliases) to
+`~/.bashrc`, then remove `shell.bash`. Verify that a new interactive shell starts
+without errors.
 
 ## Migrate legacy installations and remove obsolete links
 

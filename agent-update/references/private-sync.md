@@ -115,7 +115,8 @@ nodes. Use the existing backup, conflict, root authorization and verification
 protocol below. Hosts-file changes and HF or GitHub tokens remain explicit
 operations; routine SSH synchronization applies only what `private-ssh.md`
 defines: the generated include, its Include block, the first-setup removal of
-managed copies, the cluster key, first-contact host keys and the host labels.
+managed copies, the cluster key, first-contact host keys and, on a development
+server, the host labels.
 
 ## Apply an approved inventory
 

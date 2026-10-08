@@ -25,7 +25,8 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    [installation](references/installation.md). Inspect exact cleanup targets and
    verify the complete source and installation-scope manifests for the configured
    mode; user-scope skills install in both modes, with no inferred host layout.
-   Link the tracked shell, Git and tmux settings as that reference describes.
+   Link the tracked Git and tmux settings on every host and the shell settings
+   only on a development server, as that reference describes.
 4. Every daily, forced, and requested-edit refresh runs the current host's SSH
    synchronization: read [private synchronization](references/private-sync.md)
    and [SSH configuration](references/private-ssh.md), fetch the approved private
