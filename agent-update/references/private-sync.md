@@ -376,8 +376,10 @@ run adds that hostname to `host_profiles`.
 If the inventory has no profile for the server, add one before deployment: expected
 hostname (`socket.gethostname()` on the server), account, `development-server` role,
 the SSH context whose network matches the server, and a hosts plan built from its
-current `/etc/hosts`. Validate, encrypt, approve and publish it from the trusted host,
-which needs its own maintainer write access; the fleet deploy key is read-only.
+current `/etc/hosts`. If the server's short hostname differs from its node `name`,
+record it as that node's `hostname` for the banner. Validate, encrypt, approve and
+publish it from the trusted host, which needs its own maintainer write access; the
+fleet deploy key is read-only.
 Then run the server's own refresh stages through SSH from the trusted host: the
 installation and environment links, the SSH stage with its cluster key, and hosts-file
 work when requested and `sudo -n` succeeds. Each stage uses the server's state

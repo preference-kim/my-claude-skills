@@ -53,9 +53,11 @@ does not hold the public daily stamp.
    it with the guarded writer and derives the public key. A different existing key is
    kept: record its fingerprint as a local override in `last-success.json`, report it
    once, and continue the stage. On a `development-server`, also write
-   `~/.config/agent-update/host-labels` (0600) from the inventory nodes, one
-   `<machine name> <cluster> | <node>` line each, for the shell banner. A
-   personal device shows no banner and gets no host-labels file.
+   `~/.config/agent-update/host-labels` (0600) for the shell banner: one
+   `<machine name> <hosts_section> | <name>` line for each inventory node that has
+   a `hosts_section`, in inventory order. The machine name is the node's `hostname`, or its `name` when
+   the node has no `hostname`. The banner compares it with the server's short
+   hostname. A personal device shows no banner and gets no host-labels file.
 4. Choose the path from the installed state, checking drift on every run even
    when the private revision has not changed. If the records disagree with each
    other, report a conflict.
