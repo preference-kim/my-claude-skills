@@ -111,8 +111,9 @@ or entry, and never rewrite other lines.
   counts. Otherwise append `[ -r "<path>" ] && . "<path>"`.
 - `~/.gitconfig` must include `<dotfiles>/git/config`. If no include names it, insert
   `[include]` with `path = <dotfiles>/git/config` at the start of the file, so the
-  file's own settings still take precedence. Report the global user name and email
-  before and after; a change means a local value was missing, not overridden.
+  file's own settings still take precedence. Report the effective user name and
+  email (`git config user.email`; `--global` ignores includes) before and after; a
+  change means a local value was missing, not overridden.
 - Link `~/.tmux.conf` to `<dotfiles>/.tmux.conf` when it is absent or identical.
   Keep a different real file as a reported local override.
 
