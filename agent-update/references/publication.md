@@ -24,7 +24,21 @@ Report verified removal separately from remaining access and unresolved checks.
    skill or harness change, complete `skill-maker`'s requirement and behavior
    checks before publication; an instruction file must meet the same communication
    principles it requires of its consumers.
-2. Run `git diff --check` in both repositories. Check each SKILL.md frontmatter against the [Agent Skills specification](https://agentskills.io/specification): `name` and `description` are required; `license`, `compatibility`, `metadata` and `allowed-tools` are optional. Also run the installed skill validator when available. Its list of allowed fields can be narrower than the specification. When it rejects only fields that the specification allows, the specification check decides: those fields pass, and the rejection is neither a verification failure nor a limitation to report. Any other validator error fails the check. Re-run the full instruction-link and skill manifest comparison for the current host's configured mode after link repair.
+2. Run `git diff --check` in both repositories. Check the frontmatter of each
+   SKILL.md in the outgoing diff, including the SKILL.md behind a moved
+   submodule pointer. A refresh that changes no SKILL.md has no frontmatter to
+   check. Apply the [Agent Skills specification](https://agentskills.io/specification):
+   - The frontmatter is valid YAML with no top-level field other than the six below.
+   - `name` is required: 1–64 lowercase letters, digits and hyphens, with no
+     leading, trailing or consecutive hyphen. It equals the skill directory name.
+   - `description` is required: 1–1024 characters.
+   - `compatibility` is optional: 1–500 characters.
+   - `license`, `metadata` and `allowed-tools` are optional. `metadata` maps
+     string keys to string values.
+
+   Do not use a vendor skill validator for this check. Its field list can differ
+   from the specification. Re-run the full instruction-link and skill manifest
+   comparison for the current host's configured mode after link repair.
 3. Read `<dotfiles>/PUBLICATION.md`, then run
    `python3 <dotfiles>/scripts/publication-guard.py install` to install or verify
    both repositories' commit and push guards without discarding existing hooks.
