@@ -14,7 +14,7 @@ upstream work in the remaining steps apply to agent-file refresh or installation
 ## Choose the mode
 
 - **Daily refresh:** When the canonical AGENTS requests the session-start refresh, skip public repository and CLI work if `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update/last-successful-sync` contains today's local date. Still clean completed workspace artifacts, verify and repair the current host's configured entry points and complete skill manifest, and run approved SSH synchronization. The public date stamp never skips the private SSH fetch and drift check. Otherwise run the full refresh.
-- **Forced refresh:** For `/agent-update`, `$agent-update`, or a direct agent refresh request, ignore the date stamp and run the full agent-file and CLI refresh plus approved SSH synchronization. This does not request source review, enrollment, hosts-file writes or credential synchronization.
+- **Forced refresh:** For `/agent-update`, `$agent-update`, or a direct agent refresh request, ignore the date stamp and run the full agent-file and CLI refresh plus approved SSH synchronization. This does not request source review, server bootstrap, hosts-file writes or HF or GitHub token synchronization.
 - **Requested edit:** When the user supplies update text, refresh first, including approved SSH synchronization, then apply that request to the canonical AGENTS or shared skills before validation and publication.
 - **Link repair:** When asked to install or repair shared agent files, run the current host's symlink checks even if today's refresh already succeeded.
 - **Private synchronization only:** For an explicit request to set up, synchronize or repair private server configuration, or set up, repair or synchronize enrolled credentials, resolve only the canonical repository paths in steps 1–3 above and read `private-sync.md`. Run only its requested payloads and targets under its writer-lock and approval rules. This mode is not an agent refresh: skip public agent-file/CLI updates, cleanup, installation/manifest verification and upstream reconciliation, and leave the daily refresh stamp unchanged. Run those stages only if the user also requests an agent refresh.
@@ -28,7 +28,7 @@ Before changing tracked files:
 1. Inspect `git status --short --branch` in both repositories.
 2. Require `main`, no unrelated tracked or untracked changes, and a fast-forward relationship with each `origin/main`.
 3. Fetch both origins. Pull the dotfiles repository with `--ff-only`, synchronize submodule URLs recursively, initialize and update submodules recursively, switch the skills repository to `main`, and pull it with `--ff-only`.
-4. Re-read AGENTS.md and this skill if either changed during the pull.
+4. If AGENTS.md or this skill changed during the pull, re-read them and read each later stage reference from the updated checkout. The updated text replaces the version loaded at session start for the remaining stages; a difference between the two is not a question for the user.
 5. Stop without stashing, rebasing, resetting, or force-pushing when these conditions are not satisfied.
 
 If a requested edit belongs to an existing user-owned nested skill repository,

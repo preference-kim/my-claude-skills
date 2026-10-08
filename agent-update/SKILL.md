@@ -34,8 +34,8 @@ and untracked; a publication stop overrides the refresh/publication workflow.
    This is an agent-run stage, with no login hook, daemon, or remote fleet rollout.
    It ends with a one-line outcome and never holds the rest of the refresh.
    An unregistered host is skipped; a delegated profile reports its owner.
-   Source review, bootstrapping a server from this trusted host and credential
-   synchronization require their own explicit request. Write `/etc/hosts` or its
+   Source review, bootstrapping a server from this trusted host and HF or GitHub
+   token synchronization require their own explicit request. Write `/etc/hosts` or its
    cloud-init preservation setting only when the user explicitly requests
    hosts-file changes.
 5. Full refreshes: read [reconciliation](references/reconciliation.md) and

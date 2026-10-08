@@ -12,8 +12,9 @@ configuration maintenance is explicitly requested; ordinary SSH synchronization
 does not consult or adopt changes from documents or chat. Write `/etc/hosts` and
 its cloud-init preservation setting only on an explicit hosts-file request.
 A generic refresh, server setup or SSH update does not authorize those writes.
-Credential setup, repair and synchronization apply only explicitly requested
-enrolled payloads. Separate these scopes even when they share one inventory.
+HF and GitHub token setup, repair and synchronization apply only to explicitly
+requested payloads; the cluster key belongs to the SSH stage. Separate these
+scopes even when they share one inventory.
 
 On an enrolled SSH owner, a conflicting or failed SSH update preserves the
 installed configuration and is reported with the refresh; it does not hold the
@@ -111,9 +112,10 @@ their existing configuration.
 Role and hosts scope are separate: the private profile also defines which nodes
 belong on that device. During source review, preserve both dimensions when adding
 nodes. Use the existing backup, conflict, root authorization and verification
-protocol below. Hosts-file changes and credentials remain explicit operations;
-routine SSH synchronization applies only the generated include, its Include block
-and the first-setup removal of managed copies defined in `private-ssh.md`.
+protocol below. Hosts-file changes and HF or GitHub tokens remain explicit
+operations; routine SSH synchronization applies only what `private-ssh.md`
+defines: the generated include, its Include block, the first-setup removal of
+managed copies, the cluster key, first-contact host keys and the host labels.
 
 ## Apply an approved inventory
 
