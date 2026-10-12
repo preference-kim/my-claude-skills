@@ -64,6 +64,14 @@
   bullet and preserve causal connections; do not force every sentence into a list.
   Use headings for larger topics and deeper nesting only for necessary hierarchy.
   Remove repetition and generic background before removing definitions or evidence.
+- Avoid bare `~` for approximations and ranges in prose or tables. GitHub can pair
+  distant single tildes and strike through the intervening text. Write approximations
+  in words and ranges with words or an en dash, matching the manuscript language.
+  English examples are `about`, `approximately`, and `to`. If a literal tilde is
+  needed, escape it as `\~` or use a code span. Preserve tildes inside code,
+  URLs, and intentional strikethrough. If tildes remain, check the complete body
+  with GitHub Preview or its Markdown API for unintended strikethrough before
+  delivery or publication. A raw Markdown readback alone does not establish correct rendering.
 - Report change-specific correctness and performance evidence, material failures,
   missing checks, and limitations. Omit routine build-success statements and
   host-test counts; omit a validation section with no change-specific information.
