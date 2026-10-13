@@ -63,12 +63,13 @@ skill.
    description prepared with `write-technical-pr`, including validation evidence
    and known limitations. Do not create
    an empty commit or duplicate pull request.
-5. Record the canonical PR URL, owner, repository, PR number, exact head SHA,
-   and the existing review/thread IDs. Confirm local `HEAD`, pushed branch, and
+5. Record the canonical PR URL, owner, repository, PR number, and exact head SHA.
+   Confirm local `HEAD`, pushed branch, and
    PR head all name the same commit.
 
 ## 2. Request independent reviews
 
+Fetch all existing review and thread IDs with pagination as the baseline.
 Start every review before waiting for any one of them:
 
 - Request GitHub Copilot through the pull request reviewer flow.
@@ -98,9 +99,10 @@ state rather than a shared fixed file.
 Use one 30-minute deadline and a process-aware monitor. Do not busy-poll.
 On failure, timeout, or abandonment, account for every started reviewer.
 Stop remaining local reviewer process trees and capture their exit states.
-Report remote Copilot's pending or unknown state separately. Before
-presenting results, verify that Copilot reviewed the recorded SHA, both leaf
-reviewers completed successfully, the actual Claude model and any fallback are
+Report remote Copilot's pending or unknown state separately. Before presenting
+results, require a completed Copilot review of the recorded SHA with an ID absent
+from the baseline recorded before the request. Verify that both leaf reviewers
+completed successfully, the actual Claude model and any fallback are
 recorded, required prefixes and resolvable inline threads are present, the PR
 head did not change, and the checkout has no unexpected changes. If a reviewer fails or
 times out, report its exact state and stop unless the user explicitly

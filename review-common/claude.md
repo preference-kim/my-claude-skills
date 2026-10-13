@@ -1,14 +1,12 @@
 # Claude review process
 
-Before launching, read the canonical dotfiles `agent-guidance/claude-auth.md` and
-`agent-guidance/claude-model.md` (resolve from this directory's parent skills repo).
-Use a fresh process with subscription-managed authentication, configured model
-and ordered resource-only fallback, `xhigh` effort, no session persistence, and
-JSON output. Remove inherited credential overrides only from the child.
+Before launch, read [authentication](../../agent-guidance/claude-auth.md) and
+[model/fallback policy](../../agent-guidance/claude-model.md).
+Resolve these links from this file's canonical directory.
 
-The invoking workflow determines tools and mutation authority; never inherit the
-other-PR or own-PR permission boundary from a different workflow. Use `result` as
-review text and `modelUsage` to disclose the actual configured candidate used.
+Use a trusted directory and configuration: `--print` skips workspace trust.
+Apply the caller's tool, permission, and mutation limits. Report blocked access
+without approval or sandbox bypass flags.
 
 ```bash
 env -u CLAUDE_CODE_OAUTH_TOKEN -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN \
@@ -16,11 +14,6 @@ env -u CLAUDE_CODE_OAUTH_TOKEN -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN \
   --no-session-persistence --output-format json
 ```
 
-Apply the caller's tool restrictions to this command. No sandbox or approval bypass
-is implied. Update the model alias together with canonical claude-model.md when the
-configured primary changes.
-
-Use a trusted execution directory and configuration. Claude `--print` skips the
-workspace trust dialog. Do not execute untrusted repository hooks or configuration
-merely to inspect source. If permissions block a reviewer, report the limitation
-without adding bypass flags.
+Use top-level `result` as review text. Report the configured candidate from
+`modelUsage`, excluding auxiliary models. Update aliases with canonical
+`claude-model.md`.
