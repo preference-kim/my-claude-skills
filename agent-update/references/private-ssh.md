@@ -7,10 +7,14 @@ first-contact host trust; the agent performs the checks without a separate
 confirmation. Synchronize only the current owner's shared home unless an
 explicit fleet request names more targets. Install no hook or scheduler.
 
-Report one result: `current`, `updated`, `skipped`, `conflict` or `failed`;
-include conflict recovery and continue the public refresh. SSH has its own
-success record and does not hold the public daily stamp. Missing registration,
-delegated ownership or an owner without `ssh` is a reported skip.
+Report configuration (`current`, `updated`, `skipped`, `conflict` or `failed`)
+and connection results separately. Matching files establish configuration state,
+not working access. Name the tested routes, authentication condition and remaining
+unverified routes. SSH has its own record and does not hold the public daily
+stamp. Missing registration, delegated ownership or an owner without `ssh` is a
+configuration skip. An explicit access-repair request remains incomplete until
+its requested connection checks pass. Report conflict recovery and continue
+independent public refresh work.
 
 ## Render and select the path
 
@@ -24,7 +28,12 @@ delegated ownership or an owner without `ssh` is a reported skip.
 2. Keep owner-local state in `<private-state>/private-ssh/<profile>/` (0700/0600).
    `last-success.json` records `profile`, `inventory_revision`,
    `inventory_sha256` (ciphertext), `render_sha256`, `config_sha256`,
-   `renderer_revision` (public dotfiles commit), and `unverified_routes`.
+   `renderer_revision` (public dotfiles commit), `expected_routes`, and
+   `unverified_routes`.
+   Keep `route_checks` with each alias's check time, source host/account,
+   expected authentication, effective-configuration digest, key fingerprint,
+   returned host/account, result and error. Include jump dependencies in the
+   digest. Missing records and an empty failure list do not establish success.
    `last-verified-rendering` is the exact installed include;
    `last-verified-config` records the verified personal config and Include
    placement/scope. Conflicting records are a conflict.
@@ -37,6 +46,10 @@ delegated ownership or an owner without `ssh` is a reported skip.
    `<dotfiles>/scripts/install-cluster-key`; it guards installation and derives
    the public key. Preserve a different existing key, record its fingerprint
    as a local override in `last-success.json`, report once and continue.
+   For a retained override, compare the accepted key with its recorded
+   fingerprint and report `passed-with-override`. Report again if that
+   fingerprint changes. This does not pass a task that requires the distributed
+   key, whose installation and acceptance remain unverified.
    On development servers, write `~/.config/agent-update/host-labels` (0600):
    `<machine name> <hosts_section> | <name>` per node with `hosts_section`,
    in inventory order. Machine name is `hostname`, falling back to `name`;
@@ -46,8 +59,9 @@ delegated ownership or an owner without `ssh` is a reported skip.
    - **First setup:** no success record. Read [first setup](private-ssh-setup.md)
      before preparing any candidate, including for an existing include.
    - **Current:** include equals rendering and `render_sha256`. Verify mode,
-     active Include and syntax; record the revision and retry
-     `unverified_routes`, with no other cluster probes.
+     active Include and syntax. Apply the connection checks below even when
+     the inventory revision is unchanged. After configuration checks pass,
+     record its approved revision, digest and renderer revision.
    - **Update:** include equals `last-verified-rendering` but the new rendering
      differs. Follow the update checks below.
    - **Conflict:** include differs from its verified baseline, or the Include
@@ -65,26 +79,83 @@ An overlapping personal rule is a conflict. Missing dependencies or unsupported
 client options fail the stage before writing. New/changed routes and jump
 helpers must carry an explicit IP or resolvable DNS `HostName`, without a hosts
 write. Probe each affected existing route before writing to establish whether it
-connected.
+connected. Use the same authentication and connection-reuse constraints before
+and after. Legacy success records without these conditions are missing evidence.
 
 Use the common writer lock, protected backup, baseline recheck and
 `scripts/replace-managed-file.py`; the include is 0600. Installing it may
 activate it immediately: verify candidates first and order writes so every
 intermediate state is safe. Afterwards verify mode, syntax, effective options,
 host trust, affected-route connections and dedicated private-repository access.
-Use bounded noninteractive probes only for affected routes; unrelated outages
-do not authorize network repair or rollout.
+Use the connection checks below for affected and requested routes. Unrelated
+outages do not authorize network repair or rollout.
 
 A guarded-write failure, bad syntax/mode, effective-option or host-key mismatch,
 failed repository access, or a previously connecting route failing after writing
 requires reverse-order, hash-guarded rollback. Preserve success records and
-record failure separately. If a new or previously unreachable route fails only
-reachability/access after other checks pass, report `updated` and record its
-error in `unverified_routes` (including an identity no approved payload supplies).
-Retry host-key registration and connection on later refreshes; remove an entry
-when it passes or leaves the rendering. After verification, advance both verified
-files and `last-success.json`, writing hashes last. A second run must propose
-no changes.
+record failure separately under the common private protocol. Verify restored
+bytes, active Include and syntax after rollback. If a new or previously unreachable route fails only
+reachability/access after other checks pass, report configuration `updated` with
+the failed connection and record its error in `unverified_routes`. This includes
+an identity that no approved payload supplies. Remove an entry only after its
+required check passes or the approved source-review delta explicitly retires
+that route.
+A missing rendered stanza does not retire a route. After configuration and
+affected-route regression checks pass, advance both verified files and
+`last-success.json`, writing hashes last.
+Keep failed or missing connection evidence explicit. A second run must propose
+no configuration changes.
+
+## Verify route coverage and connections
+
+Derive intended connection aliases and authentication from the approved context
+and explicit task targets before inspecting the rendering. Compare that list with
+the rendered and effective configuration. A requested alias missing from the
+catalog is a coverage defect, even when DNS resolves it. During routine refresh,
+report that defect for inventory maintenance. Do not invent a route or drop the
+target from the checks. Authentication-only patterns do not add connection targets.
+Resolve missing approved routes before deployment. An unapproved removal is a
+conflict that preserves installed files. An uncataloged task target needs an
+approved route before it can pass or use managed first-contact trust.
+
+For routes that require a local key, verify key selection with `ssh -G <alias>`
+without `-i` or authentication overrides. Require the approved readable local key
+and the intended account, destination, port, jump chain and host-key policy.
+A local private key and public-key file do not establish that the destination
+accepts that key. Public-key registration on the destination requires explicit
+target authorization and the common backup, lock and concurrent-write checks.
+
+During refresh, probe routes with missing evidence, changed effective settings
+or key fingerprints, and prior failures. Always probe explicit task targets.
+Always test affected routes on the current owner. An explicit maintenance task
+can leave unaffected routes untested, but must report that limit.
+Reuse unchanged prior evidence only as a dated result, never as a new connection
+test. Record the expected route set so omissions remain
+visible when reconciling `route_checks` and `unverified_routes`.
+
+Run bounded, noninteractive probes from the owning source host and account.
+For local-key access, remove `SSH_AUTH_SOCK` and set `IdentityAgent=none` in the
+probe child. Disable connection reuse with `ControlMaster=no` and
+`ControlPath=none`. Do not supply `-i`, `IdentityFile`, an alternate account or a
+replacement route. Keep normal SSH configuration and require
+`BatchMode=yes`, `StrictHostKeyChecking=yes`, `ConnectionAttempts=1` and a bounded
+`ConnectTimeout`. Apply the same agent and connection-reuse constraints to jump
+clients, whose command-line options are not inherited from the destination.
+Check their effective configuration before probing. If a jump cannot meet the
+required conditions, report the route as unverified and identify the dependency.
+Do not change unrelated authentication policy to force a passing probe.
+
+Require exit status zero and the expected remote host/account from a harmless
+command such as `hostname; id -un`. For local-key access, capture the accepted
+public-key fingerprint from the same probe's verbose diagnostics and compare it
+with the expected local key, including each jump and any recorded override.
+Another configured file key
+must not mask rejection of the required key. Keep diagnostics in private state.
+Follow host-key verification before any probe.
+Classify route, trust and authentication failures separately. An agent-assisted
+or explicit-key diagnostic can isolate a failure, but cannot pass a local-key
+default-access check. Preserve the last successful evidence when recording a
+later failure, and report that failure as the current result.
 
 ## Effective-configuration checks
 

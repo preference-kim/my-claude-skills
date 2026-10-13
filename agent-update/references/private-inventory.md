@@ -87,3 +87,11 @@ home, and verify intended effective routes for every declared connection alias.
 Review each changed rule's consumers in all contexts, including unreachable
 ones. Record unreachable rollout targets as pending, separately from source
 review and offline rendering; local checks do not establish fleet deployment.
+
+Include explicitly requested connection aliases when checking context coverage.
+For a local-key requirement, the shared rules must select that key without `-i`
+or an SSH agent, including at jump hosts. Destination public-key registration
+is a separate prerequisite. Follow
+[connection checks](private-ssh.md#verify-route-coverage-and-connections) before
+reporting working access. Keep configuration publication, deployment and tested
+access as separate results.
