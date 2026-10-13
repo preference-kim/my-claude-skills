@@ -48,8 +48,8 @@ skill.
 
 ## 1. Prepare the branch and pull request
 
-1. Inspect the complete intended change set, current branch, remotes, and its
-   base branch. Ask the user if the submission scope or base is ambiguous.
+1. Record the initial staged, unstaged, and untracked status. Inspect the complete
+   intended change set, current branch, remotes, and its base branch. Ask the user if the submission scope or base is ambiguous.
    Apply the environment-variable check in the repository's Git guidance before
    validation and commit; for this shared harness, read
    `../../agent-guidance/version-control.md` from this skill's canonical directory.
@@ -93,7 +93,7 @@ Capture the Codex and Claude outputs and exit states separately, print
 intermittent progress, and keep the directory path in the orchestrator's own
 state rather than a shared fixed file.
 
-## 3. Verify completion and plan the response
+## 3. Verify newly requested reviews
 
 Use one 30-minute deadline and a process-aware monitor. Do not busy-poll.
 On failure, timeout, or abandonment, account for every started reviewer.
@@ -105,6 +105,14 @@ recorded, required prefixes and resolvable inline threads are present, the PR
 head did not change, and the checkout has no unexpected changes. If a reviewer fails or
 times out, report its exact state and stop unless the user explicitly
 authorizes proceeding with partial results.
+
+### Plan responses to feedback
+
+For an existing-feedback request, enter here directly. Record the PR URL, current
+head SHA, and local status. Fetch the unresolved review threads with pagination.
+Validate each comment against the current code, including comments on older heads.
+Do not require new Copilot or CLI reviews, local reviewer exits, or a recorded
+Claude model for this mode. Those checks apply only to reviews launched above.
 
 Apply the finding contract and `stop-bullshit` to all collected feedback,
 including Copilot's, and to your own response. Inspect every unresolved finding
