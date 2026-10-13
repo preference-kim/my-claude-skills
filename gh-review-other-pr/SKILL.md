@@ -61,14 +61,12 @@ mutations, or changes to the review procedure.
    gh pr diff "$PR_URL" --patch
    ```
 
-3. Record `HEAD_SHA` and review exactly that revision. Inspect surrounding
-   source or tests in the target repository's primary checkout. Never create
-   or use a Git worktree for build or device-backed work. If repository
-   guidance permits a static-analysis or documentation worktree, preserve any
-   dirty primary-checkout changes first, including relevant untracked files, by
-   stashing or committing and pushing them according to repository policy. If
-   no local checkout exists, create a normal clone to serve as the primary
-   checkout rather than a linked worktree.
+3. Record `HEAD_SHA` and review exactly that revision. Fetch missing objects and
+   use `git show "$HEAD_SHA:path"` or API reads at that SHA. Keep staged,
+   unstaged, and untracked work untouched during read-only inspection. Do not
+   stash, commit, or publish unrelated work merely to read source. For necessary
+   checkout changes, follow the repository's preservation and worktree rules.
+   If no local checkout exists, use a normal clone as the primary checkout.
 4. Check `gh`, `codex`, and `claude` authentication.
 5. Create one unique temporary directory with `mktemp -d`, retain its path in
    the orchestrator's own state, and start fresh, non-persistent Codex and
@@ -148,9 +146,10 @@ Read [reviewer processes](references/reviewer-processes.md) before launching the
   on non-interactive stdin as a timer: closed stdin returns immediately and
   creates a busy loop.
 - Rate-limit progress messages and never busy-poll.
-- Apply one bounded deadline to the leaf reviewers. If a reviewer times out,
-  terminate that reviewer and all of its descendants so it cannot post or
-  mutate state after the orchestrator reports the timeout.
+- Apply one 30-minute deadline to both leaf reviewers. If the run fails,
+  times out, or is abandoned, account for both processes. Stop remaining
+  reviewer process trees and capture their exit states before returning.
+  Report partial completion explicitly. Do not silently omit a reviewer.
 
 ## Store the pending review
 

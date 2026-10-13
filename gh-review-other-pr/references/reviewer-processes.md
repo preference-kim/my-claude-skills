@@ -32,3 +32,8 @@ failed rather than changing credentials or silently selecting another model.
 
 Use the caller's established security policy. Do not add approval or sandbox
 bypass flags.
+
+Use a trusted execution directory and configuration. Claude `--print` skips the
+workspace trust dialog. Do not execute untrusted repository hooks or configuration
+merely to inspect source. If permissions block a reviewer, report the limitation
+without adding bypass flags.

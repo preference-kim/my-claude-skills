@@ -19,3 +19,8 @@ env -u CLAUDE_CODE_OAUTH_TOKEN -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN \
 Apply the caller's tool restrictions to this command. No sandbox or approval bypass
 is implied. Update the model alias together with canonical claude-model.md when the
 configured primary changes.
+
+Use a trusted execution directory and configuration. Claude `--print` skips the
+workspace trust dialog. Do not execute untrusted repository hooks or configuration
+merely to inspect source. If permissions block a reviewer, report the limitation
+without adding bypass flags.

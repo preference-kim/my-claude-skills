@@ -4,7 +4,7 @@
 
 - Repository: `https://github.com/csehydrogen/.files.git`
 - Branch: `master`
-- Reviewed commit: `41f39935fe53ddd8fc0c838067c38c1fbe02f7f2`
+- Reviewed commit: `aac93b0510ec0060ca0f142f399b114d6dc31fe2`
 - Instruction path: `AGENTS.md`
 - Skill path: `skills/agent-update/SKILL.md`
 - Skill scope: every file below `skills/`, including manifest, resource, and script additions, removals, renames, and content changes.
@@ -14,6 +14,7 @@
 - `skills/agent-update/` → `<dotfiles>/skills/agent-update/`
 - `skills/gh-review-other-pr/` → `<dotfiles>/skills/gh-review-other-pr/`
 - `skills/gh-review-own-pr/` → `<dotfiles>/skills/gh-review-own-pr/`
+- `skills/moreh-tt-development/` → `<dotfiles>/agent-guidance/tt-metal/` (guidance only, not a discovered skill).
 
 Advance the reviewed commit only after the instruction file, updater skill, and full upstream skill manifest inventory at the new commit have been inspected and every applicable change has been reconciled or consciously covered by an intentional divergence.
 
@@ -33,8 +34,9 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
 - Use `sunho/` rather than `heehoon/` as the default feature-branch prefix.
 - Keep host-local mode and checkout configuration separate from the shared installation-scope manifest. General-purpose skills are available outside Moreh even on a `moreh-dev` host; project-dependent skills stay local to the configured checkout. Use the portable per-skill layout above rather than upstream-specific checkout paths or whole-directory clones. Follow `installation.md` for canonical-path reference resolution and verified legacy migration; do not restore the former ban on all global entries in `moreh-dev` or the obsolete cleanup of supported `~/.agents/skills` links.
 - Permit `git worktree` only for static code analysis or documentation at a specific HEAD; keep builds and device-backed work in the primary checkout. Adapt upstream primary-checkout guidance to this narrower local exception.
+- Keep CLI-managed Claude authentication instead of upstream's static OAuth-token file. Preserve the child-only credential override removal in `agent-guidance/claude-auth.md`.
 - Preserve the daily semantic reconciliation workflow in the local `agent-update` skill instead of replacing it with upstream's simpler pull-only workflow.
-- Keep a curated local skill set rather than mirroring upstream skills wholesale. `caveman` is not adopted because persistent compressed speech can undermine the local completeness requirements. The two GitHub review skills are adopted through local counterparts that preserve the primary-checkout, branch, and read-only/write-boundary rules above.
+- Keep a curated local skill set rather than mirroring upstream skills wholesale. Upstream removed `caveman`; it was never adopted because persistent compressed speech can undermine local completeness requirements. The two GitHub review skills are adopted through local counterparts that preserve the primary-checkout, branch, and read-only/write-boundary rules above.
 - Unlike upstream's chat-only `gh-review-other-pr`, write validated findings as concise Korean inline comments in the current viewer's unsubmitted pending review. Use the shared `humanizer` skill as the final prose-editing pass, then verify each stored comment's clarity, concision, and structure before reporting back. Keep leaf reviewers and validation read-only, authorize no other GitHub mutation, and never publish or submit the review; this places the final feedback on the relevant diff lines while preserving user control over submission.
 
 - Preserve the shared Claude/Codex harness structure: one owner per contract, narrow routing descriptions with positive/negative/adjacent cases, and runtime details in adapters. Reconcile changed upstream requirements into their owning reference rather than restoring an always-loaded catalog. Shared skill discovery uses tracked files and approved gitlinks only. Internal maintenance and evaluation evidence stays outside both worktrees and skill discovery. Do not restore a tracked evidence directory or treat personal publication authority as permission to disclose project information.
@@ -54,5 +56,7 @@ Advance the reviewed commit only after the instruction file, updater skill, and 
   the AGENTS trigger for user reactions indicating bullshit, evasion, or unearned
   certainty. PR review checks both source material and feedback after prose
   editing, including isolated reviewer prompts.
+
+- Adopt upstream Guardian authorization, verified vLLM acquisition, container authorization, topology-based reset selection, current kernel API contracts, and header-based profiler parsing in the existing TT guidance. Preserve local test placement, trace-capture restrictions, shared-cache rules, triage, and bounded reset recovery. Treat upstream source audits as reference evidence, not proof of the installed host's behavior.
 
 These are policy differences, not frozen text. Reconcile upstream changes that improve their safety or clarity without reversing the local decision.
