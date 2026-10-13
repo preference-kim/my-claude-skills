@@ -5,55 +5,39 @@ description: Use to create, revise, or assess a handoff or continuation brief fo
 
 # Agent handoff
 
-Resolve this skill’s symlink to its canonical directory before reading relative
-references, including sibling shared resources and dotfiles guidance.
+Resolve this skill's canonical directory before following relative links. This
+skill coordinates authoring. A delegated reviewer follows its review brief and
+does not invoke this workflow or delegate again.
 
-Read the [content contract](references/content.md) before drafting or assessing a
-handoff. Read the [document revision workflow](../review-common/document-revision.md)
-before preparing its independent review. This skill coordinates the work in the
-authoring session; a delegated reviewer follows its supplied review brief without
-invoking this skill or delegating again.
+## Draft
 
-## Draft the handoff and opening prompt
+Before drafting or assessing a handoff, read the [content contract](references/content.md).
+Before writing prose, read [SimpleEnglish](../simple-english/skills/simple-english/SKILL.md)
+and preserve the requested language. Reconstruct the task from the request,
+accepted plan, implementation, and evidence. Inspect an existing handoff before
+replacing it. Draft its five required sections without prescribing a new plan
+for the receiving agent.
 
-Read [SimpleEnglish](../simple-english/skills/simple-english/SKILL.md) before
-drafting the handoff and opening prompt. Apply it while drafting; preserve the
-requested delivery language and the content contract. The independent humanizer
-and stop-bullshit review below still applies.
+Also prepare a short first prompt the user can paste into a fresh session. Name
+the task, execution location, and exact handoff location. Ask the next agent to
+read the brief and relevant sources, then continue toward the goal. Preserve
+critical scope and authority limits. Do not duplicate the brief, add permissions
+or priorities, or prescribe routine commands.
 
-Reconstruct the task from the user's requirements, established plan, current
-implementation, and relevant evidence. Inspect an existing handoff before replacing
-it. Write a complete draft with the five required sections: task overview, existing
-plan, work done, remaining work, and references. Keep the next agent free to reassess
-the diagnosis and choose how to proceed within the user's constraints.
+## Review and deliver
 
-Prepare the very first prompt the user can paste into the fresh session. It must
-identify the task, execution location, and exact handoff location; ask the new agent
-to understand the brief and relevant sources and continue toward the stated goal.
-Keep it short. Preserve any critical scope or authorization limit needed to interpret
-the request. Do not duplicate the document, add permissions, invent priorities, or
-prescribe routine commands and a detailed investigation sequence.
+Before arranging independent review, read the [document revision workflow](../review-common/document-revision.md).
+Submit both the draft and opening prompt to a separate agent under that workflow.
+It must apply `humanizer` in embedded mode, then `stop-bullshit` to the prose,
+supporting claims, and its own feedback. Resolve findings against evidence and
+complete the revision pass. Self-review does not replace this requirement.
 
-## Review, revise, and deliver
+Write the final handoff to the authorized destination. Check source accessibility
+there and re-read the saved file. Reconcile concurrent content before replacing a
+destination that changed since drafting. Return its location, including a remote
+host and usable link when applicable, and the ready-to-paste first prompt as text.
+A link to a prompt file alone is insufficient.
 
-Submit both the draft and opening prompt to a separate agent through the document
-revision workflow. The reviewer must apply `humanizer` in embedded mode, then
-`stop-bullshit` to the proposed prose, supporting claims, and its own feedback.
-Resolve the findings against the evidence and complete the revision pass before
-finalizing either artifact. An author's self-check does not replace this review.
-
-Write the finalized handoff to the requested destination within the existing
-authorization. Check reference accessibility under the content contract at that
-destination. Re-read the saved file; if the destination changed
-since drafting, reconcile the concurrent content before replacing it.
-
-Return both:
-
-- The finalized document's location, including the host when remote, and a usable
-  link when available.
-- The ready-to-paste first prompt, as text in the response. A link to a prompt file
-  alone is insufficient.
-
-Keep drafts, reviewer findings, and audit notes out of the finalized handoff and
-opening prompt. If the required review or destination write is incomplete, label
-the available artifact as a draft and report that exact limitation.
+Keep drafts and audit notes out of both final artifacts. If independent review
+or the destination write remains incomplete, label the artifact as a draft and
+state the exact limit.

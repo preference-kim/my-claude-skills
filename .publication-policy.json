@@ -46,6 +46,13 @@
     "write-technical-pr/references/evidence.md",
     "write-technical-pr/references/policy.md",
     "agent-update/references/private-sync.md",
-    "agent-update/references/private-ssh.md"
+    "agent-update/references/private-ssh.md",
+    "agent-update/references/private-inventory.md",
+    "agent-update/references/private-hosts.md",
+    "agent-update/references/private-hf.md",
+    "agent-update/references/private-github.md",
+    "agent-update/references/private-bootstrap.md",
+    "agent-update/references/private-ssh-setup.md",
+    "agent-update/references/installation-migration.md"
   ]
 }

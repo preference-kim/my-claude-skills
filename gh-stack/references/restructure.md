@@ -1,16 +1,11 @@
-### Restructure a stack (remove a branch, reorder, or rename)
+# Restructure a stack
 
-Use `unstack` to tear down the stack, make structural changes, then re-init:
+Before removing, reordering, or renaming layers, record the current branch order
+and intended replacement. Apply the operation and `unstack` command contracts.
+`gh stack unstack` removes local tracking and GitHub grouping, not branches or PRs.
+Then make the authorized structural changes and run
+`gh stack init --base <trunk> <branches-in-new-order...>`.
 
-```bash
-# 1. Remove the local tracking and the GitHub stack grouping (PRs are NOT deleted)
-gh stack unstack
-
-# 2. Make structural changes — e.g. delete a branch, reorder, rename
-git branch -m old-branch-1 new-branch-1
-
-# 3. Re-create the stack with the new structure
-gh stack init --base main new-branch-1 new-branch-2 new-branch-3
-```
-
----
+Use `unstack --local` only when GitHub grouping must remain intact, such as replacing
+conflicting local tracking before checkout. Branch deletion and remote grouping
+changes require their own authorized scope; unstacking does not grant it.

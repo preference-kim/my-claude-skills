@@ -5,103 +5,85 @@ description: Use when a suspected Tenstorrent device anomaly requires a minimal 
 
 # TT Device Investigation
 
-Produce an intuitive reproducer, verify it on upstream tt-metal, and deliver
-`report.md` with `reproducer.zip`. Establish the observed failure and its location
-without assuming that a suspected device anomaly proves a hardware defect.
+Establish the observed failure and its location, verify a minimal reproducer on
+upstream tt-metal, and deliver `report.md` with `reproducer.zip`. A suspected
+device anomaly does not by itself establish a hardware defect.
 
-## Execution context
+## Entry conditions
 
-Resolve linked guidance from this skill's canonical directory. Read the
-[basic TT-Metal guide](../../agent-guidance/tt-metal/README.md) before builds or
-device access, [kernel guidance](../../agent-guidance/tt-metal/kernels.md) before
-editing kernels, and [Git guidance](../../agent-guidance/version-control.md)
-before changing checkouts. For hangs, initialization failures, or reset failures,
-use [debugging and recovery](../../agent-guidance/tt-metal/debugging.md).
+Resolve links from this skill's canonical directory. Read the [basic guide](../../agent-guidance/tt-metal/README.md)
+before builds or device access, [kernel guidance](../../agent-guidance/tt-metal/kernels.md)
+before kernel edits, and [Git guidance](../../agent-guidance/version-control.md)
+before checkout changes. For hangs, initialization failures, or reset failures,
+read [recovery](../../agent-guidance/tt-metal/debugging.md).
 
-CPU-only builds do not require a device reservation. Follow the site's device
-access protocol for device commands. Preserve the measured firmware, driver,
-and power configuration; do not change them as an incidental debugging step.
+Follow the site's device access protocol. CPU-only builds need no device
+reservation. Preserve the measured firmware, driver, and power configuration
+unless changing them is part of the authorized experiment.
 
-## Reduce and localize
+## Reproduce and localize
 
-1. Define the input, expected behavior, comparison criterion, repetition count,
-   and failure condition before each experiment. **Corruption** is disagreement
-   with the expected result; **nondeterminism (ND)** is different outputs for
-   identical inputs and execution conditions. Test both separately. Use bitwise
-   comparison when exact preservation is expected; justify any numerical tolerance.
-2. Remove model and dataset dependencies. Keep a small TTNN example when it
-   expresses the failure clearly; use a gtest when core placement, register slots,
-   or data movement require direct control. Make input construction, the operation,
-   and the check immediately visible. Retain required initialization,
-   synchronization, and barriers; remove optional diagnostics, abstraction, and
-   configuration that do not reproduce or detect the failure.
-3. Record the actual execution host, PCI BDF, and UMD logical chip ID, checking
-   their mapping for the measurement. Do not use `/dev/tenstorrent` numbers as the
-   primary identity. Record ASIC identity when available. For relevant units,
-   state logical and physical core coordinates, the NoC coordinate system, and
-   register/tile slots. Recheck mappings after reset or visibility changes.
-4. Use controls that change one relevant condition at a time: core, device,
-   register slot, operation, or memory path. Distinguish where corruption was
-   observed from where it first arose. A later successful reread does not prove
-   an earlier read was correct; removing an operation also changes execution
-   timing. Identify a particular unit only when the evidence supports it;
-   otherwise state the supported failing path. Passing controls establish only
-   the tested conditions, not general absence of a fault.
-5. Record completed repetitions, failing executions, mismatching elements or
-   words, and changes between successive outputs with their counting units.
-   Preserve representative expected/actual values and bit patterns, including
-   storage layout and offset interpretation. Treat initialization failures and
-   timeouts separately from numerical measurements.
+1. Before each experiment, define inputs, expected behavior, comparison criterion,
+   repetitions, and failure condition. Test corruption (disagreement with expected
+   output) separately from nondeterminism (different outputs under identical
+   inputs and conditions). Use bitwise comparison for exact preservation and
+   justify numerical tolerances.
+2. Remove model and dataset dependencies. Use a small TTNN example unless direct
+   control of cores, register slots, or data movement calls for a gtest. Make
+   input construction, operation, and check visible. Retain required initialization,
+   synchronization, and barriers. Remove only details unnecessary to reproduce
+   or detect the failure.
+3. Record the actual host, PCI BDF, and mapped UMD logical chip ID, plus ASIC
+   identity when available. Device-node numbers alone are insufficient. For
+   relevant units, record logical and physical core coordinates, NoC coordinate
+   system, and register/tile slots. Recheck mappings after reset or visibility
+   changes.
+4. Change one relevant condition per control: core, device, slot, operation, or
+   memory path. Distinguish the observation point from the fault's origin. Later
+   successful reads do not validate earlier reads, and removing an operation
+   changes timing too. Localize a unit only with supporting evidence, otherwise
+   report the failing path. Passing controls support only their tested conditions.
+5. Record completed repetitions, failed executions, mismatch counts, and changes
+   between successive outputs with explicit counting units. Preserve representative
+   expected/actual values and bits, storage layout, and offset meanings. Report
+   initialization failures and timeouts separately from numerical measurements.
 
-## Verify on upstream
+## Upstream verification
 
-Fetch Tenstorrent's upstream `main` at investigation time and pin its full commit
-hash. Preserve existing checkout changes under the Git guidance. Apply only the
-reproducer and required integration changes, build, and run on the same identified
-target device with comparable inputs and configuration. Record relevant runtime
-or submodule revisions and software versions.
+Fetch Tenstorrent's upstream `main` at investigation time and pin the full hash.
+Preserve existing checkout changes under Git guidance. Apply only the reproducer
+and required integration, then build and run on the same identified device with
+comparable inputs and configuration. Record relevant runtime/submodule revisions
+and software versions. A branch need not be published for this verification.
 
-Distinguish build success, completed reproduction, completed non-reproduction,
-and inability to run. Never label a fork result or a successful build as upstream
-reproduction. Report a negative result or an execution blocker as measured.
-Do not require publication of a branch to reproduce the experiment.
+Report build success, completed reproduction, completed non-reproduction, or
+inability to run distinctly. A fork result or build alone is not upstream
+reproduction. Freeze tested sources and invocation. Rerun after changing sources
+or execution settings. Retain valid evidence and the final package. Remove superseded probes
+under the cleanup policy and restore the original checkout and build environment.
 
-Freeze the final tested sources and invocation. Rerun after changes to the test
-or its execution settings; do not package an untested simplification as the
-confirmed reproducer. Keep valid evidence and the final package while removing
-superseded probes and per-run scratch under the existing cleanup policy. Restore
-the original checkout and build environment after upstream verification.
-
-## Deliver the report and source package
+## Deliverables and acceptance
 
 Write `report.md` for an external reader in this order:
 
-1. The upstream result and observed symptom: ND, corruption, or both.
-2. Exact host/device/unit identification, the full tested upstream commit hash,
-   and relevant software versions and execution conditions.
-3. A short explanation of the input, operation, expected result, and minimal test.
-4. Measured results and controls, with denominators, counting units, and a
-   representative failure signature.
-5. How to reproduce using the accompanying package.
+1. Upstream result and observed symptom: nondeterminism, corruption, or both.
+2. Exact host/device/unit identity, full upstream hash, versions, and conditions.
+3. Input, operation, expected result, and minimal test explanation.
+4. Measurements and controls, with denominators, units, and a failure signature.
+5. Reproduction procedure using the package.
 
-Make the report self-contained. Transfer material evidence into it rather than
-citing inaccessible local logs or paths; use no local-path hyperlinks. By default,
-omit internal issue/Slack history, device reservation tools and job metadata,
-work chronology, and cleanup details. Do not require a separate "Scope and
-remaining question" section; qualify conclusions where needed in the relevant
-sentence. Keep site-specific operating instructions in the README when needed.
+Put material evidence in the report. Use no local-path links and do not rely on
+inaccessible logs. Omit internal discussions, reservation metadata, work chronology,
+and cleanup history unless the recipient needs them. Qualify conclusions where they appear.
+Keep necessary site-specific procedures in the package README.
 
-Include in `reproducer.zip`:
+Include the exact tested sources and device kernels, a complete patch against
+the pinned base with all build integration, `report.md`, and file checksums in
+`reproducer.zip`. Include a `README.md` with prerequisites, placement, patch
+application, additional changes, build/run commands, controls, and expected
+normal/failure behavior.
 
-- The exact tested source files, including any separate device kernels.
-- A complete patch against the pinned upstream commit, including the test and
-  every required build-system/CMake change.
-- `README.md` with prerequisites, file placement, patch application, any additional
-  changes, build/run commands, controls, and normal/failure interpretation.
-- `report.md` and checksums for the packaged files.
-
-Verify patch applicability against the clean pinned base, equality between the
-packaged and tested sources, ZIP integrity, checksums, and consistency of commands
-and results. The package must work without an unpublished branch or unlisted local
-file. Deliver both artifacts to the user; post to an external service only under
-the instructions for that task.
+Check clean-base patch applicability, packaged/tested source equality, ZIP
+integrity, checksums, and consistency of commands and results. The package must
+need no unpublished branch or unlisted file. Deliver both artifacts. Posting to
+an external service requires the task's publication authority.

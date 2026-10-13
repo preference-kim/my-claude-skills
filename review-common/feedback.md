@@ -1,28 +1,24 @@
 # PR finding contract
 
-Each retained finding covers one concrete, high-confidence issue:
+Retain one concrete, high-confidence issue per finding. Establish the triggering
+conditions, observed behavior or violated invariant, and impact. Explain the
+contract the fix must satisfy, then give a specific code or test suggestion.
+Cite the smallest relevant changed location and any applicable authoritative
+reference, explaining why it applies. The comment must carry the causal argument
+without making the reader reconstruct it from links.
 
-1. State the precise problem, triggering conditions, and concrete impact.
-2. Explain the fundamental design contract or established principle the solution
-   must satisfy. Cite the smallest relevant code location and, when applicable,
-   an authoritative specification or documentation link that supports the claim.
-   Explain why the reference applies; distinguish convention from preference.
-3. End with concise, specific code or test suggestions.
+Prioritize correctness, concurrency, security, compatibility, resource lifetime,
+test coverage, and material maintainability in changed behavior. Use surrounding
+code to establish impact. Exclude speculative and style-only findings.
+A no-finding result is valid. Preserve material uncertainty and required reviewer
+prefixes. Use connected prose without a mandatory three-part template or generic
+background.
 
-Use short, connected sentences to establish that causal chain. Include the
-material observation or code behavior in the comment; a link alone is not the
-finding. Omit generic tutorials, repeated summaries, orchestration details, and
-speculative/style-only findings.
-No finding is preferable to a manufactured one. Preserve reviewer prefixes only
-where the invoking workflow requires them. Do not add headings merely to fill a
-three-part template. Keep material uncertainty explicit; do not invent references.
-
-Read [stop-bullshit](../stop-bullshit/SKILL.md) before composing reviewer prompts.
-Include the applicable reasoning and communication principles from the canonical
-AGENTS.md, this finding contract, and the loaded skill's instructions in each
-isolated leaf prompt. Supply their contents when canonical files are inaccessible.
-Leaves apply `stop-bullshit` directly without invoking skills or another critic.
-The check covers both the reviewed material and the reviewer's own comments
-before any permitted write. Apply it again when consolidating findings,
-including those from external reviewers, and after the last prose edit. Validate
-the final wording against this finding contract too.
+Before preparing isolated leaf prompts, read
+[stop-bullshit](../stop-bullshit/SKILL.md). Supply this contract, the applicable
+reasoning and communication principles from canonical AGENTS.md, and that skill's
+loaded instructions. Provide contents if canonical files are inaccessible.
+Leaves apply the check directly, without another critic or orchestration skill.
+Check both the reviewed material and comments before any permitted write.
+The orchestrator also applies this contract and the final substance check when
+consolidating all reviewers' findings and after the last prose edit.

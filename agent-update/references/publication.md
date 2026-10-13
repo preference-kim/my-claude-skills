@@ -1,60 +1,53 @@
-## Validate and publish
+# Validate and publish
 
-This workflow publishes only the personal dotfiles and skill repositories. The
-configured development checkout is an installation target: verify that its tracked
-files and ordinary untracked state remain unchanged. A project contribution
-requires an explicit request for that destination and a separate project workflow.
+Read `<dotfiles>/PUBLICATION.md` before preparing outgoing changes. It owns
+disclosure review, publication guards and exposure handling. This workflow
+publishes only personal dotfiles/skills repositories; the configured development
+checkout receives ignored links and must retain its tracked/ordinary untracked
+status. A project contribution requires its own authorized workflow.
 
-Repository ownership does not establish permission to disclose its contents.
-Before any publication, verify the destination's visibility and authorized audience,
-then inspect every outgoing file, historical object, commit message, PR body, and
-comment for confidential project information. Internal audits, evaluation fixtures
-and results, logs, installation inventories, and incident evidence remain outside
-both worktrees under the local agent-update state directory. Publish only content authorized for that specific audience; do not
-infer consent from a personal account, private repository, or prior push request.
+1. Re-read changed guidance for purpose, preserved requirements, reference
+   reachability and contradictions. Complete `skill-maker`'s requirement and
+   behavior checks for harness/skill edits.
+2. Run `git diff --check` in both repositories. Validate every changed
+   `SKILL.md`, including behind moved submodule pointers, against the
+   [Agent Skills specification](https://agentskills.io/specification), not a
+   vendor validator's different field list:
+   - YAML permits only `name`, `description`, `compatibility`, `license`,
+     `metadata`, `allowed-tools`.
+   - Required `name`: 1–64 lowercase letters/digits/hyphens, no leading,
+     trailing or consecutive hyphens, equal to its directory name.
+   - Required `description`: 1–1024 characters.
+   - Optional `compatibility`: 1–500 characters; `metadata`: string keys/values.
+   No changed skill means no frontmatter check. After link repair, verify the
+   host's complete instruction/source/scope manifests again.
+3. Install/verify both repository guards with
+   `python3 <dotfiles>/scripts/publication-guard.py install`, preserving hooks.
+   Stage only exact disclosure-reviewed files; new files need exact approved
+   `.publication-policy.json` entries, never an untracked-directory inventory.
+   Keep the historical base unchanged. Run each guard's `index` check before
+   commit and `history HEAD` before push.
+4. Publish any changed user-owned nested skill on its own `main` first and
+   verify remote reachability before recording its gitlink. Vendor submodules
+   remain at approved commits. Commit skills before dotfiles with concise
+   messages and no co-author. Push skills to `origin/main`, verify reachability,
+   then push dotfiles to `origin/main`; use no feature branch/PR. No parent may
+   name an unpublished child.
+5. If a child push succeeds but the parent fails, report both IDs. Retry only
+   while the parent remote remains an ancestor; otherwise stop without rewriting
+   history.
+6. Stamp today's local date and reviewed upstream commit in
+   `last-successful-sync` only when pushes succeeded (or no tracked change was
+   needed), cleanup passed, configured entry points and complete manifest/
+   frontmatter checks passed, and no installed CLI remains known outdated.
+   Unconfigured hosts, required failures and unverified known-outdated updates
+   block it. Routine SSH reports separately and does not gate this stamp;
+   explicitly requested other private payloads follow
+   [private synchronization](private-sync.md)'s combined-request success rule.
+7. Re-read final AGENTS/skill for this session. Report changed files, commit/push
+   results, configured mode/root or unconfigured state, link repairs, CLI
+   before/after versions/outcomes, required restart and verification limits.
+   Keep no-change daily refreshes unobtrusive.
 
-During a suspected exposure, stop publication, preserve necessary evidence outside
-Git, and prepare local cleanup. Keep remediation within the user-authorized scope; do not change repository
-visibility or unrelated history without authorization. A local deletion or new deletion
-commit does not establish removal from GitHub history, PR refs, caches, or copies.
-Report verified removal separately from remaining access and unresolved checks.
-
-1. Re-read changed guidance against its purpose and retained requirements. Resolve
-   duplication, stale paths, contradictions, and chronological patchwork. For a
-   skill or harness change, complete `skill-maker`'s requirement and behavior
-   checks before publication; an instruction file must meet the same communication
-   principles it requires of its consumers.
-2. Run `git diff --check` in both repositories. Check the frontmatter of each
-   SKILL.md in the outgoing diff, including the SKILL.md behind a moved
-   submodule pointer. A refresh that changes no SKILL.md has no frontmatter to
-   check. Apply the [Agent Skills specification](https://agentskills.io/specification):
-   - The frontmatter is valid YAML with no top-level field other than the six below.
-   - `name` is required: 1–64 lowercase letters, digits and hyphens, with no
-     leading, trailing or consecutive hyphen. It equals the skill directory name.
-   - `description` is required: 1–1024 characters.
-   - `compatibility` is optional: 1–500 characters.
-   - `license`, `metadata` and `allowed-tools` are optional. `metadata` maps
-     string keys to string values.
-
-   Do not use a vendor skill validator for this check. Its field list can differ
-   from the specification. Re-run the full instruction-link and skill manifest
-   comparison for the current host's configured mode after link repair.
-3. Read `<dotfiles>/PUBLICATION.md`, then run
-   `python3 <dotfiles>/scripts/publication-guard.py install` to install or verify
-   both repositories' commit and push guards without discarding existing hooks.
-   Review both diffs and stage only exact, disclosure-reviewed files. New files
-   require explicit entries in that repository's `.publication-policy.json`;
-   never populate it from an untracked directory inventory. Keep the historical
-   base unchanged during routine maintenance. Run the guard's `index` check in
-   each repository before committing and its `history HEAD` check before pushing.
-   For a changed user-owned nested skill repository, validate, commit, and push
-   its own `main` first; verify remote reachability before recording its pointer.
-   Never publish a parent whose gitlink names an unpublished child commit, and
-   never push changes to a vendor-owned submodule as part of this exception.
-4. Commit skills changes first with a concise message and no co-author. Commit the dotfiles change second so its submodule pointer names that child commit.
-5. Push the skills commit to `origin/main`. Confirm it is reachable from the remote branch, then push dotfiles to `origin/main`. Do not create a feature branch or pull request for these personal agent-file updates.
-6. If the child push succeeds but the parent push fails, report both commit IDs. Retry the parent only when the remote remains an ancestor of the local commit; otherwise stop without rewriting history.
-7. Write today's date and the reviewed upstream commit to `last-successful-sync` only after both pushes succeed or when no tracked change was needed, completed workspace cleanup succeeds, the current host's configured entry points and complete skill manifest pass verification, including the step 2 frontmatter check, and no installed CLI remains known to be outdated. If cleanup fails, the host is unconfigured, or a known-outdated CLI could not be updated and verified, do not write `last-successful-sync` for this refresh. The SSH stage keeps its own success record and runs on every refresh, so its outcome is reported here but does not gate this stamp.
-8. Re-read the final AGENTS.md and SKILL.md for the current session. Report changed files, commit IDs, push results, the host's configured mode and resolved `moreh_dev_root` when applicable (or its unconfigured state), repaired links, each CLI's before/after version and update outcome, any required process restart, and any verification limitation. Keep a no-change daily refresh unobtrusive.
-
-Never commit secrets, credentials, caches, histories, state files, or unrelated local settings.
+Caches, histories, state, credentials and unrelated settings are not outgoing
+harness content.

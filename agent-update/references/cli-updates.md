@@ -1,15 +1,36 @@
-## Keep agent command-line tools current
+# Update active installed CLIs
 
-During every full daily, forced, or requested refresh, update each installed `claude`, `codex`, and `gh` command to the latest release available through its verified installation channel. Perform these checks and updates while holding the agent-update lock, after repository preflight. A same-day daily refresh may skip public repository and CLI checks; a forced or requested refresh never skips them. This exception does not skip the independent private SSH stage.
+After repository preflight, under the agent-update lock, check `claude`,
+`codex` and `gh` on every full daily, forced or requested-edit refresh. Only
+same-day daily refreshes may skip this work; SSH remains independent.
 
-For every command:
+1. Record `command -v`, all PATH-visible installations, resolved targets and
+   before versions. Identify the selected executable's owning installation
+   channel. An absent command is reported, not installed.
+2. Update only that active installation through its owner:
+   - Native Claude: `claude update` on `latest`; switch a native `stable`
+     channel with `claude install latest`. Package-managed Claude uses that
+     manager's documented latest-channel command.
+   - Codex: `codex update` if supported, otherwise the existing package or
+     standalone installer's documented update. App-bundled binaries belong to
+     the desktop app; update a separately installed CLI or report app ownership,
+     never replace its bundle in place.
+   - GitHub: compare `gh --version` with
+     `gh api repos/cli/cli/releases/latest --jq .tag_name` (use the public API
+     directly if needed), then update the owning manager's `gh` package.
+3. Scope updates to the named package and necessary dependencies, retaining the
+   installation method, configured repositories/taps and trust/signature
+   checks. Use existing noninteractive authorization only; package-wide upgrades,
+   new package managers, password prompts or privilege-policy changes are outside
+   scope.
+4. Re-resolve the active command and compare its after version with the native
+   updater, registry or official release source. A shadowed update does not
+   update the active command. Verify an updated Codex through external
+   `codex --version`; an already-running process keeps its old in-memory version
+   until restart, which must be reported.
 
-1. Record `command -v`, every PATH-visible installation, the resolved executable or symlink target, and the pre-update version. Determine which installer or package manager owns the executable selected by PATH; do not update a shadowed copy and claim that the active command changed.
-2. Use the updater that owns that active installation:
-   - For a native Claude Code installation, use `claude update` on the `latest` channel. If its configured channel is `stable`, move it to `latest` with the native `claude install latest` command before verification. For package-managed installations, update only the installed Claude Code package with that manager's documented latest-channel command.
-   - For Codex CLI, prefer `codex update` when the installed version provides it. Otherwise use the existing installation mechanism's documented command, such as `npm install -g @openai/codex@latest`, `brew upgrade codex`, or the official standalone installer. Do not replace an app-bundled Codex binary in place; update an independently installed CLI, or report that the desktop app owns the only available binary.
-   - For GitHub CLI, compare `gh --version` with `gh api repos/cli/cli/releases/latest --jq .tag_name`, using the public GitHub API directly if the installed client cannot query it. When outdated, use the owning package manager's command for the `gh` package, such as `brew upgrade gh`, `apt install gh`, or `dnf update gh`.
-3. Update only the named CLI package and dependencies required by that package. Never run a package-manager-wide upgrade, switch an unrelated repository or tap, weaken package or tap trust, disable signature verification, bootstrap a different package manager, or replace one installation method with another merely to obtain an update. Use only already-configured non-interactive authorization; never wait for a password prompt or modify privilege policy.
-4. Re-resolve the active executable and record its post-update version. Compare it with the latest version reported by the native updater, package registry, or official release source. A Codex process that updates its own executable continues on the old in-memory version until restarted; verify the external `codex --version` result and report that a restart is required when applicable.
-
-If a command is absent, report it as not installed and do not install it implicitly. Continue checking the other commands after one update fails. If an installed command is known to be outdated but its update fails, remains shadowed, requires unavailable privilege, or cannot be verified, complete safe repository reconciliation and link repair but do not write `last-successful-sync`; report the exact command, installed version, target version when known, failure, and required recovery. A transient inability to discover a latest version is a reported verification limitation, not evidence that the installed version is current.
+Continue other CLI checks and safe repository/link work after a failure.
+A known-outdated CLI that remains unupdated, shadowed or unverified blocks
+`last-successful-sync`. Report installed/target versions when known, failure,
+missing privilege and required recovery. An unavailable latest-version lookup
+is a verification limit, not evidence that the installation is current.

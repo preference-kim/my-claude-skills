@@ -1,93 +1,68 @@
-# Task handoffs
+# Handoff content contract
 
-A handoff must let a fresh agent understand the work and decide how to continue
-without the preceding conversation. Put the objective, current state, constraints,
-and basis for the next decision in the body. References support verification.
-Leave room to reassess the previous agent's diagnosis and approach.
+The handoff must support continuation without the conversation. Explain the
+current task state in the body. References support verification, and the next
+agent remains free to reassess the diagnosis and approach. Use these five sections
+in order.
 
-## Required structure
+## 1. Task overview
 
-Use these five sections, in this order. Keep the essential explanation in the
-document; references support it rather than making the reader reconstruct it.
+State the goal, requirements, scope, and acceptance criteria before PR numbers
+or shorthand. Identify the repository, checkout, branch, relevant revision, and
+execution host or cluster. Distinguish the writer's host from execution hosts.
+Include uncommitted work, active jobs, and task-specific authority or restrictions
+when they affect continuation. Give the recorded observation time for mutable
+state. Leave unavailable times unknown and identify consequential unchecked state.
 
-### 1. Task overview
+## 2. Existing plan
 
-State the concrete goal, detailed requirements, scope, and acceptance criteria.
-Explain the intended behavior before using PR numbers or internal shorthand.
-Identify the repository, checkout path, branch and relevant revision, and the
-server or cluster where the work ran. Distinguish the writer's location from
-execution hosts. Include uncommitted work, active jobs, and task-specific
-authorization or restrictions when they affect continuation. Use a recorded
-observation time for mutable state; the current date is not evidence of when
-a check occurred. If that time is unavailable, leave it unknown. Identify
-relevant state that was not checked.
+Explain the established parts, their purpose, intended results, responsibilities,
+dependencies, and rationale. Distinguish user requirements, accepted decisions,
+and the previous agent's proposals. Label a reconstructed plan. If no plan is
+recoverable, say so. Put progress below and new suggestions under remaining work.
 
-### 2. Existing plan
+## 3. Work done
 
-Explain the established breakdown of the work: each part's purpose, intended
-result, responsibility, and dependencies. Include the rationale needed to
-understand those boundaries. Distinguish user requirements, accepted decisions,
-and the previous agent's proposed approach. If no plan is recoverable, say so;
-label any reconstruction instead of inventing a historical plan. Put progress
-in the next section and new suggestions under remaining work.
+Map the plan to completed, partial, or unverified results. Preserve the recorded
+status: "unfinished" alone does not establish "not started" or "absent." For each
+material result, explain the change and point to implementation symbols or files,
+tests, and evidence. State validation conditions and scope. Distinguish implemented,
+tested, committed, published, and accepted. A historical run or sample supports
+only its recorded conditions.
 
-### 3. Work done
+## 4. Remaining work
 
-Map the plan's parts to completed, partial, or unverified results using the
-recorded status. Keep "unfinished" when that is all the record establishes;
-"not started" or "absent" requires evidence of that specific state. For each
-material result, explain what changed, identify the implementation files or
-symbols to inspect, and cite the relevant validation and its scope. Include
-test and evidence files alongside implementation pointers. Distinguish work
-implemented, tested, committed, published, and accepted; one does not imply the
-others. A passing sample or historical run supports only its recorded conditions.
+For each material unresolved problem, connect triggering conditions, observed and
+required behavior, impact, and evidence. Separate established causes from
+hypotheses. Include failed approaches only when they change the next decision.
+State the outcomes and dependencies still required, including unfinished
+integration, validation, or delivery when the task requires them.
 
-### 4. Remaining work
-
-Explain each unresolved problem through its triggering conditions, observed
-result, expected behavior or governing criterion, impact, and evidence. State
-what is known about the cause and what remains a hypothesis. Include failed
-approaches only when their result changes the next decision. Then identify the
-outcomes and dependencies still required after the problems are resolved,
-including unfinished integration, validation, or delivery when applicable.
-
-Define what would establish resolution. Derive remaining obligations from the
-task, not a generic delivery workflow. A proposed fix needs evidence connecting
-it to the violated requirement; otherwise keep it a hypothesis. Preserve
-binding constraints and acceptance criteria; label optional investigation ideas
+Define what establishes resolution. Tie a proposed fix to evidence or label it
+as a hypothesis. Preserve binding constraints. Mark optional investigation ideas
 as suggestions with their rationale. Leave routine commands, diagnostic choices,
-and a new execution plan to the fresh agent. Do not append a second checklist
-that dictates its first actions.
+and the next execution plan to the receiving agent.
 
-### 5. References
+## 5. References
 
-Provide a selective map to the task requirements, design, implementation,
-reproducers, results, and relevant discussions. Explain what each source
-establishes and cite it near the supported claim. Use precise file/symbol,
-section, result-field, or log pointers where useful. Define path roots and
-hosts. Same-environment handoffs may link local files accessible to the receiving
-agent; identify what will not travel with Git. For another environment, transfer
-the needed facts and provide accessible sources or reproducible instructions.
-Keep the method and result needed for the next decision in the body; reference
-maintained files for detailed procedures. A directory, hash, or uninspected receipt
-is not an explanation or verified evidence.
+Map sources selectively to the requirements, design, implementation, reproducer,
+results, and discussions they establish. Cite precise inspected passages, symbols,
+or results beside material claims. Define path roots and hosts. Same-environment
+handoffs can use accessible local files but must identify what does not travel
+with Git. For another environment, include the necessary facts and accessible
+sources or reproducible instructions. Keep decision-critical methods and results
+in the body. A directory or hash alone does not explain or verify a claim.
 
-## Compose and check
+## Acceptance check
 
-Reorganize around the current task state instead of appending session history.
-Remove repeated conclusions, superseded instructions, reminders about previous
-conversational mistakes, and incidental publication or command transcripts.
-Refer to maintained operating guidance instead of copying it; retain explicit
-task-specific exceptions and unavailable prerequisites that affect the work.
-Keep detail when removing it would change the reader's understanding, decision,
-or ability to verify a material claim. Brevity alone is not the acceptance test.
+A reader must be able to explain the goal, established plan, current work and
+locations, remaining obligations, and their evidence. Resolve contradictions and
+unsupported completion claims. State consequential gaps once without inventing
+dates, dependencies, status, or authority. Do not start new implementation or
+experiments merely to fill a handoff.
 
-Before delivery, check the document against the actual request and available
-sources. Missing information stays unknown; do not fill gaps with plausible
-dates, statuses, dependencies, or authority. State consequential gaps once where
-they affect the next decision.
-Can a reader without the conversation explain the goal, the plan and its rationale, what exists and where, what remains
-and why, and how to verify those conclusions? Resolve contradictions and
-unsupported completion claims;
-state consequential evidence gaps without inventing facts or prior authority.
-Do not start new implementation work or experiments merely to fill the handoff.
+Organize around current state, not session history. Remove repeated conclusions,
+superseded instructions, conversational corrections, and incidental command logs.
+Reference maintained procedures instead of copying them. Retain task-specific
+exceptions, unavailable prerequisites, and any detail needed to understand or
+verify a material claim.

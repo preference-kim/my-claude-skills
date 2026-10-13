@@ -11,24 +11,18 @@ name: gh-stack
 ---
 # gh-stack
 
-Keep dependencies in lower branches and consumers above them; each PR compares
-one layer against the branch below it. Branch names are passed literally, including
-the repository-required prefix. Stage deliberate changes with ordinary git add/commit.
+Arrange layers by dependency: foundations below consumers, with each PR based on
+the branch below. Fix lower-layer code there, then `gh stack rebase --upstack`
+before continuing above. Use deliberate ordinary Git staging and commits.
 
-Before mutation, read [operation contracts](references/operation-contract.md).
-For inspection, require installed/authenticated gh and its gh-stack extension; read
-that reference if setup or remote selection is unresolved. Read
-[output and recovery](references/recovery.md) before interpreting nonzero exits or
-unsupported cases. Do not guess extension semantics from ordinary Git.
+Run non-interactively. Inspect with `gh stack view --json`, never its TUI.
+Before mutation, read [operation contracts](references/operation-contract.md)
+and only the relevant section of [commands](references/commands.md). For read-only
+inspection, load the operation contracts only if installation, authentication, or
+remote selection is unresolved. Confirm installed command help when uncertain.
 
-- Inspect with `gh stack view --json`; never launch its TUI.
-- Supply branch/PR arguments to init, add, and checkout, and `--auto` to submit.
-- Fix lower-layer code on that branch, then rebase upstack before continuing.
-- For a mutation, read only the relevant command section in
-  [commands](references/commands.md). Confirm the installed command's help when
-  flags or behavior are uncertain; the catalog records its source version.
-- Before removing/reordering/renaming stack layers, read
-  [restructuring](references/restructure.md).
-- Stack merging uses `gh stack merge --yes`, with the requested scope and method,
-  only when merging is authorized. An instruction about command syntax grants no
-  additional authority to merge, prune, or force-push.
+Before removing, reordering, or renaming layers, read
+[restructuring](references/restructure.md). For nonzero exits, cancellation, or
+unsupported cases, read [recovery](references/recovery.md) before choosing a response.
+Do not infer extension behavior from ordinary Git or report success from exit
+status alone.

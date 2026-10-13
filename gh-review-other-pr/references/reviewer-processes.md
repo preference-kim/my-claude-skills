@@ -7,7 +7,7 @@ printf '%s\n' "$CODEX_REVIEW_PROMPT" |
   codex exec --ephemeral --json -C "$REPO_ROOT" -
 ```
 
-Before launching Claude, read the [shared Claude adapter](../../review-common/claude.md)
+Before checking Claude authentication or launching, read the [shared Claude adapter](../../review-common/claude.md)
 for its command, authentication, model and fallback, trusted configuration, and
 result handling. Launch it concurrently with Codex and pass
 `$CLAUDE_REVIEW_PROMPT` on stdin.

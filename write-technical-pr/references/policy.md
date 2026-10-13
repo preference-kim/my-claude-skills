@@ -2,85 +2,65 @@
 
 ## Language and publication
 
-- Draft every new or substantively revised description in English with
-  [SimpleEnglish](../../simple-english/skills/simple-english/SKILL.md), even when
-  the final description will be Korean. Then prepare the manuscript in the
-  final language and structure below before the independent humanizer and
-  stop-bullshit review. Preserve the evidence, qualifications, and technical
-  meaning during translation. The English working draft is not an additional
-  section in the delivered description.
-- Default to an English body with a summary written in Korean under
-  `## Korean Summary` at the top. Present the initial manuscript and proposed
-  language before publishing. Follow an explicit
-  language request; do not reconfirm an approved choice.
-- For a single-language body, use that language for explanatory prose without
-  duplicate translation. Even when requested entirely in Korean, keep PR titles,
-  section headings, and conventional English concepts and technical terminology
-  in English. Keep text in tables, plots, figures, and similar visual elements
-  in English, including headers, cells, labels, legends, and captions. Use
-  `## Summary` for the opening summary of a single-language body. Preserve code,
-  commands, and required GitHub closing syntax.
-- Language approval does not approve an unseen manuscript. Existing approval of
-  the concrete manuscript and language permits publication without another
-  confirmation. Preserve the owning workflow's required review and write limits.
+Draft new or substantively revised descriptions in English with
+[SimpleEnglish](../../simple-english/skills/simple-english/SKILL.md), then prepare
+the final language before independent `humanizer` and `stop-bullshit` review.
+Translation preserves evidence, qualifications, and technical meaning. The English
+working draft is not an extra delivered section.
 
-## Explain the change
+Default to an English body preceded by `## Korean Summary` in Korean. A requested
+single-language body uses that language for prose, with `## Summary` and no duplicate
+translation. PR titles, headings, conventional technical terminology, and all text
+in tables, plots, and figures remain English, even for an entirely Korean request.
+Preserve code, commands, and GitHub closing syntax.
 
-- Write for the review decision. The opening summary connects the problem,
-  retained solution, and concrete result, including material contracts and scope.
-  It is not a word-count target or a list of implementation names. Avoid repeating
-  the body; use subsections when they help the reader.
-- Establish the component's behavior on the actual base. Explain what this PR
-  changes, enables, and still leaves unavailable by itself. Include surrounding
-  infrastructure only where it explains the change or an integration boundary.
-  The title describes this PR's contribution, not a later stack layer's result.
-- Name technical concepts directly and explain their execution relationship.
-  For a changed component, connect where it is called, what changes and why,
-  and the observed impact or missing comparison. Link the relevant code rather
-  than replace a specific operation with an ambiguous label.
-- Explain material output contracts through the producer-to-consumer path:
-  contents, storage location, transfer or consumption, and lifetime. Identify
-  allocation, ownership, borrowing or aliasing, and release responsibilities
-  where they affect behavior. A class name or ownership adjective is insufficient.
-- Attribute constraints to their source: semantics, preprocessing, feature scope,
-  resources or concurrency, or deployment configuration. State the stage and units
-  of size limits, including padding or alignment used for capacities. Do not
-  describe an implementation capacity as a model limit or merge unrelated limits.
+Present the initial manuscript and proposed language before publication. Explicit
+language instructions settle that choice, but do not approve an unseen manuscript.
+Existing approval of the concrete manuscript and language permits publication
+without reconfirmation, subject to the owning workflow's review and write limits.
 
-## Evidence and organization
+## Explain the retained change
 
-- Make the body self-contained for review: include the final design, relevant
-  contracts, reproduction procedure, and material results. Supporting references
-  must not require the reviewer to reconstruct the argument elsewhere.
-- Never include a local artifact path or cite a local-only file, log, plot, report,
-  or working-tree state as evidence. Transfer material facts into the body. Chat,
-  comments, dashboards, external documents, and unpublished artifacts cannot
-  carry information needed to understand or validate the claim.
-- Before reporting experiments, quantitative claims, correctness coverage,
-  performance comparisons, or figures, read [evidence contracts](evidence.md).
-  That reference owns reproducible commands, comparison tables, log excerpts,
-  measurement scope, and figure readiness. Do not duplicate its requirements here.
-- Prefer topic bullets with related explanations. Keep one coherent purpose per
-  bullet and preserve causal connections; do not force every sentence into a list.
-  Use headings for larger topics and deeper nesting only for necessary hierarchy.
-  Remove repetition and generic background before removing definitions or evidence.
-- Avoid bare `~` for approximations and ranges in prose or tables. GitHub can pair
-  distant single tildes and strike through the intervening text. Write approximations
-  in words and ranges with words or an en dash, matching the manuscript language.
-  English examples are `about`, `approximately`, and `to`. If a literal tilde is
-  needed, escape it as `\~` or use a code span. Preserve tildes inside code,
-  URLs, and intentional strikethrough. If tildes remain, check the complete body
-  with GitHub Preview or its Markdown API for unintended strikethrough before
-  delivery or publication. A raw Markdown readback alone does not establish correct rendering.
-- Report change-specific correctness and performance evidence, material failures,
-  missing checks, and limitations. Omit routine build-success statements and
-  host-test counts; omit a validation section with no change-specific information.
-  This controls reporting, not which required checks must run.
+The opening summary connects the problem, solution, and concrete result within
+this PR's scope. Describe the actual base-to-head change, not a later stack layer's
+outcome or branch development history. Include surrounding infrastructure only
+when it explains behavior or an integration boundary.
 
-## Final-state scope
+Use established codebase terms and connect the changed component's callers,
+behavior, mechanism, and observed impact or missing comparison. Where material,
+state changed inputs/outputs, shapes, invariants, defaults, unsupported cases,
+and synchronization. For relevant data paths, trace outputs from producer to
+consumer: contents, storage, transfer, lifetime,
+allocation, ownership, aliasing, and release. Attribute constraints to semantics,
+preprocessing, feature scope, resources/concurrency, or deployment. Give size-limit
+stages, units, padding, and alignment. Distinguish implementation capacity from
+model limits.
 
-Describe the retained design and results relative to the base. Omit commit-by-commit
-history, review iterations, rebases, intermediate candidates, superseded experiments,
-transient regressions, retries, and rerun chronology. Keep the base behavior needed
-to explain the change and direct performance comparisons needed to quantify it.
-Do not narrate how the branch arrived at its final state.
+Choose topics the change needs: contracts, implementation, correctness,
+performance, resources, integration, or remaining limits. Prefer coherent topic
+bullets with related explanations. Use further hierarchy only when useful.
+The reader must understand the base-to-PR change and source of each material
+constraint without reconstructing the argument from names or links.
+
+## Evidence and presentation
+
+Keep the design, contracts, reproduction, and material results self-contained.
+Supporting links cannot replace decision-critical facts in the body. Do not include
+local artifact paths or cite local-only files, logs, figures, or working-tree state
+as evidence.
+
+For experiments, quantitative claims, correctness coverage, performance comparisons,
+or figures, read [evidence contracts](evidence.md) before reporting them.
+Report change-specific results, failures, missing checks, and limitations. Omit
+routine build-success statements, host-test counts, and empty validation sections.
+This reporting rule does not waive required checks.
+
+Use words for approximations and words or an en dash for ranges. Bare `~` can pair
+across a GitHub body and strike through unrelated text. Escape literal tildes as
+`\~` or use code spans. Preserve tildes in code, URLs, and intentional strikethrough.
+If any remain, check the complete body with GitHub Preview or its Markdown API.
+Raw Markdown readback does not verify rendering.
+
+Report retained design and final results relative to the base. Keep relevant
+baselines and comparable performance conditions. Omit superseded candidates,
+transient failures, review/rebase history, retries, and rerun chronology.

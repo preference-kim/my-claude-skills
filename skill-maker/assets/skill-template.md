@@ -3,27 +3,25 @@ name:
 description:
 ---
 
-# Skill Name
+# Skill name
 
-## When Loaded
+State the domain-specific outcome without repeating the routing description.
+Use only the sections needed for this capability.
 
-State the domain-specific objective in one or two sentences. Do not restate the description.
+## Entry conditions
 
-## Gotchas
+Identify the scope, prerequisites, and authority needed to act.
 
-- Add failure modes the base agent would plausibly miss.
-- Prefer negative examples and boundary cases over general advice.
+## Required behavior
 
-## Workflow
+Describe the smallest workflow that achieves the outcome. Preserve local
+contracts and fragile details. Consolidate exceptions under their owning rule.
 
-1. Start with the smallest action that changes task quality.
-2. Keep steps outcome-oriented, not command recipes.
-3. Stop when additional guidance would only restate ordinary agent behavior.
+## Completion
 
-## Conditional Files
+Define observable results and the required handling of incomplete work.
 
-Read bundled files only when their condition applies:
+## Conditional resources
 
-- `references/...`: heavy conditional context.
-- `scripts/...`: deterministic logic the agent should run or adapt.
-- `assets/...`: templates or output resources the agent should fill.
+For each reference, script, or asset, state when it must be read or used and why.
+Omit this section if the skill needs no extra files.

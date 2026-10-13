@@ -5,79 +5,32 @@ description: Use to draft, revise, or audit a technical GitHub PR description an
 
 # Write Technical PR
 
-Resolve this skill’s symlink to its canonical directory before reading relative
-references, including sibling shared resources and dotfiles guidance.
+Resolve relative links from this skill's canonical directory. Before drafting,
+read [description policy](references/policy.md) and apply its language, content,
+and publication conditions. For experiments, quantitative claims, correctness
+coverage, performance comparisons, or figures, also read
+[evidence contracts](references/evidence.md).
 
-Read [description policy](references/policy.md) before drafting any PR body.
-Read the [document revision workflow](../review-common/document-revision.md)
-before preparing the mandatory separate-agent manuscript review.
-For experiments, quantitative claims, correctness coverage, performance comparisons,
-or figures, also read [evidence contracts](references/evidence.md); that reference
-owns reproduction commands, result presentation, and diagnostic excerpts.
-Do not run experiments or modify source, tests, branches, or benchmark artifacts
-merely to write a description.
+Establish the repository, PR, base/head, audience, and review decision. Inspect the
+diff and evidence needed for retained claims. Before revision, read the live body
+and preserve concurrent or integration-owned content. Keep a requested structure
+when valid, and replace stale explanations in their owning sections.
+Description writing alone does not authorize experiments or changes to source,
+tests, branches, or benchmark artifacts.
 
-## Establish the current argument
+Draft in English with [SimpleEnglish](../simple-english/skills/simple-english/SKILL.md),
+then prepare the final language under the description policy. Check substantive
+claims against the diff and evidence, and separately check language, structure,
+and formatting. Missing validation must remain explicit.
 
-Identify repository, PR, base/head, audience, and review decision. Inspect the actual
-diff and only the evidence needed to substantiate retained behavior. Read the live
-body before revising so concurrent or integration-owned content is not overwritten.
-Preserve an explicitly requested structure when semantically valid; reshape stale
-sections instead of appending patch notes.
+Every new or revised manuscript then follows the
+[document revision workflow](../review-common/document-revision.md). Read it before
+preparing the mandatory separate-agent review: `humanizer` first, `stop-bullshit`
+afterward, followed by supported revisions and the final author check.
+A code review or self-check does not replace this manuscript review.
 
-Use the description policy's English-first drafting, final-language, and
-draft-confirmation rules. Draft with
-[SimpleEnglish](../simple-english/skills/simple-english/SKILL.md), then prepare
-the requested final language before manuscript review. Present that manuscript
-with its proposed language before publishing; an explicit language request or
-prior approval settles that choice. The default is an English
-body preceded by `## Korean Summary` in Korean. A requested single-language body
-uses that language for explanatory prose without duplicate translation. Follow
-the description policy's English conventions for titles, headings, technical
-terminology, and visual elements even when the request says "entirely in Korean".
-
-Explain the problem, retained solution, and concrete result using established
-codebase terms. Prefer topic bullets with explanatory sub-bullets; preserve the
-connections that make the change understandable. Add only useful topics: interfaces/contracts,
-implementation, correctness, performance, resources, integration, remaining limits.
-Define inputs/outputs, ownership, shapes, invariants, defaults, unsupported cases,
-dataflow, synchronization, and material allocation assumptions where relevant.
-
-Report only the current design relative to the base and final retained results.
-Exclude branch evolution, rejected probes, transient bugs, retries, and rerun
-chronology. Use performance baselines to quantify retained results under stated
-comparable conditions, not to narrate development.
-If measured source differs from PR head, put the narrow qualifier beside the claim
-or omit it. Do not use candidate allocations as current resource usage.
-
-## Review, revise, and publish
-
-- Apply the description policy's self-contained evidence and citation requirements.
-  Keep the mechanisms that explain the change; fold refinements into their owning
-  section. Retain relevant failure signatures under the evidence contracts, not
-  superseded experiments or unfiltered diagnostic output.
-- Review substantive content against the description policy and applicable
-  evidence contracts: check every headline, table, formula, link, source identity,
-  quantitative claim, and caption against evidence. Ensure the summary explains
-  the problem, retained solution, and result; correctness, performance, and
-  integration scopes must agree. Check whether a reviewer can reconstruct the
-  base-to-PR change, the mechanism and producer-to-consumer path, and the source
-  of each material constraint; correct missing relationships, not only wording.
-  State missing validation without inventing success.
-- Separately check language, structure, and formatting against the confirmed
-  language choice and description policy, including the opening summary,
-  evidence presentation where required, and absence of local artifact paths.
-  Passing these checks does not establish substantive correctness.
-- Send every new or revised manuscript to a separate agent under the document
-  revision workflow. The reviewer uses [humanizer](../humanizer/SKILL.md) in
-  embedded mode, then [stop-bullshit](../stop-bullshit/SKILL.md) on the revised
-  prose, source claims, and its own findings. Apply justified revisions and
-  complete the final author check in that workflow before presenting a finalized
-  manuscript or publishing it. A code review or the author's self-check alone
-  does not satisfy this manuscript review. Delegated manuscript reviewers follow
-  the supplied content policies and do not invoke this orchestration again.
-- Update the live body only when the manuscript and language are approved, after completing the substantive
-  review and language/structure/formatting checks and correcting any violations.
-  Re-read it to verify the reviewed body was published
-  and concurrent content survived. Successful publication and readback establish
-  delivery, not substantive correctness or policy compliance.
+Publish only after those checks and the policy's manuscript/language approval
+conditions are satisfied. Fetch the live body afterward to confirm the reviewed
+text was stored and concurrent content survived. Readback establishes delivery,
+not correctness. For draft-only work, deliver the reviewed manuscript without a
+GitHub write.

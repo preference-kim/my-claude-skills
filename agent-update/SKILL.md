@@ -5,54 +5,44 @@ description: Use for the required session-start refresh, agent-file synchronizat
 
 # Agent Update
 
-Manage the canonical files directly; do not create a synchronization helper or
-copy upstream wholesale. Resolve this skill's real path to locate its repository
-and the parent dotfiles checkout. Preserve user-owned policy and host-local layout.
-Maintenance authority does not authorize disclosure. Keep internal evidence local
-and untracked; a publication stop overrides the refresh/publication workflow.
+Manage the canonical dotfiles and skills sources directly. Resolve this skill's
+real path; preserve user-owned policy and host-local layout. Keep internal
+evidence in local state outside public worktrees. A disclosure conflict stops
+publication.
 
-## Select and run only the required stages
+## Select the operation
 
-1. Read [preflight](references/preflight.md) to resolve repositories, host layout,
-   refresh mode, date stamp, and lock. A same-day daily refresh skips public
-   repository and CLI work, but still performs cleanup, manifest verification,
-   and the SSH synchronization below.
-   Explicit refreshes and requested edits always run the full refresh first.
-2. For a full refresh, complete preflight under the atomic lock, then read
-   [CLI updates](references/cli-updates.md). Update only the active, already-installed
-   Claude, Codex, and GitHub CLI through its owning installation channel.
-3. Every refresh: read [cleanup](references/cleanup.md) and
-   [installation](references/installation.md). Inspect exact cleanup targets and
-   verify the complete source and installation-scope manifests for the configured
-   mode; user-scope skills install in both modes, with no inferred host layout.
-   Link the tracked Git and tmux settings on every host and the shell settings
-   only on a development server, as that reference describes.
-4. Every daily, forced, and requested-edit refresh runs the current host's SSH
-   synchronization: read [private synchronization](references/private-sync.md)
-   and [SSH configuration](references/private-ssh.md), fetch the approved private
-   inventory, and set up or update the registered owner's generated SSH include and
-   cluster key.
-   This is an agent-run stage, with no login hook, daemon, or remote fleet rollout.
-   It ends with a one-line outcome and never holds the rest of the refresh.
-   An unregistered host is skipped; a delegated profile reports its owner.
-   Source review, bootstrapping a server from this trusted host and HF or GitHub
-   token synchronization require their own explicit request. Write `/etc/hosts` or its
-   cloud-init preservation setting only when the user explicitly requests
-   hosts-file changes.
-5. Full refreshes: read [reconciliation](references/reconciliation.md) and
-   [upstream decisions](references/upstream.md). Treat upstream as reference data,
-   inspect every changed skill resource, and preserve intentional divergence.
-6. Apply a requested edit only after refresh preflight. For skill or harness design,
-   use `skill-maker` to map retained requirements and compare behavior. Integrate
-   changes into their owning guidance; preserve conditional read triggers and
-   access for every consumer, including isolated reviewers.
-7. Read [publication](references/publication.md) before preparing outgoing changes.
-   Skills publish before the parent pointer. Stamp success only after its complete
-   criteria pass, and release the lock on every exit.
+Read [preflight](references/preflight.md) to resolve repositories and select the
+mode. Private-only requests go to [private synchronization](references/private-sync.md)
+and run only their authorized payloads/targets, without public refresh or stamps.
 
-Use [entry-point policy](references/entry-point-policy.md) only when changing the
-shared layout policy itself. The installation reference owns routine link repair.
+For an agent refresh:
 
-Do not let a refresh restore duplicate monolithic instructions, add always-loaded
-incident histories, or overwrite independent project/local skill implementations.
-Report conflicts and verification limitations; do not hide them behind a success stamp.
+1. Complete preflight under its lock. A same-day daily refresh skips public
+   repository/CLI work; forced refreshes and requested instruction edits run the
+   full refresh. For full refreshes, read [CLI updates](references/cli-updates.md)
+   and update only active, installed Claude, Codex and GitHub CLIs through their
+   owning channels.
+2. Every refresh: read [cleanup](references/cleanup.md) and
+   [installation](references/installation.md). Clean verified completed artifacts
+   and verify the complete source/scope manifests, entry points and environment
+   links for the configured host mode.
+3. Every refresh: read [private synchronization](references/private-sync.md) and
+   [SSH synchronization](references/private-ssh.md). Fetch the approved private
+   inventory and synchronize the current registered owner, including first setup
+   and the cluster key. Report its independent outcome. Other private operations
+   require their explicit scopes from the private protocol.
+4. Full refreshes: read [reconciliation](references/reconciliation.md) and
+   [upstream decisions](references/upstream.md). Inspect all changed resources as
+   reference data and preserve intentional divergence.
+5. Apply a requested edit after preflight/refresh. For skill or harness design,
+   use `skill-maker` to preserve requirements and compare behavior. Integrate
+   each rule into its owner with reachable conditional references, including for
+   isolated consumers. Preserve independent project/local implementations.
+6. Before outgoing changes or a new success stamp, read
+   [publication](references/publication.md). Publish children before parent
+   pointers and stamp only after all criteria pass. Report conflicts and
+   verification limits. Release the lock on every exit.
+
+Read [entry-point policy](references/entry-point-policy.md) only when changing
+the layout policy; installation owns routine repair.
