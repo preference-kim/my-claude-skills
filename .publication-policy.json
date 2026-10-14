@@ -53,6 +53,17 @@
     "agent-update/references/private-github.md",
     "agent-update/references/private-bootstrap.md",
     "agent-update/references/private-ssh-setup.md",
-    "agent-update/references/installation-migration.md"
+    "agent-update/references/installation-migration.md",
+    "technical-communication/SKILL.md",
+    "technical-communication/evals/README.md",
+    "technical-communication/evals/cases.json",
+    "technical-communication/evals/routing.json",
+    "technical-communication/evals/build_guidance.py",
+    "technical-communication/evals/run_pilot.py",
+    "technical-communication/evals/test_runner.py",
+    "agent-update/references/reference-maintenance.md",
+    "agent-update/scripts/reference_updates.py",
+    "agent-update/scripts/retire_links.py",
+    "agent-update/scripts/test_reference_policy.py"
   ]
 }

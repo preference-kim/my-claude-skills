@@ -4,10 +4,11 @@
   "gh-review-other-pr": "user",
   "gh-review-own-pr": "user",
   "gh-stack": "user",
-  "humanizer": "user",
-  "simple-english": "user",
+  "humanizer": "reference",
+  "simple-english": "reference",
   "skill-maker": "user",
   "stop-bullshit": "user",
+  "technical-communication": "user",
   "tt-device-investigation": "moreh-dev",
   "write-technical-pr": "user"
 }

@@ -14,8 +14,9 @@ preflight here and use [private synchronization](private-sync.md).
   cleanup, complete manifest/link verification and approved SSH fetch/drift checks.
 - **Forced:** `/agent-update`, `$agent-update` or an explicit refresh runs all
   stages regardless of date.
-- **Requested edit:** run the full refresh, including SSH, then apply the request
-  before validation/publication.
+- **Requested edit:** use the review-only path below for an isolated proposal.
+  Otherwise run the full refresh, including SSH, then apply the request before
+  validation/publication.
 - **Link repair:** perform configured link checks even if today's refresh passed.
 - **Private-only:** explicit server-configuration or enrolled-credential work
   runs only requested targets/payloads under the private protocol. It does not
@@ -25,6 +26,15 @@ preflight here and use [private synchronization](private-sync.md).
 Generic refresh authorizes neither source review/bootstrap nor hosts-file or
 HF/GitHub writes. Private state is
 `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`.
+
+## Review-only instruction proposals
+
+When the user requests a PR or isolated proposal without live activation, record
+clean source revisions and use separate branches/worktrees. Do not run the live
+refresh, private synchronization, installation, CLI updates, or success stamping
+as a prerequisite. Validate candidate manifests and migrations in fixtures.
+The user-requested proposal workflow owns publication and review; preserve the
+live entry points until activation is authorized.
 
 ## Validate the host layout
 

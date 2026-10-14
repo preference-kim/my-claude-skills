@@ -59,7 +59,7 @@ check line references.
 
 Apply the finding contract to one concise Korean inline comment per retained
 issue. Omit reviewer provenance and orchestration details. Run
-[humanizer](../humanizer/SKILL.md) in embedded mode, preserving technical meaning,
+[technical communication](../technical-communication/SKILL.md), preserving technical meaning,
 severity, rationale, references, and suggestions. Keep `path`, `line`, and `side`
 outside prose editing. Then apply [stop-bullshit](../stop-bullshit/SKILL.md) to
 both the reviewed material and comments. Repeat the applicable prose and substance

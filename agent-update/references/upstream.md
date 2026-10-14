@@ -35,8 +35,9 @@ for isolated consumers. Read the referenced owner before changing that contract.
   [installation](installation.md) and
   [entry-point policy](entry-point-policy.md) own host-local modes, exact
   `moreh_dev_root`, portable per-skill links, user/project scope and migration.
-  Both modes retain user skills for both runtimes. Do not restore the former
-  global-entry ban in `moreh-dev` or remove supported `~/.agents/skills` links.
+  Both modes retain user skills for both runtimes. Do not ban user-scope skills
+  in `moreh-dev` or remove supported `~/.agents/skills` links. Instruction files
+  remain in the configured project only in that mode.
   Discovery includes only approved tracked sources/gitlinks, never internal
   audits or local evidence.
 - **Source ownership:** shared skills live in `preference-kim/my-claude-skills`.
@@ -44,8 +45,12 @@ for isolated consumers. Read the referenced owner before changing that contract.
   them. `stop-bullshit` remains user-owned at `preference-kim/stop-bullshit`;
   `humanizer` and `simple-english` remain unchanged vendor submodules.
   SimpleEnglish's source is `https://github.com/AminBlg/SimpleEnglish.git`,
-  with nested `skill-path` in `.gitmodules`; install its user skill, not plugin
-  or hooks. It governs English PR drafts, handoffs and technical documentation.
+  with nested `skill-path` in `.gitmodules`. Both vendor skills are pinned
+  references, excluded from discovery and routine writing. `technical-communication`
+  owns technical prose; `stop-bullshit` owns explicit audits and recovery.
+  Preserve that separation when reconciling upstream changes. Read
+  [reference maintenance](reference-maintenance.md) before checking or adopting
+  vendor changes; update notices do not authorize adoption.
 - **Maintenance:** retain [preflight](preflight.md)'s session-driven daily
   semantic reconciliation and installed-CLI updates, rather than upstream's
   pull-only workflow. [Private synchronization](private-sync.md) runs approved
@@ -66,7 +71,7 @@ for isolated consumers. Read the referenced owner before changing that contract.
   boundaries. Unlike upstream chat-only review, `gh-review-other-pr` stores
   validated concise Korean inline findings in the viewer's unsubmitted pending
   review. Leaf reviewers/validation stay read-only; no other GitHub mutation
-  or submission is authorized. Preserve `humanizer` prose editing, followed by
+  or submission is authorized. Preserve separate technical prose review, followed by
   `stop-bullshit` checks of material and feedback, including isolated prompts.
   Preserve AGENTS' PR ban on inaccessible local evidence and same-environment
   handoff exception. Keep `stop-bullshit` as the single detailed audit owner

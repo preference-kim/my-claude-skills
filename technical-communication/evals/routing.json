@@ -1,0 +1,100 @@
+[
+  {
+    "id": "document",
+    "request": "Write a runbook for draining this service.",
+    "required": [
+      "technical-communication"
+    ],
+    "forbidden": [
+      "stop-bullshit",
+      "humanizer",
+      "simple-english"
+    ]
+  },
+  {
+    "id": "results",
+    "request": "Explain these benchmark results and the inference they support for the engineering team.",
+    "required": [
+      "technical-communication"
+    ],
+    "forbidden": [
+      "humanizer",
+      "simple-english"
+    ]
+  },
+  {
+    "id": "revision",
+    "request": "Revise this API guide to match the new ownership contract.",
+    "required": [
+      "technical-communication"
+    ],
+    "forbidden": [
+      "humanizer",
+      "simple-english"
+    ]
+  },
+  {
+    "id": "short",
+    "request": "What does mutex mean? Answer in one sentence.",
+    "required": [],
+    "forbidden": [
+      "technical-communication",
+      "stop-bullshit",
+      "humanizer",
+      "simple-english"
+    ]
+  },
+  {
+    "id": "audit",
+    "request": "You said this test passed, but the log says it did not run. Audit your claim and finish the repair.",
+    "required": [
+      "stop-bullshit"
+    ],
+    "forbidden": [
+      "technical-communication",
+      "humanizer",
+      "simple-english"
+    ]
+  },
+  {
+    "id": "pr",
+    "request": "Draft a technical PR description for this diff.",
+    "required": [
+      "write-technical-pr"
+    ],
+    "forbidden": [
+      "humanizer",
+      "simple-english"
+    ],
+    "dependent_loads": [
+      "technical-communication"
+    ]
+  },
+  {
+    "id": "handoff",
+    "request": "Prepare a continuation brief and opening prompt for a fresh session.",
+    "required": [
+      "agent-handoff"
+    ],
+    "forbidden": [
+      "humanizer",
+      "simple-english"
+    ],
+    "dependent_loads": [
+      "technical-communication"
+    ]
+  },
+  {
+    "id": "ste",
+    "request": "Write this maintenance procedure to ASD-STE100 Issue 9.",
+    "required": [
+      "technical-communication"
+    ],
+    "references": [
+      "simple-english"
+    ],
+    "forbidden": [
+      "humanizer"
+    ]
+  }
+]

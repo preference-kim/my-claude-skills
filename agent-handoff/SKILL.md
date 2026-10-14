@@ -12,7 +12,7 @@ does not invoke this workflow or delegate again.
 ## Draft
 
 Before drafting or assessing a handoff, read the [content contract](references/content.md).
-Before writing prose, read [SimpleEnglish](../simple-english/skills/simple-english/SKILL.md)
+Before writing prose, read [technical communication](../technical-communication/SKILL.md)
 and preserve the requested language. Reconstruct the task from the request,
 accepted plan, implementation, and evidence. Inspect an existing handoff before
 replacing it. Draft its five required sections without prescribing a new plan
@@ -28,7 +28,7 @@ or priorities, or prescribe routine commands.
 
 Before arranging independent review, read the [document revision workflow](../review-common/document-revision.md).
 Submit both the draft and opening prompt to a separate agent under that workflow.
-It must apply `humanizer` in embedded mode, then `stop-bullshit` to the prose,
+It must assess technical meaning and clarity, then apply `stop-bullshit` to the prose,
 supporting claims, and its own feedback. Resolve findings against evidence and
 complete the revision pass. Self-review does not replace this requirement.
 

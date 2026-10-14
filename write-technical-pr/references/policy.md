@@ -3,8 +3,8 @@
 ## Language and publication
 
 Draft new or substantively revised descriptions in English with
-[SimpleEnglish](../../simple-english/skills/simple-english/SKILL.md), then prepare
-the final language before independent `humanizer` and `stop-bullshit` review.
+[technical communication](../../technical-communication/SKILL.md), then prepare
+the final language before independent technical prose and `stop-bullshit` review.
 Translation preserves evidence, qualifications, and technical meaning. The English
 working draft is not an extra delivered section.
 
