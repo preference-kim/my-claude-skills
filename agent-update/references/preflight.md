@@ -33,8 +33,15 @@ When the user requests a PR or isolated proposal without live activation, record
 clean source revisions and use separate branches/worktrees. Do not run the live
 refresh, private synchronization, installation, CLI updates, or success stamping
 as a prerequisite. Validate candidate manifests and migrations in fixtures.
-The user-requested proposal workflow owns publication and review; preserve the
-live entry points until activation is authorized.
+The user-requested proposal workflow owns publication and review. Preserve live
+entry points while preparing and reviewing the proposal.
+
+Ordinary full refreshes pull the `main` branches used by the live installation
+and follow the updated instructions. A merged proposal can therefore become
+active on the next full refresh, without another activation step. Before merging,
+complete its required validation and obtain approval that includes activation.
+Keep proposals unmerged while either requirement is unmet. Publishing a proposal
+branch does not authorize its merge.
 
 ## Validate the host layout
 
