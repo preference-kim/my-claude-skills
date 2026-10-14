@@ -15,6 +15,21 @@ state that gap without inventing its cause or implying no benefit. Narrow the cl
 unless the task requires the missing experiment. Description writing alone does
 not authorize experiments or implementation changes.
 
+For performance results, place a compact method description beside the tables:
+the repository script/test entry point; clock source and timed boundary (for
+example, device timestamps or host wall time around trace replay); profiler
+state; repetitions, aggregation, and whether inputs/randomness vary. State the
+hardware, workload, and configuration differences that affect comparability.
+Keep full commands and setup in a collapsed reproduction block. A unit such as
+microseconds does not identify what was timed.
+
+Distinguish per-call statistics from averages over repeated calls and aggregates
+of those averages. For data-dependent work, explain what variation the reported
+samples cover. Fixed-input replay does not establish a workload latency
+percentile. Report available tail/iteration statistics when they bear on the
+claim, or state the missing coverage without inventing values or starting an
+unrequested experiment.
+
 ## Quantitative results
 
 Keep system-level achievement against a stated target model separate from
@@ -43,8 +58,9 @@ wrappers, undeclared state, or machine-specific absolute paths. A simplified
 procedure is a verified reproducer only if that version was checked.
 
 Put results and their method, conditions, units, and acceptance/comparison basis
-together. Use tables for comparable results and avoid repeating the same values
-elsewhere. Give numerical or behavioral acceptance criteria before results and
+together within the description policy's visible-body budget. Use tables for
+comparable results and avoid repeating the same values elsewhere. Give numerical
+or behavioral acceptance criteria before results and
 tie each result to its actual tested source and coverage. Distinguish validation
 scopes and production defaults from diagnostic alternatives. One passing metric
 or case does not establish full-gate approval. Mark unfinished required validation
