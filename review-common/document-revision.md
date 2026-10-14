@@ -13,6 +13,8 @@ agent:
   publication authority. Include a handoff's opening prompt.
 - Relevant sources, claim-specific evidence, and explicit gaps. For PR descriptions,
   include the base/head diff and evidence for retained claims.
+- The Reviewer contract below, including its flow-reconstruction criterion and
+  read-only limits.
 - The applicable AGENTS.md reasoning and communication principles, document policy,
   and conditional evidence contracts, plus both skills above. Supply readable
   canonical paths, or their contents when the reviewer cannot access those files.
@@ -27,9 +29,15 @@ Preserve required structure, meaning, and warranted uncertainty. Prose editing
 cannot supply missing evidence or justify a contradicted claim.
 
 Check whether a reader without the conversation can follow material conclusions
-and their support. Return supported findings with locations and proposed revisions,
-plus unresolved source or scope gaps. Identify the reviewed version and anything
-not checked. A no-finding result is valid.
+and their support. For described behavior, reconstruct the relevant flow from
+trigger and inputs through processing to outputs and later use. Check that the
+document explains why material data is needed and who produces, changes, retains,
+and consumes it. Do not fill missing relationships from source knowledge or count
+headings and fields as evidence of comprehension. Identify the exact missing link
+and its effect on the reader's decision or use; do not impose a workflow explanation
+on a simple change that needs none. Return supported findings with locations and
+proposed revisions, plus unresolved source or scope gaps. Identify the reviewed
+version and anything not checked. A no-finding result is valid.
 
 The reviewer is a read-only leaf. It can propose text but cannot edit shared
 artifacts, publish, contact others, invoke orchestration, or delegate.

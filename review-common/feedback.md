@@ -7,6 +7,15 @@ Cite the smallest relevant changed location and any applicable authoritative
 reference, explaining why it applies. The comment must carry the causal argument
 without making the reader reconstruct it from links.
 
+Before judging a changed interface or data flow, trace the relevant behavior
+across its callers and stages. Establish what each material value represents, why
+it is needed, and how its role or ownership changes from production to later use.
+Distinguish algorithm or protocol requirements from choices in the current
+representation. If a relationship is unclear, locate the ambiguity and explain
+its concrete effect on implementation, use, or maintenance; the presence of fields
+or documentation alone does not establish a coherent contract. Do not turn a
+preferred presentation into a correctness finding.
+
 Prioritize correctness, concurrency, security, compatibility, resource lifetime,
 test coverage, and material maintainability in changed behavior. Use surrounding
 code to establish impact. Exclude speculative and style-only findings.

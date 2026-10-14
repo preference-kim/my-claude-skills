@@ -58,9 +58,17 @@ Check bindings, validation, implementation, and relevant callers/tests for these
 claims. State material documentation/implementation discrepancies or missing
 recommendation evidence explicitly.
 
-For relevant data paths, trace outputs from producer to
-consumer: contents, storage, transfer, lifetime,
-allocation, ownership, aliasing, and release. Attribute constraints to semantics,
+For relevant data paths, explain the overall behavior before inventorying fields.
+A reader must be able to follow the trigger and inputs through the material
+processing stages to outputs and their later consumers. Explain why each material
+data item is needed, who produces and consumes it, and whether it is a supplied
+input, derived result, retained state, or output at each boundary. Connect storage,
+transfer, lifetime, allocation, ownership, aliasing, and release to that flow.
+When an algorithm or protocol determines the interface, give the short mechanism
+needed to understand those relationships. Distinguish semantic requirements from
+the current representation; a stored field's existence alone does not justify its
+necessity. Inspect missing links or state them as unresolved rather than inventing
+a rationale. Attribute constraints to semantics,
 preprocessing, feature scope, resources/concurrency, or deployment. Give size-limit
 stages, units, padding, and alignment. Distinguish implementation capacity from
 model limits.
@@ -119,6 +127,12 @@ Report retained design and final results relative to the base. Keep relevant
 baselines and comparable performance conditions. Omit superseded candidates,
 transient failures, review/rebase history, retries, and rerun chronology.
 
-Before manuscript review, check whether a reader can identify the changed call
-contract and interpret every result from the visible body. Missing facts require
-source inspection or an explicit gap, not more background prose.
+Before manuscript review, reconstruct the changed behavior from the document
+without filling gaps from the conversation or unstated code knowledge. Check that
+the visible body explains the changed contract, material data relationships and
+results. Completion means the reader can understand the whole relevant flow and
+why its data is needed, not merely find every requested heading or field. Scale
+this check to the change; it does not require a fixed template, diagram, or
+algorithm tutorial. This check supplements the language, contract, and evidence
+requirements; it does not replace them. Missing links need source inspection or
+an explicit gap.
