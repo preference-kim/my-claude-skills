@@ -136,7 +136,9 @@ def codex_isolation(root):
     # Global instructions are not controlled by project_doc_max_bytes in all versions.
     if "AGENTS.md instructions" in result.stdout or "<skills_instructions>" in result.stdout:
         return "Codex still injects ambient instructions; controlled comparison blocked"
-    return None
+    # prompt-input omits the tool catalog. A read-only sandbox still exposes
+    # tools, so a clean prompt is insufficient to authorize an actor run.
+    return "Codex per-case tool boundaries are unverified; controlled comparison blocked"
 
 
 def run_one(args, case, variant, repeat):
@@ -292,19 +294,37 @@ def main():
     variants = ["C"] if args.partition == "holdout" else ["A", "B", "C"]
     jobs = [(case, variant, repeat) for case in cases for variant in variants for repeat in (1, 2)]
     random.Random(20261014).shuffle(jobs)
-    with ThreadPoolExecutor(max_workers=2) as pool:
-        futures = []
-        try:
-            for job in jobs:
-                futures.append(pool.submit(run_one, args, *job))
-            records = [future.result() for future in futures]
-        except BaseException:
-            # Publish cancellation before __exit__ waits for workers. Their
-            # children have separate sessions and do not receive our SIGINT.
-            stop_campaign()
-            for future in futures:
-                future.cancel()
-            raise
+    def terminate_controller(signum, _frame):
+        raise SystemExit(128 + signum)
+    previous_term = signal.signal(signal.SIGTERM, terminate_controller)
+    previous_int = signal.getsignal(signal.SIGINT)
+    failure = None
+    try:
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            futures = []
+            try:
+                for job in jobs:
+                    futures.append(pool.submit(run_one, args, *job))
+                records = [future.result() for future in futures]
+            except BaseException as error:
+                # Children have separate sessions. Stop launches before waiting
+                # for workers, and do not interrupt their bounded cleanup again.
+                signal.signal(signal.SIGINT, signal.SIG_IGN)
+                signal.signal(signal.SIGTERM, signal.SIG_IGN)
+                stop_campaign()
+                for future in futures:
+                    future.cancel()
+                failure = error
+        if failure is not None:
+            worker_errors = [future.exception() for future in futures if not future.cancelled()]
+            other_errors = [error for error in worker_errors if error is not None and error is not failure]
+            if other_errors:
+                details = "; ".join(str(error) for error in other_errors)
+                raise RuntimeError(f"controller failure: {type(failure).__name__}: {failure}; worker failures: {details}") from failure
+            raise failure
+    finally:
+        signal.signal(signal.SIGTERM, previous_term)
+        signal.signal(signal.SIGINT, previous_int)
     (args.output / "summary.json").write_text(json.dumps(records, indent=2) + "\n")
     if STOP.is_set():
         print("Campaign stopped at a quota/overage signal; do not launch more model runs.", flush=True)

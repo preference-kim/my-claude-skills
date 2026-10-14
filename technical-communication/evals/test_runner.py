@@ -104,6 +104,15 @@ class QuotaTests(unittest.TestCase):
 
     @unittest.skipUnless(hasattr(os, "killpg"), "process groups require a POSIX runtime")
     def test_controller_interrupt_cancels_queue_and_reaps_children(self):
+        for signum in (signal.SIGINT, signal.SIGTERM):
+            with self.subTest(signal=signum):
+                self.check_controller_interrupt(signum)
+
+    @unittest.skipUnless(hasattr(os, "killpg"), "process groups require a POSIX runtime")
+    def test_controller_reports_worker_cleanup_failure(self):
+        self.check_controller_interrupt(signal.SIGTERM, cleanup_error=True)
+
+    def check_controller_interrupt(self, signum, cleanup_error=False):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             argv = self.campaign_arguments(root)
@@ -116,8 +125,12 @@ class QuotaTests(unittest.TestCase):
                             "deadline=time.monotonic()+10\n"
                             f"while not Path({str(release)!r}).exists() and time.monotonic()<deadline:\n time.sleep(0.02)\n")
             wrapper = root / "controller.py"
+            cleanup = ("real_terminate=run_pilot.terminate_group\n"
+                       "def terminate(process):\n real_terminate(process)\n raise RuntimeError('synthetic cleanup error')\n"
+                       "run_pilot.terminate_group=terminate\n") if cleanup_error else ""
             wrapper.write_text("import signal,subprocess,sys\nfrom unittest.mock import patch\n"
                                f"sys.path.insert(0, {str(Path(run_pilot.__file__).parent)!r})\nimport run_pilot\n"
+                               + cleanup +
                                "signal.signal(signal.SIGINT, signal.default_int_handler)\n"
                                "real_popen=subprocess.Popen\n"
                                f"def spawn(_command, **kwargs):\n return real_popen([sys.executable, {str(fake)!r}], **kwargs)\n"
@@ -131,15 +144,18 @@ class QuotaTests(unittest.TestCase):
                     while len(list(markers.iterdir())) < 2 and controller.poll() is None and time.monotonic() < deadline:
                         time.sleep(0.02)
                     self.assertEqual(len(list(markers.iterdir())), 2)
-                    controller.send_signal(signal.SIGINT)
-                    time.sleep(0.5)
-                    # A broken controller can finish, exposing further launches instead of hanging the test.
-                    release.touch()
+                    controller.send_signal(signum)
+                    # Verify cleanup while children still require termination;
+                    # releasing them first could hide surviving process groups.
                     self.assertNotEqual(controller.wait(timeout=5), 0)
                     self.assertEqual(len(list(markers.iterdir())), 2)
                     records = [json.loads(path.read_text()) for path in (root / "output").glob("*/record.json")]
-                    self.assertEqual(len(records), 2)
-                    self.assertTrue(all(record["status"] == "campaign_stopped" and record["exit_code"] is not None for record in records))
+                    if cleanup_error:
+                        self.assertIn("worker failures:", (root / "controller.log").read_text())
+                        self.assertIn("synthetic cleanup error", (root / "controller.log").read_text())
+                    else:
+                        self.assertEqual(len(records), 2)
+                        self.assertTrue(all(record["status"] == "campaign_stopped" and record["exit_code"] is not None for record in records))
                     for marker in markers.iterdir():
                         with self.assertRaises(ProcessLookupError):
                             os.killpg(int(marker.name), 0)
@@ -151,6 +167,28 @@ class QuotaTests(unittest.TestCase):
                         except ProcessLookupError:
                             pass
                     controller.wait(timeout=3)
+
+    def test_codex_prompt_inspection_without_tool_evidence_blocks_actors(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
+            root = Path(directory)
+            argv = self.campaign_arguments(root)
+            inspected = SimpleNamespace(returncode=0, stdout="[]", stderr="")
+            with patch.object(sys, "argv", argv), patch.object(run_pilot.subprocess, "run", return_value=inspected), patch.object(run_pilot, "run_one", side_effect=AssertionError("actor launch must be blocked")) as actor:
+                result = run_pilot.main()
+            self.assertEqual(result, 2)
+            actor.assert_not_called()
+            blocked = json.loads((root / "output/blocked.json").read_text())
+            self.assertEqual(blocked["generations"], 0)
+            self.assertIn("tool", blocked["reason"])
+
+    def test_controller_restores_signal_handlers_after_failure(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
+            argv = self.campaign_arguments(Path(directory))
+            previous = {signum: signal.getsignal(signum) for signum in (signal.SIGINT, signal.SIGTERM)}
+            with patch.object(sys, "argv", argv), patch.object(run_pilot, "codex_isolation", return_value=None), patch.object(run_pilot, "run_one", side_effect=RuntimeError("synthetic worker failure")):
+                with self.assertRaisesRegex(RuntimeError, "synthetic worker failure"):
+                    run_pilot.main()
+            self.assertEqual({signum: signal.getsignal(signum) for signum in previous}, previous)
 
     def test_child_is_stopped_and_queued_work_skipped(self):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:

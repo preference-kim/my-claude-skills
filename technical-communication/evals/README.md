@@ -49,6 +49,8 @@ Do not chain campaigns unconditionally. On an account-wide quota rejection or
 reported overage, the runner stops queued work and terminates active process
 groups. If termination fails, it reports unverified termination and makes a
 bounded reaping attempt; inspect the affected process before any further run.
+SIGINT and SIGTERM to the controller also stop queued work and clean up active
+groups before the controller exits. Further interrupts are ignored during cleanup.
 Exit code 3 requires stopping further model runs under the current account policy. Preserve partial
 results. A later authorized rerun uses a new output directory and a recorded reason.
 Codex
@@ -64,10 +66,12 @@ The runner needs Python 3.9 or later and the selected CLI. It restricts actors t
 supplied material. Claude safe mode, disabled skills, and restricted tools exclude
 installed customizations; provider-built-in security controls remain enabled.
 Inspect initialization records for unexpected skills, plugins, or MCP servers.
-Codex's prompt-inspection gate rejects ambient AGENTS or skill instructions. Some
-versions still load global AGENTS when project loading is disabled: report this
-as a blocked comparison, not a clean evaluation. Do not alter live instructions
-or copy credentials to work around it.
+Codex actor runs are currently blocked. The prompt inspector can expose ambient
+AGENTS or skill instructions, but it does not verify the tool catalog or per-case
+tool restrictions under the actor's launch configuration. A clean prompt
+inspection therefore cannot authorize a campaign. A verified adapter is required
+before Codex evaluation can resume. Do not alter live instructions or copy
+credentials to work around this gate.
 
 Document actors receive no tools. The repair actor may edit its synthetic
 `converter.py` and run the supplied checker; it cannot modify the checker or
