@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise quota stopping with a synthetic child process, without model calls."""
+"""Exercise quota stopping and cancellation with synthetic children, without model calls."""
 
 import argparse
 import io
@@ -31,6 +31,126 @@ class QuotaTests(unittest.TestCase):
         self.assertIsNotNone(run_pilot.quota_stop_reason(event(status="allowed", isUsingOverage=True)))
         self.assertIsNone(run_pilot.quota_stop_reason(event(status="allowed", rateLimitType="seven_day")))
         self.assertIsNone(run_pilot.quota_stop_reason(event(status="rejected", rateLimitType="model_capacity")))
+
+    def test_codex_quota_scope(self):
+        messages = [
+            "You’ve hit your usage limit. Try again later.",
+            "You've hit your usage limit. Upgrade your plan to continue.",
+            "Quota exceeded. Check your plan and billing details.",
+            "Your workspace is out of credits. Add credits to continue.",
+            "Your workspace is out of credits. Ask your workspace owner to refill in order to continue.",
+            "You hit your spend cap set in your workspace. Increase your spend cap to continue.",
+            "You hit your spend cap set by the owner of your workspace. Ask an owner to increase your spend cap to continue.",
+            "To use Codex with your ChatGPT plan, upgrade to Plus: https://chatgpt.com/explore/plus.",
+        ]
+        for message in messages:
+            for event in ({"type": "error", "message": message},
+                          {"type": "turn.failed", "error": {"message": message}}):
+                with self.subTest(event=event):
+                    self.assertIsNotNone(run_pilot.quota_stop_reason(event))
+        for message in ["Selected model is at capacity. Please try a different model.",
+                        "Flex capacity unavailable.", "Rate limit exceeded; retry after 1 second.",
+                        "You’ve hit your usage limit for example-model. Switch to another model now.",
+                        "A task response quoting: You’ve hit your usage limit."]:
+            self.assertIsNone(run_pilot.quota_stop_reason({"type": "error", "message": message}))
+        for event in [None, [], {"type": "error", "message": None},
+                      {"type": "turn.failed", "error": "malformed"},
+                      {"type": "item.completed", "message": messages[0]}]:
+            self.assertIsNone(run_pilot.quota_stop_reason(event))
+
+    def campaign_arguments(self, root):
+        case = {"id": "probe", "kind": "audit", "prompt": "synthetic", "partition": "development"}
+        (root / "cases.json").write_text(json.dumps([case]))
+        for variant in ("A", "B", "C"):
+            directory = root / "guidance" / variant
+            directory.mkdir(parents=True)
+            (directory / "probe.md").write_text("synthetic guidance")
+        return ["run_pilot.py", "--cases", str(root / "cases.json"),
+                "--guidance", str(root / "guidance"), "--output", str(root / "output"),
+                "--runtime", "codex", "--model", "fixture", "--effort", "fixture",
+                "--partition", "development"]
+
+    def test_codex_quota_stops_campaign_but_transient_errors_do_not(self):
+        events = [({"type": "error", "message": "You’ve hit your usage limit. Try again later."}, True),
+                  ({"type": "turn.failed", "error": {"message": "Quota exceeded. Check your plan and billing details."}}, True),
+                  ({"type": "error", "message": "Selected model is at capacity. Please try a different model."}, False)]
+        for event, quota in events:
+            with self.subTest(event=event), tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
+                root = Path(directory)
+                argv = self.campaign_arguments(root)
+                fake = root / "fake.py"
+                fake.write_text("import sys\nsys.stdin.read()\nprint(" + repr(json.dumps(event)) + ", flush=True)\nraise SystemExit(1)\n")
+                real_popen = subprocess.Popen
+                children = []
+                def spawn(_command, **kwargs):
+                    child = real_popen([sys.executable, str(fake)], **kwargs)
+                    children.append(child)
+                    return child
+                # The isolation probe is deliberately stubbed; this tests scheduling only.
+                with patch.object(sys, "argv", argv), patch.object(run_pilot, "codex_isolation", return_value=None), patch.object(run_pilot.subprocess, "Popen", side_effect=spawn):
+                    result = run_pilot.main()
+                records = json.loads((root / "output/summary.json").read_text())
+                self.assertEqual(len(records), 6)
+                self.assertTrue(all(child.poll() is not None for child in children))
+                if quota:
+                    self.assertEqual(result, 3)
+                    self.assertLessEqual(len(children), 2)
+                    self.assertTrue(any(record["status"] == "quota_stopped" for record in records))
+                    self.assertGreaterEqual(sum(record["status"] == "not_started_campaign_stop" for record in records), 4)
+                else:
+                    self.assertEqual(result, 1)
+                    self.assertEqual(len(children), 6)
+                    self.assertFalse(run_pilot.STOP.is_set())
+
+    @unittest.skipUnless(hasattr(os, "killpg"), "process groups require a POSIX runtime")
+    def test_controller_interrupt_cancels_queue_and_reaps_children(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
+            root = Path(directory)
+            argv = self.campaign_arguments(root)
+            markers = root / "children"
+            markers.mkdir()
+            release = root / "release"
+            fake = root / "fake.py"
+            fake.write_text("import os,sys,time\nfrom pathlib import Path\nsys.stdin.read()\n"
+                            f"Path({str(markers)!r}, str(os.getpid())).touch()\n"
+                            "deadline=time.monotonic()+10\n"
+                            f"while not Path({str(release)!r}).exists() and time.monotonic()<deadline:\n time.sleep(0.02)\n")
+            wrapper = root / "controller.py"
+            wrapper.write_text("import signal,subprocess,sys\nfrom unittest.mock import patch\n"
+                               f"sys.path.insert(0, {str(Path(run_pilot.__file__).parent)!r})\nimport run_pilot\n"
+                               "signal.signal(signal.SIGINT, signal.default_int_handler)\n"
+                               "real_popen=subprocess.Popen\n"
+                               f"def spawn(_command, **kwargs):\n return real_popen([sys.executable, {str(fake)!r}], **kwargs)\n"
+                               f"sys.argv={argv!r}\n"
+                               "with patch.object(run_pilot, 'codex_isolation', return_value=None), patch.object(run_pilot.subprocess, 'Popen', side_effect=spawn):\n"
+                               " raise SystemExit(run_pilot.main())\n")
+            with (root / "controller.log").open("w") as log:
+                controller = subprocess.Popen([sys.executable, str(wrapper)], stdout=log, stderr=log, start_new_session=True)
+                try:
+                    deadline = time.monotonic() + 5
+                    while len(list(markers.iterdir())) < 2 and controller.poll() is None and time.monotonic() < deadline:
+                        time.sleep(0.02)
+                    self.assertEqual(len(list(markers.iterdir())), 2)
+                    controller.send_signal(signal.SIGINT)
+                    time.sleep(0.5)
+                    # A broken controller can finish, exposing further launches instead of hanging the test.
+                    release.touch()
+                    self.assertNotEqual(controller.wait(timeout=5), 0)
+                    self.assertEqual(len(list(markers.iterdir())), 2)
+                    records = [json.loads(path.read_text()) for path in (root / "output").glob("*/record.json")]
+                    self.assertEqual(len(records), 2)
+                    self.assertTrue(all(record["status"] == "campaign_stopped" and record["exit_code"] is not None for record in records))
+                    for marker in markers.iterdir():
+                        with self.assertRaises(ProcessLookupError):
+                            os.killpg(int(marker.name), 0)
+                finally:
+                    release.touch()
+                    for pid in [controller.pid, *(int(marker.name) for marker in markers.iterdir())]:
+                        try:
+                            os.killpg(pid, signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass
+                    controller.wait(timeout=3)
 
     def test_child_is_stopped_and_queued_work_skipped(self):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
@@ -97,19 +217,22 @@ class QuotaTests(unittest.TestCase):
                 if not leader_exits:
                     raise subprocess.TimeoutExpired("fixture", timeout)
                 return -15
-            process = SimpleNamespace(pid=123, wait=wait)
-            with patch.object(run_pilot.os, "killpg", side_effect=PermissionError("synthetic EPERM")):
+            process = SimpleNamespace(pid=123, poll=lambda: None, wait=wait)
+            with patch.object(run_pilot.os, "killpg", side_effect=PermissionError("synthetic EPERM")), patch.object(run_pilot, "TERMINATION_GRACE_SECONDS", 0.01):
                 with self.assertRaisesRegex(RuntimeError, "termination unverified.*synthetic EPERM"):
                     run_pilot.terminate_group(process)
-            self.assertEqual(waits, [run_pilot.TERMINATION_GRACE_SECONDS])
+            self.assertEqual(waits, [0.01] * 3)
 
     def test_probe_permission_failure_is_not_group_absence(self):
         waits = []
-        process = SimpleNamespace(pid=123, wait=lambda timeout: waits.append(timeout))
-        with patch.object(run_pilot.os, "killpg", side_effect=[None, PermissionError("synthetic probe EPERM")]):
+        process = SimpleNamespace(pid=123, poll=lambda: None, wait=lambda timeout: waits.append(timeout))
+        def signal_group(_pid, sig):
+            if sig == 0:
+                raise PermissionError("synthetic probe EPERM")
+        with patch.object(run_pilot.os, "killpg", side_effect=signal_group), patch.object(run_pilot, "TERMINATION_GRACE_SECONDS", 0.01):
             with self.assertRaisesRegex(RuntimeError, "termination unverified.*probe EPERM"):
                 run_pilot.terminate_group(process)
-        self.assertEqual(waits, [run_pilot.TERMINATION_GRACE_SECONDS] * 2)
+        self.assertEqual(waits, [0.01] * 3)
 
     def test_primary_failure_survives_cleanup_failure_and_stops_campaign(self):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
@@ -118,15 +241,30 @@ class QuotaTests(unittest.TestCase):
             (root / "A/probe.md").write_text("synthetic guidance")
             args = SimpleNamespace(output=root, guidance=root, runtime="claude", model="fixture", effort="fixture", fallback=None)
             case = {"id": "probe", "kind": "audit", "prompt": "synthetic"}
-            class FailedInput(io.StringIO):
-                def write(self, _text):
-                    raise OSError("synthetic primary error")
-            process = SimpleNamespace(stdin=FailedInput())
+            def poll():
+                raise OSError("synthetic primary error")
+            process = SimpleNamespace(poll=poll)
             with patch.object(run_pilot.subprocess, "Popen", return_value=process), patch.object(run_pilot, "terminate_group", side_effect=RuntimeError("synthetic cleanup error")):
                 with self.assertRaisesRegex(RuntimeError, "primary error.*cleanup error") as caught:
                     run_pilot.run_one(args, case, "A", 1)
             self.assertIsInstance(caught.exception.__cause__, OSError)
             self.assertTrue(run_pilot.STOP.is_set())
+
+    def test_unread_large_prompt_does_not_block_timeout(self):
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
+            root = Path(directory)
+            (root / "A").mkdir()
+            (root / "A/probe.md").write_text("synthetic guidance")
+            args = SimpleNamespace(output=root, guidance=root, runtime="codex", model="fixture", effort="fixture", fallback=None)
+            case = {"id": "probe", "kind": "audit", "prompt": "synthetic " * 100000}
+            real_popen = subprocess.Popen
+            def spawn(_command, **kwargs):
+                return real_popen([sys.executable, "-c", "import time; time.sleep(10)"], **kwargs)
+            with patch.object(run_pilot.subprocess, "Popen", side_effect=spawn), patch.object(run_pilot, "RUN_TIMEOUT_SECONDS", 0.1):
+                record = run_pilot.run_one(args, case, "A", 1)
+            self.assertEqual(record["status"], "timeout")
+            self.assertIsNotNone(record["exit_code"])
+            self.assertLess(record["elapsed_seconds"], 3)
 
     @unittest.skipUnless(hasattr(os, "fork"), "process groups require a POSIX runtime")
     def test_group_termination_outlives_leader(self):

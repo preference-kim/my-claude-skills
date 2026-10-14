@@ -34,15 +34,36 @@ TERMINATION_GRACE_SECONDS = 5
 
 
 def quota_stop_reason(event):
-    if not isinstance(event, dict) or event.get("type") != "rate_limit_event":
+    if not isinstance(event, dict):
         return None
-    info = event.get("rate_limit_info", {})
-    if not isinstance(info, dict):
+    if event.get("type") == "rate_limit_event":
+        info = event.get("rate_limit_info", {})
+        if not isinstance(info, dict):
+            return None
+        if info.get("isUsingOverage") or info.get("overageInUse"):
+            return "provider reports overage usage"
+        if info.get("status") == "rejected" and info.get("rateLimitType") in {"five_hour", "seven_day"}:
+            return "provider reports exhausted account-wide quota"
         return None
-    if info.get("isUsingOverage") or info.get("overageInUse"):
-        return "provider reports overage usage"
-    if info.get("status") == "rejected" and info.get("rateLimitType") in {"five_hour", "seven_day"}:
-        return "provider reports exhausted account-wide quota"
+    if event.get("type") == "error":
+        message = event.get("message")
+    elif event.get("type") == "turn.failed" and isinstance(event.get("error"), dict):
+        message = event["error"].get("message")
+    else:
+        return None
+    # Codex 0.162.1 JSONL carries messages, not the structured quota subtype.
+    # Match its account-limit messages, not transient capacity/rate-limit errors
+    # or the distinct "usage limit for <model>" message.
+    # https://github.com/openai/codex/blob/092d3acd6bec3e3a14bdc7e7a2810ab628ab759d/codex-rs/protocol/src/error.rs
+    if isinstance(message, str) and message.replace("’", "'").casefold().startswith((
+        "you've hit your usage limit.",
+        "quota exceeded. check your plan and billing details.",
+        "your workspace is out of credits.",
+        "you hit your spend cap set in your workspace.",
+        "you hit your spend cap set by the owner of your workspace.",
+        "to use codex with your chatgpt plan, upgrade to plus:",
+    )):
+        return "provider reports exhausted account quota or unavailable plan access"
     return None
 
 
@@ -56,19 +77,17 @@ def terminate_group(process):
     failure = None
     group_gone = False
     try:
-        try:
-            os.killpg(process.pid, signal.SIGTERM)
-        except ProcessLookupError:
-            group_gone = True
-        for escalation in (False, True):
-            if group_gone:
+        for sig in (signal.SIGTERM, signal.SIGKILL):
+            process.poll()
+            try:
+                os.killpg(process.pid, sig)
+            except ProcessLookupError:
+                group_gone = True
                 break
-            if escalation:
-                try:
-                    os.killpg(process.pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    group_gone = True
-                    break
+            except PermissionError as error:
+                # On macOS an exited, unreaped group can return EPERM. Reap
+                # and retry within the deadline; EPERM alone never proves absence.
+                failure = error
             deadline = time.monotonic() + TERMINATION_GRACE_SECONDS
             try:
                 process.wait(timeout=TERMINATION_GRACE_SECONDS)
@@ -81,9 +100,13 @@ def terminate_group(process):
                 except ProcessLookupError:
                     group_gone = True
                     break
+                except PermissionError as error:
+                    failure = error
                 if time.monotonic() >= deadline:
                     break
                 time.sleep(0.05)
+            if group_gone:
+                break
     except OSError as error:
         failure = error
     finally:
@@ -95,7 +118,7 @@ def terminate_group(process):
             if failure is not None:
                 detail = str(failure) + "; " + detail
             raise RuntimeError("process-group termination unverified: " + detail) from failure
-    if failure is not None:
+    if failure is not None and not group_gone:
         raise RuntimeError("process-group termination unverified: " + str(failure)) from failure
     if not group_gone:
         raise RuntimeError("process-group termination unverified: group still present")
@@ -153,15 +176,14 @@ def run_one(args, case, variant, repeat):
         cmd += ["-"]
     start = time.monotonic()
     stop_reason = None
-    with (directory / "events.jsonl").open("w") as output, (directory / "stderr.txt").open("w") as stderr:
+    # A file avoids blocking the worker on a pipe write before it can monitor STOP.
+    with (directory / "prompt.txt").open() as stdin, (directory / "events.jsonl").open("w") as output, (directory / "stderr.txt").open("w") as stderr:
         with LAUNCH_LOCK:
             if STOP.is_set():
                 return {"case": case["id"], "variant": variant, "repeat": repeat, "status": "not_started_campaign_stop"}
-            process = subprocess.Popen(cmd, stdin=subprocess.PIPE, text=True, stdout=output, stderr=stderr,
+            process = subprocess.Popen(cmd, stdin=stdin, text=True, stdout=output, stderr=stderr,
                                        cwd=workspace, env=env, start_new_session=True)
         try:
-            process.stdin.write(prompt)
-            process.stdin.close()
             with (directory / "events.jsonl").open() as tail:
                 pending = ""
                 while True:
@@ -271,8 +293,18 @@ def main():
     jobs = [(case, variant, repeat) for case in cases for variant in variants for repeat in (1, 2)]
     random.Random(20261014).shuffle(jobs)
     with ThreadPoolExecutor(max_workers=2) as pool:
-        futures = [pool.submit(run_one, args, *job) for job in jobs]
-        records = [future.result() for future in futures]
+        futures = []
+        try:
+            for job in jobs:
+                futures.append(pool.submit(run_one, args, *job))
+            records = [future.result() for future in futures]
+        except BaseException:
+            # Publish cancellation before __exit__ waits for workers. Their
+            # children have separate sessions and do not receive our SIGINT.
+            stop_campaign()
+            for future in futures:
+                future.cancel()
+            raise
     (args.output / "summary.json").write_text(json.dumps(records, indent=2) + "\n")
     if STOP.is_set():
         print("Campaign stopped at a quota/overage signal; do not launch more model runs.", flush=True)
