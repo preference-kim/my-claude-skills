@@ -38,6 +38,26 @@ behavior, mechanism, and observed impact or missing comparison. Where material,
 put the changed interface in the visible body: inputs/outputs, defaults, and
 whether calls return new storage or mutate caller-provided buffers. Include
 shapes, invariants, unsupported cases, and synchronization when they affect use.
+
+For tensor operations, document the call contract rather than just the signature.
+For each new or changed tensor, state its role, shape, dtype, element layout,
+buffer type, and device memory layout or sharding. Distinguish device storage
+from placement across devices. Cover returned and caller-provided output tensors,
+including mutation and aliasing rules. A new op needs its full interface; an op
+revision may focus on changed arguments, outputs, and constraints, retaining
+unchanged facts only when needed to use the change. Shared constraints can appear
+once above a compact parameter table; do not impose this table on unrelated PRs.
+
+Separate required and supported configurations, defaults, and recommendations.
+Give relevant memory, program, and compute configuration values with their
+hardware/workload conditions and the source or measurement supporting the
+recommendation. A configuration fixed by the implementation is a requirement,
+not a tuning recommendation. Identify a supported allocation helper when useful;
+do not invent configurable options or a recommended value without evidence.
+Check bindings, validation, implementation, and relevant callers/tests for these
+claims. State material documentation/implementation discrepancies or missing
+recommendation evidence explicitly.
+
 For relevant data paths, trace outputs from producer to
 consumer: contents, storage, transfer, lifetime,
 allocation, ownership, aliasing, and release. Attribute constraints to semantics,
@@ -61,7 +81,7 @@ Established technical abbreviations remain appropriate for their audience.
 
 ## Evidence and presentation
 
-Keep the visible body within 3,000 characters, including the summary, headings,
+Keep the visible body within 5,000 characters, including the summary, headings,
 tables, and visible `<summary>` labels. Count Unicode characters after removing
 the hidden contents of collapsed `<details>` blocks; count the remaining Markdown
 including whitespace as a conservative bound. Check the final saved manuscript,
