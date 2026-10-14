@@ -44,6 +44,8 @@ def quota_stop_reason(event):
             return "provider reports overage usage"
         if info.get("status") == "rejected" and info.get("rateLimitType") in {"five_hour", "seven_day"}:
             return "provider reports exhausted account-wide quota"
+        if info.get("status") == "rejected" and info.get("rateLimitType") == "overage":
+            return "provider reports exhausted overage quota"
         return None
     if event.get("type") == "error":
         message = event.get("message")
@@ -297,7 +299,7 @@ def main():
     def terminate_controller(signum, _frame):
         raise SystemExit(128 + signum)
     previous_term = signal.signal(signal.SIGTERM, terminate_controller)
-    previous_int = signal.getsignal(signal.SIGINT)
+    previous_int = signal.signal(signal.SIGINT, terminate_controller)
     failure = None
     try:
         with ThreadPoolExecutor(max_workers=2) as pool:

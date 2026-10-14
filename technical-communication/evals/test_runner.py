@@ -29,6 +29,8 @@ class QuotaTests(unittest.TestCase):
             return {"type": "rate_limit_event", "rate_limit_info": values}
         self.assertIsNotNone(run_pilot.quota_stop_reason(event(status="rejected", rateLimitType="seven_day")))
         self.assertIsNotNone(run_pilot.quota_stop_reason(event(status="allowed", isUsingOverage=True)))
+        self.assertIsNotNone(run_pilot.quota_stop_reason(event(status="rejected", rateLimitType="overage")))
+        self.assertIsNotNone(run_pilot.quota_stop_reason(event(status="rejected", rateLimitType="overage", isUsingOverage=False)))
         self.assertIsNone(run_pilot.quota_stop_reason(event(status="allowed", rateLimitType="seven_day")))
         self.assertIsNone(run_pilot.quota_stop_reason(event(status="rejected", rateLimitType="model_capacity")))
 
@@ -70,14 +72,17 @@ class QuotaTests(unittest.TestCase):
                 "--runtime", "codex", "--model", "fixture", "--effort", "fixture",
                 "--partition", "development"]
 
-    def test_codex_quota_stops_campaign_but_transient_errors_do_not(self):
-        events = [({"type": "error", "message": "You’ve hit your usage limit. Try again later."}, True),
-                  ({"type": "turn.failed", "error": {"message": "Quota exceeded. Check your plan and billing details."}}, True),
-                  ({"type": "error", "message": "Selected model is at capacity. Please try a different model."}, False)]
-        for event, quota in events:
+    def test_quota_stops_campaign_but_transient_errors_do_not(self):
+        events = [({"type": "error", "message": "You’ve hit your usage limit. Try again later."}, True, "codex"),
+                  ({"type": "turn.failed", "error": {"message": "Quota exceeded. Check your plan and billing details."}}, True, "codex"),
+                  ({"type": "error", "message": "Selected model is at capacity. Please try a different model."}, False, "codex"),
+                  ({"type": "rate_limit_event", "rate_limit_info": {"status": "rejected", "rateLimitType": "overage"}}, True, "claude"),
+                  ({"type": "rate_limit_event", "rate_limit_info": {"status": "rejected", "rateLimitType": "overage", "isUsingOverage": False}}, True, "claude")]
+        for event, quota, runtime in events:
             with self.subTest(event=event), tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
                 root = Path(directory)
                 argv = self.campaign_arguments(root)
+                argv[argv.index("--runtime") + 1] = runtime
                 fake = root / "fake.py"
                 fake.write_text("import sys\nsys.stdin.read()\nprint(" + repr(json.dumps(event)) + ", flush=True)\nraise SystemExit(1)\n")
                 real_popen = subprocess.Popen
@@ -112,7 +117,11 @@ class QuotaTests(unittest.TestCase):
     def test_controller_reports_worker_cleanup_failure(self):
         self.check_controller_interrupt(signal.SIGTERM, cleanup_error=True)
 
-    def check_controller_interrupt(self, signum, cleanup_error=False):
+    @unittest.skipUnless(hasattr(os, "killpg"), "process groups require a POSIX runtime")
+    def test_controller_honors_sigint_when_inherited_ignored(self):
+        self.check_controller_interrupt(signal.SIGINT, ignore_sigint=True)
+
+    def check_controller_interrupt(self, signum, cleanup_error=False, ignore_sigint=False):
         with tempfile.TemporaryDirectory(dir=SCRATCH) as directory:
             root = Path(directory)
             argv = self.campaign_arguments(root)
@@ -131,7 +140,7 @@ class QuotaTests(unittest.TestCase):
             wrapper.write_text("import signal,subprocess,sys\nfrom unittest.mock import patch\n"
                                f"sys.path.insert(0, {str(Path(run_pilot.__file__).parent)!r})\nimport run_pilot\n"
                                + cleanup +
-                               "signal.signal(signal.SIGINT, signal.default_int_handler)\n"
+                               f"signal.signal(signal.SIGINT, {'signal.SIG_IGN' if ignore_sigint else 'signal.default_int_handler'})\n"
                                "real_popen=subprocess.Popen\n"
                                f"def spawn(_command, **kwargs):\n return real_popen([sys.executable, {str(fake)!r}], **kwargs)\n"
                                f"sys.argv={argv!r}\n"
