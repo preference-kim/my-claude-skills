@@ -15,9 +15,12 @@ does not authorize experiments, publication, or changes beyond the request.
 
 Lead with the supported conclusion and its scope. Connect the material conditions,
 inputs, mechanism, and outputs so the reader can follow why the result occurs.
-Include interfaces, ownership, state changes, failure paths, or tradeoffs when
-they affect use or the decision. Explain consequential constraints rather than
-merely naming fields or listing implementation steps.
+Identify the exact object under discussion: the callable and its contract, or the
+script, revision, invocation, and configuration behind a result. Give the concrete
+signature or command when it determines use or reproduction; a descriptive name
+or link alone is insufficient. Include ownership, state changes, failure paths,
+or tradeoffs when they affect use or the decision. Explain consequential
+constraints rather than merely naming fields or listing implementation steps.
 
 Use established technical terms consistently. Define unfamiliar terms for this
 audience; do not replace precise terms with broader everyday words. Preserve

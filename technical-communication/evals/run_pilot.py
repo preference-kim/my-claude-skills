@@ -26,6 +26,11 @@ For document cases produce the author draft only; independent review and publica
 are outside your authority. Do not delegate or consult external resources.
 Referenced resources not supplied here are outside this exercise. Do not treat
 fictional source records as measurements of a real system.
+
+The evaluation restrictions above apply to this model invocation. In a document
+about another task or agent, TASK defines that task's authority and constraints.
+Preserve those constraints; do not transfer an evaluation restriction to the
+document's recipient unless TASK also assigns it to that recipient.
 """
 STOP = threading.Event()
 LAUNCH_LOCK = threading.Lock()

@@ -39,7 +39,12 @@ put the changed interface in the visible body: inputs/outputs, defaults, and
 whether calls return new storage or mutate caller-provided buffers. Include
 shapes, invariants, unsupported cases, and synchronization when they affect use.
 
-For tensor operations, document the call contract rather than just the signature.
+For a new or changed callable interface, show its public signature in a fenced
+code block with the appropriate language. Use the caller-facing API from the
+inspected binding or declaration, including arguments, defaults, and return type
+where declared. Explain material return behavior separately when the signature
+does not express it. Identify the API layer when several signatures exist.
+For tensor operations, document the call contract as well as the signature.
 For each new or changed tensor, state its role, shape, dtype, element layout,
 buffer type, and device memory layout or sharding. Distinguish device storage
 from placement across devices. Cover returned and caller-provided output tensors,
@@ -89,8 +94,9 @@ Established technical abbreviations remain appropriate for their audience.
 
 ## Evidence and presentation
 
-Keep the visible body within 5,000 characters, including the summary, headings,
-tables, and visible `<summary>` labels. Count Unicode characters after removing
+Keep the visible body within 7,000 characters, including the summary, headings,
+tables, and visible `<summary>` labels. Count Unicode code points (Python `len`
+of the decoded text) after removing
 the hidden contents of collapsed `<details>` blocks; count the remaining Markdown
 including whitespace as a conservative bound. Check the final saved manuscript,
 not an earlier draft, with a deterministic count rather than an estimate. If

@@ -22,6 +22,8 @@ synthetic task and the separate review-orchestration files are excluded. Some
 included source passages still refer to review and publication; the common task
 instruction limits the actor to an author draft. This tests author behavior under
 that boundary, not execution of the complete artifact workflow.
+The wrapper's execution limits govern the authoring invocation. The task defines
+any recipient's authority; authoring limits are not automatically task constraints.
 The six development cases run twice per variant in each available runtime
 (36 outputs per runtime). Freeze C before examining the two held-out cases, which
 run twice each on C (four more outputs per runtime). Conversation excerpts test

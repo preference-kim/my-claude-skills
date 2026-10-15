@@ -37,11 +37,14 @@ The user-requested proposal workflow owns publication and review. Preserve live
 entry points while preparing and reviewing the proposal.
 
 Ordinary full refreshes pull the `main` branches used by the live installation
-and follow the updated instructions. A merged proposal can therefore become
-active on the next full refresh, without another activation step. Before merging,
-complete its required validation and obtain approval that includes activation.
-Keep proposals unmerged while either requirement is unmet. Publishing a proposal
-branch does not authorize its merge.
+and follow the updated instructions. Publication, merge, and activation are
+separate authorizations. Complete required validation and obtain merge approval
+before merging; publishing a proposal branch does not authorize its merge.
+When activation is explicitly withheld, preserve the live checkout revisions
+and entry points, including after an authorized merge. Do not run a post-merge
+refresh, live submodule update, installation, or success stamping. Record the
+merged revisions and pending activation decision in local state. A later refresh
+that would load those changes requires activation approval.
 
 ## Validate the host layout
 
