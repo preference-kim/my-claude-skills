@@ -10,7 +10,7 @@ Resolve relative links from this skill's canonical directory. Read the repositor
 
 ## Select the authorized mode
 
-- Submission: prepare and publish the branch and PR, then request all three reviews.
+- Submission: prepare and publish the branch and PR, then run the reviewer workflow below.
 - Existing feedback: enter the response plan directly. Request fresh reviews only when asked.
 - Inspection: read-only access to the recorded PR head with `git show` or API calls. Preserve staged,
   unstaged, and untracked work without stashing or publishing it just to read source.
@@ -36,9 +36,17 @@ committing. Push, then reuse the branch's open PR or create one with
 Record the canonical URL, owner, repository, number, and head SHA. Require local
 `HEAD`, pushed branch, and PR head to agree. Fetch all existing review and thread
 IDs with pagination as the baseline immediately before requesting reviews.
-Start all three before waiting:
+Normally use Copilot, Codex, and Claude. If the user explicitly reports or GitHub
+explicitly indicates that Copilot's review quota is exhausted, record that evidence
+and skip Copilot for this run without further approval. Report
+`skipped: quota exhausted`, never completed. Do not request, retry, or wait for
+Copilot after that confirmation, including when it arrives during the run.
+Silence, timeouts, generic rate limits, and authentication/access errors do not
+establish quota exhaustion. This exception does not waive either CLI review.
 
-- Request Copilot through the PR reviewer flow.
+Start all non-skipped reviewers before waiting:
+
+- Unless skipped for confirmed quota exhaustion, request Copilot through the PR reviewer flow.
 - Launch fresh Codex and Claude leaf processes concurrently against the repository.
   Read the [Claude adapter](../review-common/claude.md) before its launch.
 - Give both leaves the URL, exact SHA, and [finding contract](../review-common/feedback.md),
@@ -53,11 +61,14 @@ Use a unique per-run directory outside the repository, keep its path in the
 orchestrator's state, and capture outputs and exit states separately.
 
 Use one 30-minute deadline with process-aware waiting and intermittent progress.
-On failure, timeout, or abandonment, stop remaining local process trees and record
-every exit state. Report remote Copilot's pending or unknown state separately.
+Confirmed Copilot quota exhaustion uses the skip rule above. For any other
+reviewer failure, timeout, or abandonment, stop remaining local process trees,
+record every exit state, and report remote Copilot's pending or unknown state
+separately. Stop the run; do not automatically retry a failed reviewer request.
 Proceed only when:
 
-- Copilot completed a review of the recorded SHA with an ID absent from the baseline.
+- Copilot completed a review of the recorded SHA with an ID absent from the baseline,
+  or was explicitly recorded as skipped under the quota exception above.
 - Both leaves succeeded, and Claude's actual model and fallback are recorded.
 - Posted findings have the required prefixes and resolvable inline threads.
 - The PR head is unchanged and the checkout has no unexpected changes.

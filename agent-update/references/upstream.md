@@ -3,7 +3,7 @@
 ## Reviewed source and mappings
 
 - Repository: `https://github.com/csehydrogen/.files.git`; branch: `master`.
-- Reviewed commit: `27a1b114b2f3c8791fffb5c41f1311da6f946184`.
+- Reviewed commit: `a02946d21773e4171b6d0627e159f624f526809c`.
 - Instruction: `AGENTS.md`; updater: `skills/agent-update/SKILL.md`.
 - Inventory: every file under `skills/`, including added, removed, renamed and
   changed manifests, resources and scripts.
@@ -76,6 +76,8 @@ for isolated consumers. Read the referenced owner before changing that contract.
   Preserve AGENTS' PR ban on inaccessible local evidence and same-environment
   handoff exception. Keep `stop-bullshit` as the single detailed audit owner
   and its user-challenge trigger; prose editing remains a separate role.
+  `gh-review-own-pr` owns the confirmed Copilot quota exception; other missing
+  reviewer results still require explicit authorization to continue.
 - **TT knowledge:** maintain approved Moreh/TT guidance in mandatory
   `agent-guidance/tt-metal/` references, not a new domain skill. Retain Guardian
   and verified vLLM authorization, container integration, topology-based resets,
@@ -83,6 +85,10 @@ for isolated consumers. Read the referenced owner before changing that contract.
   placement, trace restrictions, cache rules, triage and bounded recovery.
   Upstream audits are evidence to inspect, not proof of installed-host behavior.
   New project-derived details require audience authorization.
+  Do not adopt the blanket replacement of `ttnn.deallocate(x)` with `del x`.
+  Python name deletion and explicit device-storage deallocation have different
+  ownership effects. Review aliases, required release timing, and the active
+  implementation before changing tensor lifetime code.
 - **Non-adoption:** upstream removed `caveman`; it was never adopted because
   persistent compressed speech conflicts with completeness. The user retired
   `plan-review`; do not restore its discovery entries or opposite-family
