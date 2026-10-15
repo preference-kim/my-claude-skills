@@ -14,10 +14,11 @@ submodule; reject absolute/escaping paths. The top-level directory remains the
 manifest key and must match the skill name.
 
 `<skills>/.installation-policy.json` assigns every source key exactly once to
-`user` or `moreh-dev`. Reject duplicate/unknown/missing keys or values before
-changing links. Publication approval does not assign scope. SimpleEnglish uses
-`skills/simple-english` inside its submodule: preserve vendor files and install
-that skill only, not its plugin, hooks or output style.
+`user`, `moreh-dev`, or `reference`. Reject duplicate/unknown/missing keys or values before
+changing links. Publication approval does not assign scope. References remain
+pinned, readable sources but receive no discovery links. SimpleEnglish uses
+`skills/simple-english` inside its submodule; preserve vendor files and do not
+install its skill, plugin, hooks, or output style during routine synchronization.
 
 Resolve skill symlinks before relative references. Shared resources such as
 `review-common` and `agent-guidance` stay at their canonical locations; user
@@ -37,7 +38,10 @@ Keep real discovery directories with individual links to the resolved source
 
 User skills have no duplicate project entries. In `host-global`, project skills
 are intentionally excluded and unconfigured checkouts are untouched. In
-`moreh-dev`, create no host-global instructions. Installation in a project does
+`moreh-dev`, create no host-global instructions and remove existing managed global
+instruction links after verifying the corresponding project links. Preserve real
+files and unrelated links as explicit overrides; report any resulting duplicate
+loading rather than silently calling the layout canonical. Installation in a project does
 not authorize publishing or reorganizing its tracked files.
 
 Create missing parents and leave correct links unchanged. Replace a wrong
@@ -80,6 +84,21 @@ Before migrating a legacy Git-clone discovery root or the former
 conflicting real root under routine link rules.
 
 ## Remove obsolete links and verify
+
+After validating manifests and retained instruction links, preview the targeted
+reference/duplicate migration:
+
+```bash
+python3 <skills>/agent-update/scripts/retire_links.py --dotfiles <dotfiles> --mode <mode>
+```
+
+Add `--project <validated-root>` for `moreh-dev`. Its default is read-only; use
+`--apply` for the authorized migration. The helper removes only
+exact canonical symlinks, refuses changed links, and preserves tracked project
+paths and overrides. Tests use `--user-root` to isolate discovery directories.
+It handles only these retirements; the creation, environment-link, managed-exclude,
+and complete verification rules in this document still apply. Previous managed
+installations with different targets require inspection under the rules below.
 
 Verify a relocated skill's destination entries/references before removing old
 links. Defer removal when required installation is blocked, including a bad

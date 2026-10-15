@@ -12,7 +12,7 @@ scope, exact links, conflicts and migration. Preserve their separation:
   checkout.
 - Skill scope comes independently from `.installation-policy.json`: user skills
   are installed for both runtimes in both modes; project skills stay in that
-  checkout.
+  checkout; pinned references receive no discovery links.
 - Publication scope is separate from installation. Local project links do not
   authorize project contributions.
 

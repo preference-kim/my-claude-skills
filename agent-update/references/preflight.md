@@ -14,8 +14,9 @@ preflight here and use [private synchronization](private-sync.md).
   cleanup, complete manifest/link verification and approved SSH fetch/drift checks.
 - **Forced:** `/agent-update`, `$agent-update` or an explicit refresh runs all
   stages regardless of date.
-- **Requested edit:** run the full refresh, including SSH, then apply the request
-  before validation/publication.
+- **Requested edit:** use the review-only path below for an isolated proposal.
+  Otherwise run the full refresh, including SSH, then apply the request before
+  validation/publication.
 - **Link repair:** perform configured link checks even if today's refresh passed.
 - **Private-only:** explicit server-configuration or enrolled-credential work
   runs only requested targets/payloads under the private protocol. It does not
@@ -25,6 +26,33 @@ preflight here and use [private synchronization](private-sync.md).
 Generic refresh authorizes neither source review/bootstrap nor hosts-file or
 HF/GitHub writes. Private state is
 `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`.
+
+## Review-only instruction proposals
+
+When the user requests a PR or isolated proposal without live activation, record
+clean source revisions and use separate branches/worktrees. Do not run the live
+refresh, private synchronization, installation, CLI updates, or success stamping
+as a prerequisite. Validate candidate manifests and migrations in fixtures.
+The user-requested proposal workflow owns publication and review. Preserve live
+entry points while preparing and reviewing the proposal.
+
+Ordinary full refreshes pull the `main` branches used by the live installation
+and follow the updated instructions. Publication, merge, and activation are
+separate authorizations. Complete required validation and obtain merge approval
+before merging; publishing a proposal branch does not authorize its merge.
+When activation is withheld, keep the proposal unmerged unless the already-installed
+refresh path honors a persisted hold before any pull or submodule update. Verify
+the reader, its state location, and an explicit-approval release condition from a
+fresh session using the retained installation. A local note or a rule available
+only in the incoming revision does not establish that protection. If the reader
+is absent or unverified, report the missing prerequisite; changing live policy
+requires separate authorization.
+
+With that protection verified, preserve live checkout revisions and entry points
+after an authorized merge. Record the installed and merged revisions and pending
+activation decision in the hold's documented state location. Do not run a
+post-merge refresh, live submodule update, installation, or success stamping until
+activation is approved and the hold is explicitly released.
 
 ## Validate the host layout
 

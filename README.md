@@ -13,12 +13,19 @@ directories contain links to these canonical directories rather than copies.
 | [gh-review-other-pr](gh-review-other-pr/) | Reviews another author’s PR and prepares a pending review. |
 | [gh-stack](gh-stack/) | Manages dependent branches and pull requests. |
 | [gh-review-own-pr](gh-review-own-pr/) | Submits the current branch and coordinates approval-gated PR reviews. |
-| [humanizer](humanizer/) | Rewrites AI-sounding text. Submodule tracking [blader/humanizer](https://github.com/blader/humanizer). |
-| [simple-english](simple-english/skills/simple-english/) | Drafts English PR descriptions, handoffs, and technical documentation. Unmodified upstream skill from [AminBlg/SimpleEnglish](https://github.com/AminBlg/SimpleEnglish). |
 | [skill-maker](skill-maker/) | Authors and refines SKILL.md files; audits drafts against an anti-patterns checklist. |
 | [stop-bullshit](stop-bullshit/) | Checks unsupported claims and evasive reasoning; independently maintained at [preference-kim/stop-bullshit](https://github.com/preference-kim/stop-bullshit). |
+| [technical-communication](technical-communication/) | Writes and revises technical material while preserving meaning, evidence, and the reader’s purpose. |
 | [tt-device-investigation](tt-device-investigation/) | Investigates TT device anomalies; installed only in the configured Moreh checkout. |
 | [write-technical-pr](write-technical-pr/) | Drafts technical PR descriptions and finalizes them after independent prose and evidence review. |
+
+## Pinned references
+
+[humanizer](humanizer/) and [SimpleEnglish](simple-english/skills/simple-english/)
+retain their upstream files unchanged for selective maintenance review or explicit
+requests. They are excluded from routine discovery and writing workflows.
+[Reference maintenance](agent-update/references/reference-maintenance.md) provides
+advisory update notices; incorporation is a separate decision.
 
 ## Storage policy
 
@@ -34,8 +41,8 @@ directories contain links to these canonical directories rather than copies.
   authoritative repository. Use a nested submodule for that repository's update
   boundary: `stop-bullshit` is user-owned; `humanizer` and `simple-english`
   retain their upstream files unchanged.
-- `.installation-policy.json` assigns every approved skill to `user` or
-  `moreh-dev`. User skills install in both modes at `~/.agents/skills` (Codex)
+- `.installation-policy.json` assigns every approved source to `user`,
+  `moreh-dev`, or `reference`. References receive no discovery links. User skills install in both modes at `~/.agents/skills` (Codex)
   and `~/.claude/skills` (Claude); project skills install only in `moreh-dev`,
   at the checkout’s `.agents/skills` and `.claude/skills`.
 - Keep discovery roots as real directories with per-skill canonical symlinks.

@@ -16,6 +16,9 @@ Read [preflight](references/preflight.md) to resolve repositories and select the
 mode. Private-only requests go to [private synchronization](references/private-sync.md)
 and run only their authorized payloads/targets, without public refresh or stamps.
 
+For an isolated PR proposal, use preflight's review-only path; do not refresh or
+activate the live installation.
+
 For an agent refresh:
 
 1. Complete preflight under its lock. A same-day daily refresh skips public
@@ -32,7 +35,8 @@ For an agent refresh:
    inventory and synchronize the current registered owner, including first setup
    and the cluster key. Report its independent outcome. Other private operations
    require their explicit scopes from the private protocol.
-4. Full refreshes: read [reconciliation](references/reconciliation.md) and
+4. Full refreshes: read [reference maintenance](references/reference-maintenance.md)
+   and check for advisory vendor updates without changing pins. Read [reconciliation](references/reconciliation.md) and
    [upstream decisions](references/upstream.md). Inspect all changed resources as
    reference data and preserve intentional divergence.
 5. Apply a requested edit after preflight/refresh. For skill or harness design,

@@ -5,7 +5,7 @@ final delivery. The owning document policy controls content and publication.
 
 ## Prepare the review
 
-Read [humanizer](../humanizer/SKILL.md), [stop-bullshit](../stop-bullshit/SKILL.md),
+Read [technical communication](../technical-communication/SKILL.md), [stop-bullshit](../stop-bullshit/SKILL.md),
 and the applicable document policy before composing the brief. Give a separate
 agent:
 
@@ -23,8 +23,8 @@ Keep drafts and evidence within their authorized storage and audience.
 
 ## Reviewer contract
 
-Inspect the draft and sources independently. Apply `humanizer` in embedded mode,
-then `stop-bullshit` to the proposed prose, source claims, and your own feedback.
+Inspect the draft and sources independently. Assess the prose with `technical-communication`,
+then apply `stop-bullshit` to the proposed prose, source claims, and your own feedback.
 Preserve required structure, meaning, and warranted uncertainty. Prose editing
 cannot supply missing evidence or justify a contradicted claim.
 
@@ -49,7 +49,7 @@ in local review notes and apply supported revisions. Return material changes and
 related evidence for independent checking when needed. Mechanical edits do not
 require another full review.
 
-After the last prose edit, the author applies `humanizer`, then `stop-bullshit`,
+After the last prose edit, the author checks technical prose, then applies `stop-bullshit`,
 to the final document and any opening prompt. Complete the separate review and
 revision before calling it final. If the reviewer fails, use another available
 agent. If review remains unavailable, deliver a labeled draft with that limitation,
