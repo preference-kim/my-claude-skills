@@ -40,11 +40,19 @@ Ordinary full refreshes pull the `main` branches used by the live installation
 and follow the updated instructions. Publication, merge, and activation are
 separate authorizations. Complete required validation and obtain merge approval
 before merging; publishing a proposal branch does not authorize its merge.
-When activation is explicitly withheld, preserve the live checkout revisions
-and entry points, including after an authorized merge. Do not run a post-merge
-refresh, live submodule update, installation, or success stamping. Record the
-merged revisions and pending activation decision in local state. A later refresh
-that would load those changes requires activation approval.
+When activation is withheld, keep the proposal unmerged unless the already-installed
+refresh path honors a persisted hold before any pull or submodule update. Verify
+the reader, its state location, and an explicit-approval release condition from a
+fresh session using the retained installation. A local note or a rule available
+only in the incoming revision does not establish that protection. If the reader
+is absent or unverified, report the missing prerequisite; changing live policy
+requires separate authorization.
+
+With that protection verified, preserve live checkout revisions and entry points
+after an authorized merge. Record the installed and merged revisions and pending
+activation decision in the hold's documented state location. Do not run a
+post-merge refresh, live submodule update, installation, or success stamping until
+activation is approved and the hold is explicitly released.
 
 ## Validate the host layout
 
