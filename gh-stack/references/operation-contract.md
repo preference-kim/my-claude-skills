@@ -6,10 +6,17 @@ Before `init`, set `git config rerere.enabled true` to avoid its confirmation.
 Follow repository Git rules for branch naming, preserving dirty work, and publication.
 The extension uses branch names literally, including any required prefix.
 
-Choose the intended remote before mutation. With multiple remotes, use
+Before mutation, verify both the intended Git remote and the GitHub API target
+repository. Do not assume `--remote` or `remote.pushDefault` also selects the API
+repository. With multiple remotes, use
 `--remote <name>` on `push`, `submit`, `sync`, `rebase`, or `link`, or configure
 `remote.pushDefault` to that remote. `checkout`, `modify`, and `trunk` lack
 `--remote` and require the configured default.
+
+Rely on `gh repo set-default` only after verifying that the installed extension
+honors it. If it does not, upgrade to a verified fixed release or set
+`GH_REPO=HOST/OWNER/REPO` for the individual command. Confirm the API target
+matches the intended repository before proceeding.
 
 Stacks are linear: one parent and at most one child per branch. Use separate
 stacks for parallel workstreams. From a branch shared across stacks, commands
