@@ -13,7 +13,8 @@
 | `skills/agent-update/` | `<dotfiles>/skills/agent-update/` |
 | `skills/gh-review-other-pr/` | `<dotfiles>/skills/gh-review-other-pr/` |
 | `skills/gh-review-own-pr/` | `<dotfiles>/skills/gh-review-own-pr/` |
-| `skills/moreh-tt-development/` | `<dotfiles>/agent-guidance/tt-metal/`, not a discovered skill |
+| `skills/moreh-tt-development/`: reusable API and measurement guidance | `<dotfiles>/agent-guidance/tt-metal/`, not a discovered skill |
+| `skills/moreh-tt-development/`: team operations and project conventions | Registered private `team-development.md`; report pending private updates during routine reconciliation |
 
 Advance the reviewed commit only after inspecting the instruction, updater and
 full skill inventory and reconciling each applicable change or documenting its

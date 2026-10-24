@@ -42,11 +42,13 @@ server as the user's account with `ssh -o BatchMode=yes`. The server requires
 access; passwordless sudo is needed only for requested hosts-file work.
 
 Use `<dotfiles>/scripts/bootstrap-remote <ssh-destination> [profile]` with
-`--deployment-config <protected snapshot>` for the pinned settings. It streams
-fleet keys, installs checksum-pinned `age` into `~/.local/bin` if needed, clones
+`--deployment-config <protected snapshot>` for the pinned settings. It repairs
+checksum-pinned `age` and its key verifier in `~/.local/bin` if needed, verifies
+an existing fleet identity before copying keys, streams the settings packet and
+fleet archive over stdin, and clones
 dotfiles over HTTPS and the private repository with the deploy key, writes
 `host-global` mode when absent, and registers the profile (default: short
-hostname). One remote writer lock covers installed-identity verification, key
+hostname). One remote writer lock covers verifier repair, installed-identity verification, key
 transfer, repository setup, and registration. An unverifiable or different
 installed fleet identity blocks copying; rotation remains separately authorized.
 Re-running repairs the same state. Run once per host sharing a home

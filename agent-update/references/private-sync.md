@@ -10,6 +10,7 @@ Keep private state under `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`
 | --- | --- |
 | Every agent refresh, or an explicit current-owner SSH update | [SSH synchronization](private-ssh.md) |
 | Explicit source review, inventory maintenance or device registration | [Inventory maintenance](private-inventory.md) |
+| Explicit deployment path migration | [Path migration](private-deployment.md#explicit-path-migration) |
 | Explicit server bootstrap or fleet-key lifecycle work | [Bootstrap and fleet keys](private-bootstrap.md) |
 | Explicit hosts-file changes | [Hosts plans](private-hosts.md) |
 | Explicit HF credential setup, repair or synchronization | [HF payload](private-hf.md) |

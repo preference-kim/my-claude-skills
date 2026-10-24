@@ -28,7 +28,8 @@ independent public refresh work.
 2. Keep owner-local state in `<private-state>/private-ssh/<profile>/` (0700/0600).
    `last-success.json` records `profile`, `inventory_revision`,
    `inventory_sha256` (ciphertext), `render_sha256`, `config_sha256`,
-   `renderer_revision` (public dotfiles commit), `expected_routes`, and
+   `renderer_revision` (public dotfiles commit), `deployment_revision`,
+   `ssh_include_path`, `cluster_key_path`, `expected_routes`, and
    `unverified_routes`.
    Keep `route_checks` with each alias's check time, source host/account,
    expected authentication, effective-configuration digest, key fingerprint,
@@ -38,14 +39,24 @@ independent public refresh work.
    `last-verified-config` records the verified personal config and Include
    placement/scope. Conflicting records are a conflict.
 3. Load [deployment configuration](private-deployment.md) from the pinned private
-   revision. This stage may write the include selected by `paths.ssh_include`, its Include
+   revision. Before installing a key or writing any file, compare the configured
+   include/key paths with the last successful paths. For legacy records, recover
+   those paths only from that run's pinned deployment or verified config and key
+   records; do not infer them from today's settings. A difference or an
+   unprovable baseline is a conflict: preserve installed files and success records,
+   and use [explicit path migration](private-deployment.md#explicit-path-migration).
+   A genuine first setup follows the ownership checks below.
+   This stage may write the include selected by `paths.ssh_include`, its Include
    block in `~/.ssh/config`, proven managed copies removed at first setup,
    cluster key, first-contact host keys, and development-server host labels.
    Non-SSH `files` plans and other private keys remain out of scope.
-   When rendering references configured `paths.cluster_key`, pipe its independently
-   approved `cluster-ssh-key` payload (OpenSSH key) into
-   `<dotfiles>/scripts/install-cluster-key`; it guards installation and derives
-   the public key. Preserve a different existing key, record its fingerprint
+   When rendering references configured `paths.cluster_key`, plan installation
+   using the independently approved `cluster-ssh-key` payload (OpenSSH key) and
+   `<dotfiles>/scripts/install-cluster-key`. Do not invoke the installer during
+   discovery: all drift, ownership and effective-configuration checks must pass
+   first. Install under the common writer lock, before the include/config switch;
+   the installer guards replacement and derives the public key.
+   Preserve a different existing key, record its fingerprint
    as a local override in `last-success.json`, report once and continue.
    For a retained override, compare the accepted key with its recorded
    fingerprint and report `passed-with-override`. Report again if that
@@ -62,7 +73,8 @@ independent public refresh work.
    - **Current:** include equals rendering and `render_sha256`. Verify mode,
      active Include and syntax. Apply the connection checks below even when
      the inventory revision is unchanged. After configuration checks pass,
-     record its approved revision, digest and renderer revision.
+     record its approved revision, digest, renderer/deployment revisions and
+     verified include/key paths.
    - **Update:** include equals `last-verified-rendering` but the new rendering
      differs. Follow the update checks below.
    - **Conflict:** include differs from its verified baseline, or the Include
