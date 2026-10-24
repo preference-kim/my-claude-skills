@@ -8,6 +8,8 @@ description: Use for a top-level request to review another author's GitHub PR an
 Resolve relative links from this skill's canonical directory. The top-level agent
 reviews with fresh Codex and Claude leaves, then stores validated Korean inline
 comments in one unsubmitted GitHub review.
+Before reviewing code, load the applicable team review policy in the
+[finding contract](../review-common/feedback.md#team-review-policy).
 
 ## Allowed actions
 
@@ -35,7 +37,8 @@ Before checking authentication or launching, read
 `claude` authentication, then read [finding contract](../review-common/feedback.md).
 Give each leaf:
 
-- The URL and exact SHA, the finding contract, and its required isolated context.
+- The URL and exact SHA, the finding contract including its team review policy,
+  and its required isolated context.
 - Authority for direct, read-only inspection only. No GitHub writes, local edits,
   branch changes, review-orchestration skills, subagents, or other reviewer processes.
 - The requirement to investigate changed behavior and relevant surrounding code,
@@ -78,5 +81,6 @@ then humanize, audit, update, and fetch it again. Apply the API contract's rules
 for partial failure or a head change during writing.
 
 Report only the reviewed SHA, pending state and URL or ID, comment count, reviewer
-completion states, and material residual risk. Do not repeat the findings in chat.
+completion states, team policy source revision when available, coverage (applied, unavailable,
+or not applicable), and material residual risk. Do not repeat the findings in chat.
 If no actionable finding remains, say so and create no review.

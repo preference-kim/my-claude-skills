@@ -7,6 +7,8 @@ description: Use for a top-level request to submit or review the user's own PR, 
 
 Resolve relative links from this skill's canonical directory. Read the repository's
 `AGENTS.md`. This is a top-level workflow. Delegated reviewers inspect directly.
+Before reviewing code or validating existing feedback, load the applicable team
+review policy in the [finding contract](../review-common/feedback.md#team-review-policy).
 
 ## Select the authorized mode
 
@@ -22,6 +24,8 @@ Before Git mutations or thread handling, read
 [Git policy](../../agent-guidance/version-control.md) for checkout preservation,
 worktrees, branch and commit rules, environment-variable cleanup, and thread ownership.
 Builds and device tests stay in the current session checkout under its execution rules.
+For every mode, report the team policy source revision when available and whether it was applied,
+unavailable, or not applicable.
 
 ## Submit and collect reviews
 
@@ -50,9 +54,10 @@ Start all non-skipped reviewers before waiting:
 - Launch fresh Codex and Claude leaf processes concurrently against the repository.
   Read the [Claude adapter](../review-common/claude.md) before its launch.
 - Give both leaves the URL, exact SHA, and [finding contract](../review-common/feedback.md),
-  including its isolated-context requirements. Their only permitted writes are
-  resolvable inline review comments on changed lines of that SHA. Require
-  `[Codex review]` or `[Claude review]` on every posted review body and inline comment.
+  including its team review policy and isolated-context requirements. Their only
+  permitted writes are resolvable inline review comments on changed lines of that
+  SHA. Require `[Codex review]` or `[Claude review]` on every posted review body
+  and inline comment.
 
 Each leaf must inspect directly without reading review-orchestration skills,
 delegating, or launching reviewers. All other actions are read-only, including

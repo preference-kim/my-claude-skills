@@ -1,5 +1,21 @@
 # PR finding contract
 
+## Team review policy
+
+For PRs targeting `moreh-dev` repositories or other repositories the user
+identifies as Moreh team repositories, including the user's own PRs, read and apply
+the [Moreh code-review policy](https://github.com/moreh-dev/tt-metal/blob/moreh/main/.github/skills/code-review/SKILL.md)
+alongside the reviewed repository's applicable review instructions. Retrieve the
+current policy from `moreh/main` and record the source revision. Apply each rule
+only within its stated scope. If the policy cannot be read, report that review
+coverage is incomplete rather than claiming it was applied.
+
+Supply the inspected policy and its source revision to isolated reviewers, using
+its contents when they cannot access the source. The policy supplies review
+criteria; it does not change the owning workflow's permissions or delegation rules.
+
+## Findings and isolated context
+
 Retain one concrete, high-confidence issue per finding. Establish the triggering
 conditions, observed behavior or violated invariant, and impact. Explain the
 contract the fix must satisfy, then give a specific code or test suggestion.
