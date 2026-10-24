@@ -2,17 +2,30 @@
 
 ## Team review policy
 
-For PRs targeting `moreh-dev` repositories or other repositories the user
-identifies as Moreh team repositories, including the user's own PRs, read and apply
-the [Moreh code-review policy](https://github.com/moreh-dev/tt-metal/blob/moreh/main/.github/skills/code-review/SKILL.md)
-alongside the reviewed repository's applicable review instructions. Retrieve the
-current policy from `moreh/main` and record the source revision. Apply each rule
-only within its stated scope. If the policy cannot be read, report that review
-coverage is incomplete rather than claiming it was applied.
+Before reviewing code or validating existing feedback, the orchestrator resolves
+`checkout` and `repository_url` literally from `~/.config/agent-update/private-sync.json`. Require an exact origin URL match. With existing repository
+authentication, fetch `origin/main`, record its commit, and read `review-policy.md` using `git show <commit>:review-policy.md`. Do not alter the private
+checkout's files, branch, or remote. A failed fetch cannot be replaced by cached
+references. Missing or invalid registration, an origin mismatch, missing
+document, or failed source access means team policy coverage is unavailable;
+report that limit without treating it as evidence that no policy applies.
 
-Supply the inspected policy and its source revision to isolated reviewers, using
-its contents when they cannot access the source. The policy supplies review
-criteria; it does not change the owning workflow's permissions or delegation rules.
+The private document owns repository matching, policy sources, and author scope.
+Apply matching policies alongside the reviewed repository's review instructions,
+within each rule's stated scope. Record the private configuration revision in
+private task state and each applied policy's source revision for the review
+report. Report not applicable only after reading the configuration and
+establishing that no entry matches. Keep team identifiers, source locations, and
+policy contents out of public skill files.
+
+Give isolated reviewers the resolved coverage state: applied, not applicable, or
+unavailable, with a brief reason for the latter two. For applied policies,
+supply the policy and its source revision, including contents when source access
+is unavailable to the leaf. Leaves use this supplied context without reading
+private registration or unrelated configuration; an absent coverage state or
+missing applicable policy is a limitation to report to the orchestrator. The
+policy supplies review criteria; it does not change the owning workflow's
+permissions or delegation rules.
 
 ## Findings and isolated context
 

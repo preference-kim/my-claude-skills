@@ -9,6 +9,8 @@ Resolve relative links from this skill's canonical directory. Read the repositor
 `AGENTS.md`. This is a top-level workflow. Delegated reviewers inspect directly.
 Before reviewing code or validating existing feedback, load the applicable team
 review policy in the [finding contract](../review-common/feedback.md#team-review-policy).
+Policy loading may fetch remote refs in the registered private repository; it
+does not authorize changing that repository's files, branch, or remote.
 
 ## Select the authorized mode
 
@@ -53,8 +55,9 @@ Start all non-skipped reviewers before waiting:
 - Unless skipped for confirmed quota exhaustion, request Copilot through the PR reviewer flow.
 - Launch fresh Codex and Claude leaf processes concurrently against the repository.
   Read the [Claude adapter](../review-common/claude.md) before its launch.
-- Give both leaves the URL, exact SHA, and [finding contract](../review-common/feedback.md),
-  including its team review policy and isolated-context requirements. Their only
+- Give both leaves the URL, exact SHA, [finding contract](../review-common/feedback.md),
+  resolved policy coverage state, and applicable policy contents and revisions.
+  Include the contract's isolated-context requirements. Their only
   permitted writes are resolvable inline review comments on changed lines of that
   SHA. Require `[Codex review]` or `[Claude review]` on every posted review body
   and inline comment.
