@@ -21,7 +21,8 @@ restore their discovery links or mandatory writing passes during reconciliation.
 Do not make the canonical AGENTS depend on a particular host alias, clone path, or unavailable companion file.
 
 Upstream availability and local installation do not authorize redistribution.
-Preserve the approved Moreh/TT-Metal guidance under dotfiles' mandatory
-`agent-guidance/tt-metal/` references. Do not create a new domain skill merely to
-move that content. New project-derived details require authorization for the
+Preserve public TT API guidance and the mandatory private-policy loader under
+dotfiles' `agent-guidance/tt-metal/` references. Team operations, project
+conventions, and deployment values stay private; do not copy them back while
+reconciling upstream. Do not create a new domain skill merely to move content. New project-derived details require authorization for the
 publication audience; task-derived evidence stays outside both public worktrees.

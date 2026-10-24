@@ -73,6 +73,10 @@ A delegated profile has empty `files` and `ssh_equivalence`; the validator's
 Apply plans on their owning host. Credential enrollment and shared-home access
 are independent of configuration delegation.
 
+Before planning managed file or cluster-key writes, read
+[deployment configuration](private-deployment.md). Load its protected snapshot
+from the same pinned private revision and pass it to the validator and writers.
+
 ## Guard writes and recovery
 
 Configuration writers share the atomic directory `writer.lock` under private

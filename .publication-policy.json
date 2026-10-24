@@ -64,6 +64,7 @@
     "agent-update/references/reference-maintenance.md",
     "agent-update/scripts/reference_updates.py",
     "agent-update/scripts/retire_links.py",
-    "agent-update/scripts/test_reference_policy.py"
+    "agent-update/scripts/test_reference_policy.py",
+    "agent-update/references/private-deployment.md"
   ]
 }

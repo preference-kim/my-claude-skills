@@ -78,17 +78,16 @@ for isolated consumers. Read the referenced owner before changing that contract.
   and its user-challenge trigger; prose editing remains a separate role.
   `gh-review-own-pr` owns the confirmed Copilot quota exception; other missing
   reviewer results still require explicit authorization to continue.
-- **TT knowledge:** maintain approved Moreh/TT guidance in mandatory
-  `agent-guidance/tt-metal/` references, not a new domain skill. Retain Guardian
-  and verified vLLM authorization, container integration, topology-based resets,
-  current kernel contracts and header-based profiling alongside local test
-  placement, trace restrictions, cache rules, triage and bounded recovery.
-  Upstream audits are evidence to inspect, not proof of installed-host behavior.
-  New project-derived details require audience authorization.
-  Do not adopt the blanket replacement of `ttnn.deallocate(x)` with `del x`.
-  Python name deletion and explicit device-storage deallocation have different
-  ownership effects. Review aliases, required release timing, and the active
-  implementation before changing tensor lifetime code.
+- **TT knowledge:** public `agent-guidance/tt-metal/` retains API/measurement
+  guidance and mandatory policy loading, not team operating values. Private
+  `team-development.md` owns build/test conventions, reservation and reset
+  procedures, recovery budgets, and project helper integrations. Preserve their
+  behavior through the loader; never restore private settings to public files
+  when reconciling upstream. Public deployment helpers consume private
+  `deployment.json` under the guarded deployment contract. Personal Git settings
+  and existing history stay unchanged. New project-derived details require
+  audience authorization. Do not adopt a blanket replacement of explicit device
+  deallocation with Python name deletion; inspect ownership and release timing.
 - **Non-adoption:** upstream removed `caveman`; it was never adopted because
   persistent compressed speech conflicts with completeness. The user retired
   `plan-review`; do not restore its discovery entries or opposite-family

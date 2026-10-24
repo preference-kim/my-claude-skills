@@ -26,8 +26,8 @@ Neither reorganization nor a deprecation label changes personal SSH routes or
 schedules deletion.
 
 Non-SSH `files` plans are restricted to `/etc/hosts` and an explicitly planned
-`/etc/cloud/cloud.cfg.d/99-moreh-preserve-hosts.cfg`. The profile validator checks
-binding/layout before application. For each reviewed `before` and `after`:
+`paths.cloud_hosts` from [deployment configuration](private-deployment.md).
+The profile validator checks binding/layout before application. For each reviewed `before` and `after`:
 current `after` requires verification only; current `before` permits replacement.
 A different current file permits a three-way merge only for verified disjoint
 hunks that pass the SSH equivalence checks below. Overlap, unknown ownership or

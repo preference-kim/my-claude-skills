@@ -24,9 +24,12 @@ stage's verification and records.
 
    ```
    Host *
-   Include ~/.ssh/moreh_cluster.conf
+   Include <paths.ssh_include>
    Host *
    ```
+
+   Substitute the exact validated `paths.ssh_include` from
+   [deployment configuration](private-deployment.md); never write the placeholder.
 
 4. Apply the routine effective-configuration checks. A hidden, defeated or
    dropped personal rule is a conflict: identify its resolution and write

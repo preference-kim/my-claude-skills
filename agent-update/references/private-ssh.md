@@ -37,11 +37,12 @@ independent public refresh work.
    `last-verified-rendering` is the exact installed include;
    `last-verified-config` records the verified personal config and Include
    placement/scope. Conflicting records are a conflict.
-3. This stage may write the generated `~/.ssh/moreh_cluster.conf`, its Include
+3. Load [deployment configuration](private-deployment.md) from the pinned private
+   revision. This stage may write the include selected by `paths.ssh_include`, its Include
    block in `~/.ssh/config`, proven managed copies removed at first setup,
    cluster key, first-contact host keys, and development-server host labels.
    Non-SSH `files` plans and other private keys remain out of scope.
-   When rendering references `~/.ssh/moreh_cluster_sunho`, pipe its independently
+   When rendering references configured `paths.cluster_key`, pipe its independently
    approved `cluster-ssh-key` payload (OpenSSH key) into
    `<dotfiles>/scripts/install-cluster-key`; it guards installation and derives
    the public key. Preserve a different existing key, record its fingerprint

@@ -32,16 +32,24 @@ history remains decryptable by the old identity.
 
 ## Bootstrap a server
 
+Read [deployment configuration](private-deployment.md). Use the trusted
+controller's private settings for clone URLs and the default GitHub account;
+preserve an existing registered account.
+
 Run from a trusted host holding the fleet directory and able to reach the
 server as the user's account with `ssh -o BatchMode=yes`. The server requires
 `git`, `python3`, `tar`, `gzip`, `sha256sum`, an SSH client and github.com
 access; passwordless sudo is needed only for requested hosts-file work.
 
-Use `<dotfiles>/scripts/bootstrap-remote <ssh-destination> [profile]`. It streams
+Use `<dotfiles>/scripts/bootstrap-remote <ssh-destination> [profile]` with
+`--deployment-config <protected snapshot>` for the pinned settings. It streams
 fleet keys, installs checksum-pinned `age` into `~/.local/bin` if needed, clones
 dotfiles over HTTPS and the private repository with the deploy key, writes
 `host-global` mode when absent, and registers the profile (default: short
-hostname). Re-running repairs the same state. Run once per host sharing a home
+hostname). One remote writer lock covers installed-identity verification, key
+transfer, repository setup, and registration. An unverifiable or different
+installed fleet identity blocks copying; rotation remains separately authorized.
+Re-running repairs the same state. Run once per host sharing a home
 to add each exact hostname to `host_profiles`.
 
 If the inventory lacks a profile, read [inventory maintenance](private-inventory.md)
