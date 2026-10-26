@@ -80,6 +80,13 @@ Catalog identifiers/helper aliases are literal names. Do not store rendered
 output back in the inventory or select contexts with shell-startup/`Match exec`
 network probes.
 
+An owning profile may carry `ssh_verification` alongside `ssh`: explicit
+`expected_hostnames` for helper aliases lacking a canonical node hostname, and
+user-authorized `excluded_routes` with their reason and resume condition.
+These are verification metadata, not SSH options; they must leave rendered routes
+unchanged. Review the hostname evidence and exclusion scope before approval.
+Do not infer an exclusion from a failed probe or broaden a one-run exclusion.
+
 Before publishing an SSH edit, read
 [effective-configuration checks](private-ssh.md#effective-configuration-checks).
 Render every owning SSH profile, require identical output for owners sharing a

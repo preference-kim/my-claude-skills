@@ -29,8 +29,8 @@ independent public refresh work.
    `last-success.json` records `profile`, `inventory_revision`,
    `inventory_sha256` (ciphertext), `render_sha256`, `config_sha256`,
    `renderer_revision` (public dotfiles commit), `deployment_revision`,
-   `ssh_include_path`, `cluster_key_path`, `expected_routes`, and
-   `unverified_routes`.
+   `ssh_include_path`, `cluster_key_path`, `expected_routes`, `excluded_routes`,
+   and `unverified_routes`.
    Keep `route_checks` with each alias's check time, source host/account,
    expected authentication, effective-configuration digest, key fingerprint,
    returned host/account, result and error. Include jump dependencies in the
@@ -110,9 +110,9 @@ record failure separately under the common private protocol. Verify restored
 bytes, active Include and syntax after rollback. If a new or previously unreachable route fails only
 reachability/access after other checks pass, report configuration `updated` with
 the failed connection and record its error in `unverified_routes`. This includes
-an identity that no approved payload supplies. Remove an entry only after its
-required check passes or the approved source-review delta explicitly retires
-that route.
+an identity that no approved payload supplies. Move an entry out of `unverified_routes` only after its required check passes,
+an active authorized exclusion is recorded separately, or the approved
+source-review delta explicitly retires that route.
 A missing rendered stanza does not retire a route. After configuration and
 affected-route regression checks pass, advance both verified files and
 `last-success.json`, writing hashes last.
@@ -138,13 +138,33 @@ A local private key and public-key file do not establish that the destination
 accepts that key. Public-key registration on the destination requires explicit
 target authorization and the common backup, lock and concurrent-write checks.
 
-During refresh, probe routes with missing evidence, changed effective settings
-or key fingerprints, and prior failures. Always probe explicit task targets.
-Always test affected routes on the current owner. An explicit maintenance task
+Read the owning profile's optional `ssh_verification` from the approved inventory
+before selecting probes. `expected_hostnames` maps a literal route alias to its
+allowed returned hostnames; use canonical node hostnames for other routes.
+Missing expectations remain unresolved: do not accept a probe's observed hostname
+as its own expectation. Establish expectations during explicit inventory
+maintenance from inspected endpoint evidence, then publish before using them.
+`excluded_routes` maps literal aliases to a `reason` and `resume_condition`.
+Keep these aliases in coverage, but do not probe them or traverse them as jumps
+while the exclusion applies. Record them separately as `excluded_routes`, never
+as passed or as unresolved `unverified_routes`. Keep prior results as dated
+history. Source maintenance owns persisted exclusions; a one-run exclusion stays
+in that run's record. Reevaluate the resume condition each run; when it is met,
+restore the route to probe selection rather than silently marking it verified.
+A required route depending on an excluded jump is itself excluded with that
+reason. Unexpected failures or missing evidence on other routes remain unverified.
+
+During refresh, probe non-excluded routes with missing evidence, changed effective
+settings or key fingerprints, changed hostname expectations, and prior failures.
+Always probe non-excluded explicit task targets and affected routes on the
+current owner. An explicit maintenance task
 can leave unaffected routes untested, but must report that limit.
 Reuse unchanged prior evidence only as a dated result, never as a new connection
-test. Record the expected route set so omissions remain
-visible when reconciling `route_checks` and `unverified_routes`.
+test. Store digests of normal effective settings and all jump dependencies
+separately from probe-only settings, plus the applied hostname expectations.
+Compare the same representations on the next run. Record the expected route set
+so omissions remain visible when reconciling `route_checks`, `excluded_routes`
+and `unverified_routes`.
 
 Run bounded, noninteractive probes from the owning source host and account.
 For local-key access, remove `SSH_AUTH_SOCK` and set `IdentityAgent=none` in the
@@ -154,8 +174,13 @@ replacement route. Keep normal SSH configuration and require
 `BatchMode=yes`, `StrictHostKeyChecking=yes`, `ConnectionAttempts=1` and a bounded
 `ConnectTimeout`. Apply the same agent and connection-reuse constraints to jump
 clients, whose command-line options are not inherited from the destination.
-Check their effective configuration before probing. If a jump cannot meet the
-required conditions, report the route as unverified and identify the dependency.
+A temporary probe configuration may apply only these constraints and disable
+agent forwarding, then include the unchanged normal user and system configuration.
+Verify that destination, port, account, key files, jump chain and known-hosts sources
+match normal effective settings. Ensure nested jump clients use that same probe
+configuration; retain both normal and probe digests. Do not change installed SSH
+policy merely to make a probe pass. Check every hop before probing.
+If a jump cannot meet the required conditions, report the route as unverified and identify the dependency.
 Do not change unrelated authentication policy to force a passing probe.
 
 Require exit status zero and the expected remote host/account from a harmless
