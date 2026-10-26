@@ -15,7 +15,7 @@ does not authorize changing that repository's files, branch, or remote.
 ## Select the authorized mode
 
 - Submission: prepare and publish the branch and PR, then run the reviewer workflow below.
-- Existing feedback: enter the response plan directly. Request fresh reviews only when asked.
+- Existing feedback: respond to it directly. Request fresh reviews only when asked.
 - Inspection: read-only access to the recorded PR head with `git show` or API calls. Preserve staged,
   unstaged, and untracked work without stashing or publishing it just to read source.
 
@@ -84,23 +84,27 @@ Proceed only when:
 If these conditions fail, report exact states and stop unless the user authorizes
 partial results. No findings is a valid successful review.
 
-## Plan and apply feedback responses
+## Respond to feedback
 
 For existing feedback, record the URL, current SHA, and local status and fetch
 unresolved threads with pagination. This mode does not require new reviewer requests
 or process/model checks. Validate every unresolved comment against current code,
 including comments on older heads.
 
-Apply the [finding contract](../review-common/feedback.md) and its `stop-bullshit`
-check to all feedback, including Copilot's, and your response. Present a plan before
-editing or resolving threads: a precise fix, evidence for no change, or a missing
-decision for each finding. Include validation and eligible automated threads.
-Proceed only within an explicitly approved response plan.
+Evaluate each comment yourself with the [finding contract](../review-common/feedback.md)
+and its `stop-bullshit` check, including Copilot's, and decide whether to accept it.
+Accept a comment when a realistic trigger produces the claimed failure and the fix
+is proportionate to it. Act on each decision without asking for per-finding or
+response-plan approval: fix accepted comments in the layer that owns the defect,
+and reply on each declined thread with the trigger you traced and why no change is
+warranted. Ask the user only for a decision that needs information or authority
+you lack, such as a product or design choice.
 
-Reconfirm the PR head and local branch, apply approved changes, and run targeted
-and repository-required validation. Inspect the final diff, commit, and push under
-Git policy. Confirm the pushed commit is the
-PR head. Resolve only addressed, successfully validated, pushed concerns whose
-root comment is from Copilot or another automated agent. Human-authored roots stay
-open for a person to resolve. Report the commit, validation, and resolved versus
-unresolved threads.
+Reconfirm the PR head and local branch, apply the fixes, and run targeted and
+repository-required validation. Inspect the final diff and commit under Git policy.
+Pushing and changing a PR title or body still need the user's approval; present
+the commits and validation for it. After an approved push, confirm the pushed
+commit is the PR head. Resolve only addressed, validated, pushed concerns whose
+root comment is from Copilot or another automated agent. Leave declined threads
+open with your reply; human-authored roots stay open for a person to resolve.
+Report the commits, validation, replies, and resolved versus unresolved threads.
