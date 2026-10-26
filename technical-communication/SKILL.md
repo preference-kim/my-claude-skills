@@ -69,6 +69,11 @@ ordinary editing does not require an audit report.
 
 ## Conditional references
 
+Before introducing or assessing a technique or concept name, including one taken
+from code, read [domain research](../../agent-guidance/domain-research.md). Verify
+the semantic fit before building an explanation around it; reuse sufficient prior
+research. This reference also applies when this skill is loaded in isolation.
+
 For an explicit STE compliance request, inspect the requested edition of the
 standard and the pinned [SimpleEnglish reference](../simple-english/skills/simple-english/SKILL.md).
 Do not infer compliance from the skill's branding or apply word substitutions
