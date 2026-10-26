@@ -94,6 +94,12 @@ Established technical abbreviations remain appropriate for their audience.
 
 ## Evidence and presentation
 
+In PR tables, keep one row per distinct case. Collapse duplicate rows and
+repeated runs of the same case, including rows that differ only by repeat index.
+For repeated measurements, state the repeat count and aggregation method with
+the retained result; preserve material variation or failures in that row or its
+adjacent explanation. Keep cases with materially different conditions separate.
+
 Keep the visible body within 7,000 characters, including the summary, headings,
 tables, and visible `<summary>` labels. Count Unicode code points (Python `len`
 of the decoded text) after removing
