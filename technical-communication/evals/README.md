@@ -24,9 +24,10 @@ instruction limits the actor to an author draft. This tests author behavior unde
 that boundary, not execution of the complete artifact workflow.
 The wrapper's execution limits govern the authoring invocation. The task defines
 any recipient's authority; authoring limits are not automatically task constraints.
-The six development cases run twice per variant in each available runtime
-(36 outputs per runtime). Freeze C before examining the two held-out cases, which
-run twice each on C (four more outputs per runtime). Conversation excerpts test
+Cases marked `development` run twice per variant in each available runtime.
+Freeze C before examining cases still marked `holdout`, which run twice each
+on C. Move a case to development when it is inspected or revised during
+maintenance; derive output counts from the selected cases. Conversation excerpts test
 response to supplied feedback, not long-session memory. A versus B probes selected
 conflicts; B versus C changes composition and size together and cannot establish
 a pure context-length effect.

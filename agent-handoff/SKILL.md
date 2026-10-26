@@ -13,16 +13,16 @@ does not invoke this workflow or delegate again.
 
 Before drafting or assessing a handoff, read the [content contract](references/content.md).
 Before writing prose, read [technical communication](../technical-communication/SKILL.md)
-and preserve the requested language. Reconstruct the task from the request,
-accepted plan, implementation, and evidence. Inspect an existing handoff before
-replacing it. Draft its five required sections without prescribing a new plan
-for the receiving agent.
+and preserve the requested language. Inspect the request, relevant sources, and
+any existing handoff to select currently valid objectives and essential context.
+Apply the content contract's selection and length limits; leave the structure and
+level of detail proportional to the task.
 
-Also prepare a short first prompt the user can paste into a fresh session. Name
-the task, execution location, and exact handoff location. Ask the next agent to
-read the brief and relevant sources, then continue toward the goal. Preserve
-critical scope and authority limits. Do not duplicate the brief, add permissions
-or priorities, or prescribe routine commands.
+Also prepare an opening prompt within the content contract's limit. Name the
+task and exact handoff location; ask the next agent to read it and continue
+toward the goal using its own investigation and judgment. Include execution
+location or an authority limit only when needed to begin correctly. Do not
+duplicate the brief, add permissions or priorities, or prescribe a work plan.
 
 ## Review and deliver
 
@@ -33,11 +33,13 @@ supporting claims, and its own feedback. Resolve findings against evidence and
 complete the revision pass. Self-review does not replace this requirement.
 
 Write the final handoff to the authorized destination. Check source accessibility
-there and re-read the saved file. Reconcile concurrent content before replacing a
-destination that changed since drafting. Return its location, including a remote
-host and usable link when applicable, and the ready-to-paste first prompt as text.
+there, re-read the saved file, and measure both final artifacts against the
+content contract's character limits after the last edit. Reconcile concurrent
+content before replacing a destination that changed since drafting. Return its
+location, including a remote host and usable link when applicable, and the
+ready-to-paste first prompt as text.
 A link to a prompt file alone is insufficient.
 
 Keep drafts and audit notes out of both final artifacts. If independent review
 or the destination write remains incomplete, label the artifact as a draft and
-state the exact limit.
+state the exact limit outside the brief and opening prompt.

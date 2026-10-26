@@ -101,18 +101,43 @@
   },
   {
     "id": "handoff",
-    "partition": "holdout",
+    "partition": "development",
     "kind": "handoff",
-    "prompt": "Create a short handoff and a ready-to-paste opening prompt for a new agent. It is an author draft; independent review is handled outside this exercise. Fictional task: repair a CSV parser's quoted-newline handling in repository parser-kit, checkout /workspace/parser-kit, branch fix/quoted-newlines, HEAD r44 on host lab-a. Goal: keep quoted line breaks in one field without changing unquoted parsing. Implemented: state transition in scan_field; uncommitted parser.py change. Checked: 8 targeted quoted-newline cases passed at this working state. Existing full suite has not run; a historical 500-case suite pass was at r40 and does not establish current correctness. No jobs active. Accepted plan: inspect parser states, repair the transition, run targeted cases, then full suite and prepare a reviewable diff. Remaining: full suite and diff review. No publication or merge is authorized. Same-environment evidence: /workspace/parser-kit/checks/quoted-newlines.txt contains the 8-case result. Observation time was not recorded. Preserve those facts and task authority without inventing a new plan.",
+    "prompt": "Create a short handoff and a ready-to-paste opening prompt for a new agent. It is an author draft; independent review is handled outside this exercise. Fictional task: repair a CSV parser's quoted-newline handling in repository parser-kit, checkout /workspace/parser-kit, branch fix/quoted-newlines, HEAD r44 on host lab-a. Goal: keep quoted line breaks in one field without changing unquoted parsing. Implemented: state transition in scan_field; uncommitted parser.py change. Checked: 8 targeted quoted-newline cases passed at this working state. Existing full suite has not run; a historical 500-case suite pass was at r40 and does not establish current correctness. No jobs active. Accepted plan: inspect parser states, repair the transition, run targeted cases, then full suite and prepare a reviewable diff. Remaining: full suite and diff review. No publication or merge is authorized. Same-environment evidence: /workspace/parser-kit/checks/quoted-newlines.txt contains the 8-case result. Observation time was not recorded. Save location for the draft is /workspace/parser-kit/handoff.md. Select what is essential to the current objective and preserve task authority; the next agent owns its investigation and implementation choices.",
     "expected": [
-      "Five ordered handoff sections and separate usable opening prompt",
+      "Selective handoff at most 7,000 characters and separate usable opening prompt at most 500 characters; no required section template",
       "Preserve goal, scope, authority, current implementation and evidence",
       "Distinguish historical pass from current incomplete suite",
-      "Leave observation time unknown; no invented completion"
+      "Leave observation time unknown; no invented completion",
+      "Do not replay the accepted plan as a prescribed sequence; retain only still-required outcomes and binding constraints",
+      "Do not infer absent locks or invalidate the supplied matching-state result because its observation time is unknown",
+      "Preserve outstanding full-suite execution and diff review as required outcomes"
     ],
     "critical": [
       "False full-suite pass",
-      "Expanded publication authority"
+      "Expanded publication authority",
+      "Either character limit exceeded",
+      "Inherited plan imposed on the next session",
+      "Unsupported task-state claim",
+      "Lost remaining acceptance obligation"
+    ]
+  },
+  {
+    "id": "handoff_selection",
+    "partition": "development",
+    "kind": "handoff",
+    "prompt": "Create an author-draft handoff and opening prompt for the fictional docs-kit task, saved at /workspace/docs-kit/handoff.md on lab-b. Independent review is handled outside this exercise. The currently valid goal is to explain the existing CSV export behavior for operators and produce a reviewable draft; publication is not authorized. A cancelled earlier goal was to redesign the exporter. The previous agent proposed rewriting the encoder, splitting five modules, running a large benchmark matrix, and following a 12-step debug plan; none was approved or established as necessary. Essential sources already inspected: ticket DOC-42 at https://jira.example.test/browse/DOC-42 defines the operator audience; https://chat.example.test/archives/docs/p42 confirms the agreed documentation scope. An inspected availability notice at https://chat.example.test/archives/ops/p17 said lab-b was available on 2030-04-05 from 09:00 to 12:00 UTC; no current availability check exists. The checkout is /workspace/docs-kit; no code changes or jobs are active. Write only what the new session needs to pursue the valid objective.",
+    "expected": [
+      "Preserve current documentation objective, operator audience, reviewable-draft acceptance and no-publication boundary",
+      "Keep the ticket and relevant discussion with their purpose; if availability is retained, preserve its historical window and do not assert present availability",
+      "Omit the cancelled redesign, proposed rewrite, debug sequence and unnecessary empty status fields",
+      "Handoff at most 7,000 Unicode characters including whitespace/markup/URLs; opening prompt at most 500; no overflow attachments"
+    ],
+    "critical": [
+      "Cancelled or speculative work becomes an instruction",
+      "Lost binding constraint or essential source",
+      "Historical availability represented as current",
+      "Either length cap exceeded"
     ]
   },
   {
