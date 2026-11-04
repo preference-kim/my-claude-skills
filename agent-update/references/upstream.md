@@ -3,7 +3,7 @@
 ## Reviewed source and mappings
 
 - Repository: `https://github.com/csehydrogen/.files.git`; branch: `master`.
-- Reviewed commit: `a02946d21773e4171b6d0627e159f624f526809c`.
+- Reviewed commit: `24759b2829b54150ac9876fff334589899645faa`.
 - Instruction: `AGENTS.md`; updater: `skills/agent-update/SKILL.md`.
 - Inventory: every file under `skills/`, including added, removed, renamed and
   changed manifests, resources and scripts.
@@ -64,7 +64,11 @@ for isolated consumers. Read the referenced owner before changing that contract.
   [Publication](publication.md) publishes user-owned children before personal
   parents on `main`; project installation grants no project publication or
   disclosure authority. `<dotfiles>/PUBLICATION.md` owns audience/history
-  review and local-only evidence.
+  review and local-only evidence. Upstream's default commit and push after task
+  changes (`24759b2`) is adopted only for PR work, by the user's 2026-11-04
+  decision: version-control.md's PR branch synchronization pushes within about
+  an hour without delaying work and keeps the description current. Other tracked
+  project changes still need explicit project-scope authorization.
 - **Claude authentication:** `<dotfiles>/agent-guidance/claude-auth.md` owns
   CLI-managed authentication and child-only override removal, instead of an
   upstream static OAuth-token file.

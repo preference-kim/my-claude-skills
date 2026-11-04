@@ -18,6 +18,9 @@ Present the initial manuscript and proposed language before publication. Explici
 language instructions settle that choice, but do not approve an unseen manuscript.
 Existing approval of the concrete manuscript and language permits publication
 without reconfirmation, subject to the owning workflow's review and write limits.
+A revision that keeps a published description current after a PR branch push
+needs no prior approval once reviewed; follow the
+[Git policy](../../../agent-guidance/version-control.md#pr-branch-synchronization).
 
 ## Explain the retained change
 

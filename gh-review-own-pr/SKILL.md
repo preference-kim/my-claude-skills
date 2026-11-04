@@ -101,10 +101,10 @@ warranted. Ask the user only for a decision that needs information or authority
 you lack, such as a product or design choice.
 
 Reconfirm the PR head and local branch, apply the fixes, and run targeted and
-repository-required validation. Inspect the final diff and commit under Git policy.
-Pushing and changing a PR title or body still need the user's approval; present
-the commits and validation for it. After an approved push, confirm the pushed
-commit is the PR head. Resolve only addressed, validated, pushed concerns whose
+repository-required validation. Inspect the final diff, then commit, push, and
+update a stale description under the Git policy's PR branch synchronization.
+Changing the PR title still needs the user's approval. After the push, confirm the
+pushed commit is the PR head. Resolve only addressed, validated, pushed concerns whose
 root comment is from Copilot or another automated agent. Leave declined threads
 open with your reply; human-authored roots stay open for a person to resolve.
 Report the commits, validation, replies, and resolved versus unresolved threads.
