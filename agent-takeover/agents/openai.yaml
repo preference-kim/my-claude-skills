@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent Takeover"
+  short_description: "Reassess inherited work and complete the remaining task"
+  default_prompt: "Use $agent-takeover to take responsibility for this unfinished task, assess the inherited evidence and approach, and execute the remaining work through verification."
+
+policy:
+  allow_implicit_invocation: true

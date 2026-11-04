@@ -1,5 +1,6 @@
 {
   "agent-handoff": "user",
+  "agent-takeover": "user",
   "agent-update": "user",
   "gh-review-other-pr": "user",
   "gh-review-own-pr": "user",

@@ -52,6 +52,13 @@ instruction/root conflicts block that installation. Do not silently count an
 override as canonical. Preserve `.system`, provider-managed and unrelated entries;
 do not replace discovery roots with whole-repository links/clones.
 
+For the canonical `agent-handoff` installation, retain its explicit-only invocation
+policy in both runtimes. Codex reads `agents/openai.yaml`; for Claude, merge
+`"agent-handoff": "user-invocable-only"` into `skillOverrides` in the current user's
+`~/.claude/settings.json`, preserving unrelated settings and any existing `off`
+override. Keep the shared `SKILL.md` frontmatter portable. `agent-takeover` remains
+eligible for implicit invocation; do not impose a matching restriction on it.
+
 For project entries, require untracked paths before creation/replacement, even
 for existing symlinks. Derive relative symlinks from resolved checkout locations.
 Record tracked and ordinary untracked status before/after; it must remain

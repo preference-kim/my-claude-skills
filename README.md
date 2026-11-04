@@ -8,7 +8,8 @@ directories contain links to these canonical directories rather than copies.
 
 | Skill | Description |
 |-------|-------------|
-| [agent-handoff](agent-handoff/) | Prepares a reviewed task handoff and the opening prompt for a fresh session. |
+| [agent-handoff](agent-handoff/) | Explicitly invoked to prepare a reviewed outgoing brief and next-session prompt. |
+| [agent-takeover](agent-takeover/) | Takes over unfinished work, assesses inherited evidence and plans, and executes through verification. |
 | [agent-update](agent-update/) | Synchronizes shared agent guidance across hosts while preserving local policy. |
 | [gh-review-other-pr](gh-review-other-pr/) | Reviews another author’s PR and prepares a pending review. |
 | [gh-stack](gh-stack/) | Manages dependent branches and pull requests. |
@@ -18,6 +19,11 @@ directories contain links to these canonical directories rather than copies.
 | [technical-communication](technical-communication/) | Writes and revises technical material while preserving meaning, evidence, and the reader’s purpose. |
 | [tt-device-investigation](tt-device-investigation/) | Investigates TT device anomalies; installed only in the configured Moreh checkout. |
 | [write-technical-pr](write-technical-pr/) | Drafts technical PR descriptions and finalizes them after independent prose and evidence review. |
+
+`agent-handoff` requires explicit invocation; `agent-takeover` also supports
+implicit selection for requests to take over unfinished work. Both check the
+current request before starting their workflow. Runtime invocation policy is
+maintained by [installation](agent-update/references/installation.md).
 
 ## Pinned references
 

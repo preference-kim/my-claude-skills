@@ -1,0 +1,7 @@
+interface:
+  display_name: "Agent Handoff"
+  short_description: "Prepare an outgoing brief and next-session prompt"
+  default_prompt: "Use $agent-handoff to prepare a reviewed outgoing handoff and an opening prompt that invokes agent-takeover in the receiving session."
+
+policy:
+  allow_implicit_invocation: false

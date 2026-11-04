@@ -2,13 +2,17 @@
 
 A handoff gives a fresh session a clean starting point when accumulated context
 has become cluttered. Preserve only currently valid objectives and the
-references and context essential to pursuing them. The receiving agent owns
-its investigation, implementation choices, and next plan.
+references and context essential to pursuing them. The receiving agent owns the
+full remaining objective, including investigation, planning, execution, and
+verification. The brief supplies evidence and constraints for those decisions;
+the previous agent's approach is subject to reassessment.
 
 ## Select what remains relevant
 
 State what still needs to be accomplished, the scope and acceptance criteria,
-and binding user requirements or decisions. Remove completed or superseded goals
+and binding user requirements or decisions. Preserve the material gap between
+the current result and the required outcome, including uncertainty about whether
+the existing approach can close it. Remove completed or superseded goals
 unless their result is essential context for an active objective. Do not carry
 forward the previous agent's proposed plan, diagnosis, or implementation
 preferences as instructions. State current scope directly instead of reciting
@@ -35,9 +39,11 @@ will not travel with Git.
 
 Do not reproduce an implementation tour, session chronology, speculative fixes,
 routine commands, or detailed next steps. Link maintained sources instead of
-copying them. Retain a failed approach or prior decision only when it establishes
-an essential constraint, with its evidence and limits; leave reassessment to the
-receiving agent. Do not start implementation or experiments to fill a handoff.
+copying them. Retain a failed approach or prior decision when it establishes an
+essential constraint or materially affects the next approach selection, with its
+evidence and limits. Failed variants do not by themselves establish that the
+whole approach is infeasible. Leave reassessment to the receiving agent. Do not
+start implementation or experiments to fill a handoff.
 
 ## Length limits
 
@@ -54,9 +60,10 @@ bypass the limit.
 
 ## Acceptance check
 
-A reader without the conversation can identify the valid objectives, binding
-constraints, and essential sources/context, then investigate and decide how to
-continue independently. Every retained detail serves that purpose. Resolve
+A reader without the conversation can identify the full remaining objective,
+the material gap to acceptance, binding constraints, and essential sources/context,
+then independently choose and carry out the work needed to close that gap.
+Every retained detail serves that purpose. Resolve
 contradictions and unsupported claims; preserve consequential uncertainty and
 authority boundaries. Both artifacts fit their limits and carry no stale agenda
 or unnecessary instructions from the previous session.
