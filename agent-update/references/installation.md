@@ -59,6 +59,15 @@ policy in both runtimes. Codex reads `agents/openai.yaml`; for Claude, merge
 override. Keep the shared `SKILL.md` frontmatter portable. `agent-takeover` remains
 eligible for implicit invocation; do not impose a matching restriction on it.
 
+When `<dotfiles>/claude/auto-mode-allow.json` exists, synchronize its rules into
+`autoMode.allow` of the same settings file as `[agent-update:<id>] <text>` entries.
+Start a missing `autoMode.allow` list with `"$defaults"` so built-in rules stay
+active; an existing list keeps its own choice. Replace a same-id entry whose text
+changed, append new ids, remove managed entries whose id left the file, and
+preserve every unprefixed entry and unrelated setting. Validate both JSON files
+and require unique ids; report a malformed file as a conflict instead of writing.
+Write atomically.
+
 For project entries, require untracked paths before creation/replacement, even
 for existing symlinks. Derive relative symlinks from resolved checkout locations.
 Record tracked and ordinary untracked status before/after; it must remain
