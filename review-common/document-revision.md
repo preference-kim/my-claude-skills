@@ -15,9 +15,12 @@ agent:
   include the base/head diff and evidence for retained claims.
 - The Reviewer contract below, including its flow-reconstruction criterion and
   read-only limits.
-- The applicable AGENTS.md reasoning and communication principles, document policy,
-  and conditional evidence contracts, plus both skills above. Supply readable
-  canonical paths, or their contents when the reviewer cannot access those files.
+- The applicable AGENTS.md reasoning and communication principles and Language
+  section, document policy, conditional evidence contracts, the domain research
+  reference, and applicable team writing policy sections with their revision,
+  plus both skills above. Supply
+  readable canonical paths, or their contents when the reviewer cannot access
+  those files.
 
 Keep drafts and evidence within their authorized storage and audience.
 

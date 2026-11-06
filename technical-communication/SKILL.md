@@ -13,21 +13,28 @@ does not authorize experiments, publication, or changes beyond the request.
 
 ## Explain the work
 
-Lead with the supported conclusion and its scope. Connect the material conditions,
-inputs, mechanism, and outputs so the reader can follow why the result occurs.
-Identify the exact object under discussion: the callable and its contract, or the
-script, revision, invocation, and configuration behind a result. Give the concrete
-signature or command when it determines use or reproduction; a descriptive name
-or link alone is insufficient. Include ownership, state changes, failure paths,
+Lead with the supported conclusion and its scope. An issue or defect report states
+in its title and opening the consequence (error, wrong output, or cost), whether
+correctness is affected, and its size or that it is unmeasured; a report that asks
+for a change also states the goal and where the change must happen. Connect the
+material conditions, inputs, mechanism, and outputs so the reader can follow why
+the result occurs. Identify the exact object under discussion: the callable and
+its contract, or the script, revision, invocation, and configuration behind a
+result. Give the concrete signature or command when it determines use or
+reproduction; a descriptive name or link alone is insufficient. Include ownership, state changes, failure paths,
 or tradeoffs when they affect use or the decision. Explain consequential
 constraints rather than merely naming fields or listing implementation steps.
 
-Use established technical terms consistently. Define unfamiliar terms for this
-audience; do not replace precise terms with broader everyday words. Preserve
-distinctions such as verification against a specification and validation for an
-intended use when the work makes them. Shorten syntax without shortening meaning.
-Use connected paragraphs, lists for parallel items, and tables for comparisons.
-Do not impose a template, rhetorical introduction, or sentence-length quota.
+Use established technical terms consistently. Define an unfamiliar term for this
+audience by what it contains or excludes; do not replace precise terms with broader
+everyday words. Preserve distinctions such as verification against a specification
+and validation for an intended use when the work makes them. Keep the text and
+each sentence as short as a precise account of the intent and mechanism allows;
+shorten syntax, not meaning. Use paragraphs or bullets for the flow, lists for
+parallel items, and tables for comparisons. When table cells would hold sentences,
+first consider bullets instead. Bold the title of a titled bullet. Follow the
+structure the artifact's owning contract defines; otherwise add no template,
+rhetorical introduction, or sentence-length quota.
 
 ## Match claims to evidence
 
@@ -45,7 +52,10 @@ of local-only evidence. Same-environment reports may link local files but must
 carry the conclusion and essential context. Distinguish a proposed procedure
 from one actually run; a simplified reproducer is verified only after that
 version was checked. Report measurements with comparable conditions and scope,
-without inventing precision, missing samples, or general guarantees.
+without inventing precision, missing samples, or general guarantees. Before a
+results table, state what was measured and what a difference between cases
+isolates, define the entities involved, and describe each scenario by its system
+state. Label a case by what was measured, not by an outcome it does not represent.
 
 ## Revise as a whole
 
@@ -56,14 +66,19 @@ leaving the contradicted claim elsewhere, or turn one local comment into the
 document's new purpose. Preserve concurrent content and requirements still in
 force; inspect material ambiguity before changing scope.
 
-Remove repetition, embellishment, incidental history, and defensive caveats
+Remove repetition, embellishment, incidental history, defensive caveats,
+disclaimers that bound no claim, and sentences that leave the document's point
 before removing useful conditions or evidence. Keep an earlier attempt only
 when it explains a decision, risk, or reproduction step. Report execution,
 observed results, and acceptance separately when their distinction matters.
 
-After the last edit, reconstruct the argument from the saved artifact without
-the conversation: can this reader explain the result, its basis, its limits,
-and the required next action? Repair gaps and stop when the purpose is met.
+After the last edit, check each sentence skeptically: whether its logic holds,
+whether it follows from the previous sentence and leads to the next, and whether
+an expression admits more than one reading. Replace such an expression with one
+that admits only the intended reading. Then reconstruct the argument from the
+saved artifact without the conversation: can this reader explain the result, its
+basis, its limits, and the required next action? Repair gaps and stop when the
+purpose is met.
 Use `stop-bullshit` when an explicit audit or the owning workflow requires it;
 ordinary editing does not require an audit report.
 
@@ -73,6 +88,11 @@ Before introducing or assessing a technique or concept name, including one taken
 from code, read [domain research](../../agent-guidance/domain-research.md). Verify
 the semantic fit before building an explanation around it; reuse sufficient prior
 research. This reference also applies when this skill is loaded in isolation.
+
+When a private team policy is registered, read its writing policy through the
+[team policy loader](../../agent-guidance/team-development.md) before writing;
+that policy defines which work it covers. An isolated reviewer uses the policy
+sections and revision its brief supplies instead of running the loader.
 
 For an explicit STE compliance request, inspect the requested edition of the
 standard and the pinned [SimpleEnglish reference](../simple-english/skills/simple-english/SKILL.md).

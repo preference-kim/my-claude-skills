@@ -8,33 +8,70 @@ the final language before independent technical prose and `stop-bullshit` review
 Translation preserves evidence, qualifications, and technical meaning. The English
 working draft is not an extra delivered section.
 
-Default to an English body preceded by `## Korean Summary` in Korean. A requested
-single-language body uses that language for prose, with `## Summary` and no duplicate
-translation. PR titles, headings, conventional technical terminology, and all text
-in tables, plots, and figures remain English, even for an entirely Korean request.
+Default to an English body preceded by `## Korean Summary` in Korean, which is
+then the Summary section below; the English body does not repeat it. A requested
+single-language body uses that language for prose, with `## Summary` and no
+duplicate translation. Before choosing, read the
+[team writing policy](../../../agent-guidance/team-development.md); it can set
+another default for the repositories it covers. An explicit request for the PR
+overrides any default. Write Korean prose in 개조식 or 하다체. The AGENTS.md
+Language section governs English titles, headings, terms, and table and figure
+text. Keep the title to about 60 characters, naming the main contribution.
 Preserve code, commands, and GitHub closing syntax.
 
-Present the initial manuscript and proposed language before publication. Explicit
-language instructions settle that choice, but do not approve an unseen manuscript.
-Existing approval of the concrete manuscript and language permits publication
-without reconfirmation, subject to the owning workflow's review and write limits.
-A revision that keeps a published description current after a PR branch push
-needs no prior approval once reviewed; follow the
+For the user's own PR, publish a new or revised description body after the
+required review and your final check without waiting for approval. Read it back,
+then ask the user to review it and state what changed. Revise and publish a stale
+description of the user's unmerged PR the same way, whether a push, a lower PR's
+merge, a rebase, or new evidence made it stale; the push itself follows the
 [Git policy](../../../agent-guidance/version-control.md#pr-branch-synchronization).
+Changing an existing PR's title still needs the user's approval. For another
+author's PR, publish only a reviewed manuscript the user approved.
 
-## Explain the retained change
+## Structure the description
+
+Carry the flow of these sections in bullets; use a short paragraph only for
+context a bullet cannot hold:
+
+- **Summary:** three titled bullets (problem, change, result), titled in the
+  Summary's language and each at most two sentences. The problem bullet gives the
+  background problem and the goal, the change bullet the core change, and the
+  result bullet the outcome within this PR's scope: an optimization's speedup, or
+  for a bug fix, briefly what was fixed and how. Keep the qualifier that bounds
+  each claim, such as its condition or whether it was measured or derived from
+  code. Leave revisions, runs, and which commit passed which check to the owning
+  section.
+- **Change chapters:** one or more chapters explain the changes, each headed for
+  the change it explains. For each, state how Base behaves, what this PR changes,
+  and why. Give changes of different kinds, such as a feature, an interim
+  workaround, and a bug fix found during the work, separate chapters. A one-line
+  fix needs one short chapter.
+- **Other changes:** one brief `## Other changes` section lists changes outside
+  the main issue, each with its reason. Omit it when there are none.
+- **Evidence:** results and validation sections, headed for their content, hold
+  what the review decision needs.
+
+When the repository spans several software layers or components, name the layer
+of each background item and change, using the layer names the repository's
+documentation defines, or the component's established name where none is
+defined. When the change depends on runtime structure, such as process
+boundaries, call order, or a pipeline schedule, explain that structure plainly
+before the mechanism, with a small text diagram where timing matters. When a rule treats cases differently,
+list each case and why it needs separate handling. When shared code changes, list
+which of its other users change behavior. Consider a diagram or plot where it
+explains a change or result better than text or a table; the
+[evidence contracts](evidence.md) govern figures.
 
 Plan the reader's decision before drafting: what behavior or contract changes,
 what evidence supports it, and what remains unresolved. Select the facts needed
 for that decision before adding implementation detail. A description is not an
-inventory of the work performed. Use the summary for the purpose and result;
-keep detailed contracts, methods, and numerical results in their owning sections
-instead of repeating them in the summary and body.
+inventory of the work performed. Keep detailed contracts, methods, and numerical
+results in their owning sections instead of repeating them in the Summary and
+body. Describe the actual base-to-head change, not a later stack layer's outcome
+or branch development history. Include surrounding infrastructure only when it
+explains behavior or an integration boundary.
 
-The opening summary connects the problem, solution, and concrete result within
-this PR's scope. Describe the actual base-to-head change, not a later stack layer's
-outcome or branch development history. Include surrounding infrastructure only
-when it explains behavior or an integration boundary.
+## Explain the retained change
 
 Use established codebase terms and connect the changed component's callers,
 behavior, mechanism, and observed impact or missing comparison. Where material,
@@ -81,18 +118,20 @@ preprocessing, feature scope, resources/concurrency, or deployment. Give size-li
 stages, units, padding, and alignment. Distinguish implementation capacity from
 model limits.
 
-Choose topics the change needs: contracts, implementation, correctness,
-performance, resources, integration, or remaining limits. Prefer coherent topic
-bullets with related explanations. Use further hierarchy only when useful.
-The reader must understand the base-to-PR change and source of each material
-constraint without reconstructing the argument from names or links.
+Within that structure, cover only the topics the change needs: contracts,
+implementation, correctness, performance, resources, integration, or remaining
+limits. Use further hierarchy only when useful. The reader must understand the
+base-to-PR change and source of each material constraint without reconstructing
+the argument from names or links.
 
-Name each implementation or comparison by its branch/revision, API, algorithm,
-or distinguishing configuration. Relative adjectives such as "ordinary",
-"optimized", or "new" cannot identify a comparison on their own. Do not invent
-abbreviations or slash-packed metrics to make a table fit. When scenarios change
-the operation, workload, or outcome being measured, explain each scenario briefly
-and use separate subsections/tables if a combined table requires decoding a legend.
+Label the base and this PR "Base" and "This PR" in text and tables, and define
+each once with its revision and what it contains; a revision hash alone does not
+tell the reader which side it is. Name other implementations or comparisons by
+API, algorithm, or distinguishing configuration. Relative adjectives such as
+"ordinary", "optimized", or "new" cannot identify a comparison on their own. Do
+not invent abbreviations or slash-packed metrics to make a table fit. When
+scenarios change the operation, workload, or outcome being measured, use separate
+subsections or tables if a combined table requires decoding a legend.
 Established technical abbreviations remain appropriate for their audience.
 
 ## Evidence and presentation
@@ -109,8 +148,10 @@ of the decoded text) after removing
 the hidden contents of collapsed `<details>` blocks; count the remaining Markdown
 including whitespace as a conservative bound. Check the final saved manuscript,
 not an earlier draft, with a deterministic count rather than an estimate. If
-counting is unavailable, report compliance as unverified. This is a ceiling, not
-a target. An over-budget manuscript remains a draft until it is reduced.
+counting is unavailable, report compliance as unverified. Above the limit, cut
+content or ask the user for a higher ceiling; never compress sentences to fit.
+The manuscript remains a draft until it fits. The limit is a ceiling, not a
+target; for a higher ceiling the user grants, aim for about half of it.
 
 Keep the changed contract, measurement method, main results, and limitations
 needed for the review decision visible. Use compact bullets for experimental
@@ -147,7 +188,7 @@ without filling gaps from the conversation or unstated code knowledge. Check tha
 the visible body explains the changed contract, material data relationships and
 results. Completion means the reader can understand the whole relevant flow and
 why its data is needed, not merely find every requested heading or field. Scale
-this check to the change; it does not require a fixed template, diagram, or
-algorithm tutorial. This check supplements the language, contract, and evidence
+this check to the change; it requires no sections beyond those above, and no
+diagram or algorithm tutorial. This check supplements the language, contract, and evidence
 requirements; it does not replace them. Missing links need source inspection or
 an explicit gap.

@@ -6,14 +6,18 @@ Distinguish direct measurements, calculations from measured inputs, model-derive
 estimates, hypotheses awaiting a test, and design decisions justified by criteria.
 Do not label derived values as measured. Give the source revision's role and its
 relationship to PR head, workload, units, denominator, resources, and protocol
-needed to interpret a claim. Qualify stale or narrower evidence beside the claim,
-or omit it. Candidate allocations are not current resource usage.
+needed to interpret a claim. Qualify stale or narrower evidence beside the claim
+in its owning section, or omit it. Candidate allocations are not current resource
+usage. Report the configurations the review decision needs or the user named.
 
 For comparisons, name the baseline, changed code/option, and conditions held equal.
-Final latency alone does not establish speedup. If the baseline was not measured,
-state that gap without inventing its cause or implying no benefit. Narrow the claim
-unless the task requires the missing experiment. Description writing alone does
-not authorize experiments or implementation changes.
+State an optimization's speedup as a ratio above one: Base ÷ This PR for a time,
+This PR ÷ Base for a rate such as throughput. Give the direction of any other
+ratio, such as a longer latency. Final latency alone does not establish speedup.
+If the baseline was not measured, state that gap without inventing its cause or
+implying no benefit. Narrow the claim unless the task requires the missing
+experiment. Description writing alone does not authorize experiments or
+implementation changes.
 
 For performance results, place a compact method description beside the tables:
 the repository script/test entry point; clock source and timed boundary (for
@@ -73,11 +77,12 @@ secrets, and local paths.
 
 ## Figures and artifacts
 
-Use a figure when a table does not communicate the relationship well. Generate it
-from the described source and measurements. Label samples, interpolation,
-derived series, and modeled expectations distinctly. Required figures must be
-attached before publication, replaced by complete tables, or their claims omitted.
-Do not relabel stale data as current.
+Generate a figure from the described source and measurements. Label samples,
+interpolation, derived series, and modeled expectations distinctly. Before
+publication, attach a figure that carries a claim to the description, replace it
+with complete tables, or omit its claim. A linked figure, such as one on a host
+the team writing policy approves, only supplements text or tables that carry the
+claim. Do not relabel stale data as current.
 
 Keep local plots, CSVs, logs, and temporary scripts out of the production diff
 unless the repository requires them. The [description policy](policy.md)'s

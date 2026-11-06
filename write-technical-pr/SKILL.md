@@ -29,8 +29,7 @@ preparing the mandatory separate-agent review: technical prose first, `stop-bull
 afterward, followed by supported revisions and the final author check.
 A code review or self-check does not replace this manuscript review.
 
-Publish only after those checks and the policy's manuscript/language approval
-conditions are satisfied. Fetch the live body afterward to confirm the reviewed
-text was stored and concurrent content survived. Readback establishes delivery,
-not correctness. For draft-only work, deliver the reviewed manuscript without a
-GitHub write.
+Publish only after those checks, under the policy's publication rules. Fetch the
+live body afterward to confirm the reviewed text was stored and concurrent
+content survived. Readback establishes delivery, not correctness. For draft-only
+work, deliver the reviewed manuscript without a GitHub write.
