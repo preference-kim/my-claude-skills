@@ -66,6 +66,15 @@ leaving the contradicted claim elsewhere, or turn one local comment into the
 document's new purpose. Preserve concurrent content and requirements still in
 force; inspect material ambiguity before changing scope.
 
+The artifact itself must let its reader understand the situation and the
+intent; linked comments or pages supplement it but cannot carry what the
+reader's purpose needs. A length limit exists to refine content into what that
+reader can take in. When the core still cannot be conveyed clearly within a
+limit after cutting what the purpose does not need, extend the text where the
+owning contract allows it, or report what a fixed limit cuts; do not drop or
+compress the core. Attach a diagram as supplementary material when it conveys
+structure or timing better than prose and the artifact cannot hold it.
+
 Remove repetition, embellishment, incidental history, defensive caveats,
 disclaimers that bound no claim, and sentences that leave the document's point
 before removing useful conditions or evidence. Keep an earlier attempt only

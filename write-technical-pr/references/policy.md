@@ -30,6 +30,10 @@ author's PR, publish only a reviewed manuscript the user approved.
 
 ## Structure the description
 
+The description alone must let a reviewer understand the situation, the intent,
+the analysis behind the change, and its rationale. A PR comment or linked page
+can supplement it but cannot carry what the review decision needs.
+
 Carry the flow of these sections in bullets; use a short paragraph only for
 context a bullet cannot hold:
 
@@ -59,7 +63,8 @@ boundaries, call order, or a pipeline schedule, explain that structure plainly
 before the mechanism, with a small text diagram where timing matters. When a rule treats cases differently,
 list each case and why it needs separate handling. When shared code changes, list
 which of its other users change behavior. Consider a diagram or plot where it
-explains a change or result better than text or a table; the
+explains a change or result better than text or a table, attached as a linked
+supplementary figure when the body cannot render it; the
 [evidence contracts](evidence.md) govern figures.
 
 Plan the reader's decision before drafting: what behavior or contract changes,
@@ -148,10 +153,13 @@ of the decoded text) after removing
 the hidden contents of collapsed `<details>` blocks; count the remaining Markdown
 including whitespace as a conservative bound. Check the final saved manuscript,
 not an earlier draft, with a deterministic count rather than an estimate. If
-counting is unavailable, report compliance as unverified. Above the limit, cut
-content or ask the user for a higher ceiling; never compress sentences to fit.
-The manuscript remains a draft until it fits. The limit is a ceiling, not a
-target; for a higher ceiling the user grants, aim for about half of it.
+counting is unavailable, report compliance as unverified. The limit exists to
+refine the content into what a reviewer can take in; it is a ceiling, not a
+target. Above it, first cut repetition and detail the review decision does not
+need, and move secondary detail into collapsed blocks. If the core of the PR
+still cannot be conveyed clearly within the limit, exceed it by what the core
+needs and report the final count with the reason; conveying the information is
+the governing principle. Never compress sentences or drop the core to fit.
 
 Keep the changed contract, measurement method, main results, and limitations
 needed for the review decision visible. Use compact bullets for experimental
