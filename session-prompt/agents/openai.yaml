@@ -1,7 +1,0 @@
-interface:
-  display_name: "Session Prompt"
-  short_description: "Turn Korean text into an English prompt for another session"
-  default_prompt: "Use $session-prompt to turn my Korean text into an English prompt for another session, within the length limit."
-
-policy:
-  allow_implicit_invocation: true

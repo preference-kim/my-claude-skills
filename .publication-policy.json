@@ -69,9 +69,9 @@
     "agent-update/scripts/retire_links.py",
     "agent-update/scripts/test_reference_policy.py",
     "agent-update/references/private-deployment.md",
-    "session-prompt/SKILL.md",
-    "session-prompt/agents/openai.yaml",
-    "session-prompt/references/claude.md",
-    "session-prompt/references/codex.md"
+    "better-prompt/SKILL.md",
+    "better-prompt/agents/openai.yaml",
+    "better-prompt/references/claude.md",
+    "better-prompt/references/codex.md"
   ]
 }

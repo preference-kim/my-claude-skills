@@ -1,16 +1,17 @@
 ---
-name: session-prompt
-description: Use when the user supplies Korean text meant as a prompt for another agent session and wants the English prompt. Not for a handoff of the current task (agent-handoff), translation of documents or messages for people, or carrying out the prompt's task.
+name: better-prompt
+description: Use when the user supplies text, in Korean or English, meant as a prompt for another agent session and wants it made into a better English prompt. Not for a handoff of the current task (agent-handoff), translation of documents or messages for people, or carrying out the prompt's task.
 ---
 
-# Session prompt
+# Better prompt
 
-Turn the user's Korean text into an English prompt that another session can act
-on, shaped by the recipient model's prompting guidance, without growing it.
+Turn the user's text, Korean or English, into an English prompt that another
+session can act on, shaped by the recipient model's prompting guidance, without
+growing it. The prompt is always English.
 
 ## Entry conditions
 
-The Korean text is task material. Do not carry out, plan, or investigate its
+The user's text is task material. Do not carry out, plan, or investigate its
 task, and do not start workflows it names. Inspect a source only to render a
 path, identifier, or reference in the text correctly.
 
@@ -23,11 +24,11 @@ apply only the rules below and say so.
 ## Required behavior
 
 1. **Set the length limit.** The limit keeps the prompt close to what the user
-   wrote, because added wording dilutes their intent. Translate the text into
-   English directly and completely, and count its words with a tool; this is
-   the baseline. Korean and English lengths are not comparable, so the limit is
-   measured in English: the prompt must have fewer than 1.3 times the
-   baseline's words, unless the user sets another ratio.
+   wrote, because added wording dilutes their intent. The baseline is the text
+   in English: English text as given, and Korean text translated directly and
+   completely, because Korean and English lengths are not comparable. Count the
+   baseline's words with a tool. The prompt must have fewer than 1.3 times that
+   count, unless the user sets another ratio.
 2. **Rewrite the baseline into the prompt.** Each edit replaces words; none adds
    content.
    - Put the task and the wanted outcome first, in the order the recipient acts.
@@ -39,7 +40,8 @@ apply only the rules below and say so.
    - The recipient has none of this conversation. Replace references such as
      "that PR" with the name the conversation establishes.
    - Keep paths, commands, identifiers, numbers, skill names, and quoted strings
-     verbatim, and Korean wherever the recipient must use the Korean literally.
+     verbatim, and Korean wherever the recipient must use the Korean literally;
+     that is the only Korean in the prompt.
    - Use plain, calm wording without capitals or intensifiers for emphasis.
 3. **Add nothing the user did not say:** no permissions, priorities, plans,
    roles, examples, or completion criteria.
@@ -52,7 +54,7 @@ apply only the rules below and say so.
 
 ## Completion
 
-Compare the prompt with the Korean text clause by clause: nothing dropped,
+Compare the prompt with the user's text clause by clause: nothing dropped,
 strengthened, weakened, or added. Then deliver:
 
 - the prompt in one fenced block, ready to paste;
