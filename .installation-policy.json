@@ -6,6 +6,7 @@
   "gh-review-own-pr": "user",
   "gh-stack": "user",
   "humanizer": "reference",
+  "session-prompt": "user",
   "simple-english": "reference",
   "skill-maker": "user",
   "stop-bullshit": "user",
