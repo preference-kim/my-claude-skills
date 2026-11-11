@@ -11,7 +11,7 @@ directories contain links to these canonical directories rather than copies.
 | [agent-handoff](agent-handoff/) | Explicitly invoked to prepare a reviewed outgoing brief and next-session prompt. |
 | [agent-takeover](agent-takeover/) | Takes over unfinished work, assesses inherited evidence and plans, and executes through verification. |
 | [agent-update](agent-update/) | Synchronizes shared agent guidance across hosts while preserving local policy. |
-| [better-prompt](better-prompt/) | Turns Korean or English text into a length-limited English prompt for another session, shaped by the recipient model's prompting guidance. |
+| [better-prompt](better-prompt/) | Turns text in any language into a length-limited English prompt for another session, shaped by the recipient model's prompting guidance. |
 | [gh-review-other-pr](gh-review-other-pr/) | Reviews another author’s PR and prepares a pending review. |
 | [gh-stack](gh-stack/) | Manages dependent branches and pull requests. |
 | [gh-review-own-pr](gh-review-own-pr/) | Submits the current branch and coordinates approval-gated PR reviews. |

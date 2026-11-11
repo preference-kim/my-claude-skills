@@ -1,13 +1,14 @@
 ---
 name: better-prompt
-description: Use when the user supplies text, in Korean or English, meant as a prompt for another agent session and wants it made into a better English prompt. Not for a handoff of the current task (agent-handoff), translation of documents or messages for people, or carrying out the prompt's task.
+description: Use when the user supplies text, in any language, meant as a prompt for another agent session and wants it made into a better English prompt. Not for a handoff of the current task (agent-handoff), translation of documents or messages for people, or carrying out the prompt's task.
 ---
 
 # Better prompt
 
-Turn the user's text, Korean or English, into an English prompt that another
+Turn the user's text, in any language, into an English prompt that another
 session can act on, shaped by the recipient model's prompting guidance, without
-growing it. The prompt is always English.
+growing it. The prompt is always English; the original language stays only
+where the recipient needs the original wording.
 
 ## Entry conditions
 
@@ -25,8 +26,8 @@ apply only the rules below and say so.
 
 1. **Set the length limit.** The limit keeps the prompt close to what the user
    wrote, because added wording dilutes their intent. The baseline is the text
-   in English: English text as given, and Korean text translated directly and
-   completely, because Korean and English lengths are not comparable. Count the
+   in English: English text as given, and other text translated directly and
+   completely, because lengths in different languages are not comparable. Count the
    baseline's words with a tool. The prompt must have fewer than 1.3 times that
    count, unless the user sets another ratio.
 2. **Rewrite the baseline into the prompt.** Each edit replaces words; none adds
@@ -40,8 +41,8 @@ apply only the rules below and say so.
    - The recipient has none of this conversation. Replace references such as
      "that PR" with the name the conversation establishes.
    - Keep paths, commands, identifiers, numbers, skill names, and quoted strings
-     verbatim, and Korean wherever the recipient must use the Korean literally;
-     that is the only Korean in the prompt.
+     verbatim. Keep original-language wording only where the recipient must use
+     it literally, such as text to search for, quote, or output.
    - Use plain, calm wording without capitals or intensifiers for emphasis.
 3. **Add nothing the user did not say:** no permissions, priorities, plans,
    roles, examples, or completion criteria.

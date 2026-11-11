@@ -1,6 +1,6 @@
 interface:
   display_name: "Better Prompt"
-  short_description: "Turn Korean or English text into a better English prompt"
+  short_description: "Turn text in any language into a better English prompt"
   default_prompt: "Use $better-prompt to turn my text into an English prompt for another session, within the length limit."
 
 policy:
