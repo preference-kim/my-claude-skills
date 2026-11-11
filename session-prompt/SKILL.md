@@ -22,10 +22,12 @@ apply only the rules below and say so.
 
 ## Required behavior
 
-1. **Set the length limit.** Translate the text into English directly and
-   completely, and count its words with a tool; this is the baseline. Korean and
-   English lengths are not comparable, so the limit is measured in English: the
-   prompt must have fewer than 1.2 times the baseline's words.
+1. **Set the length limit.** The limit keeps the prompt close to what the user
+   wrote, because added wording dilutes their intent. Translate the text into
+   English directly and completely, and count its words with a tool; this is
+   the baseline. Korean and English lengths are not comparable, so the limit is
+   measured in English: the prompt must have fewer than 1.3 times the
+   baseline's words, unless the user sets another ratio.
 2. **Rewrite the baseline into the prompt.** Each edit replaces words; none adds
    content.
    - Put the task and the wanted outcome first, in the order the recipient acts.
