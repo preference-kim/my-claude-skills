@@ -55,7 +55,8 @@ for isolated consumers. Read the referenced owner before changing that contract.
 - **Maintenance:** retain [preflight](preflight.md)'s session-driven daily
   semantic reconciliation and installed-CLI updates, rather than upstream's
   pull-only workflow. [Private synchronization](private-sync.md) runs approved
-  current-owner SSH on every refresh; other private scopes remain explicit.
+  current-owner SSH on every refresh and, on personal devices only, the
+  user-approved discord-relay payload; other private scopes remain explicit.
   Shell startup and `clear` never fetch/deploy. No cron, launchd or daemon is
   required.
 - **Git and publication:** `<dotfiles>/agent-guidance/version-control.md` owns

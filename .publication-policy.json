@@ -54,6 +54,7 @@
     "agent-update/references/private-hosts.md",
     "agent-update/references/private-hf.md",
     "agent-update/references/private-github.md",
+    "agent-update/references/private-discord-relay.md",
     "agent-update/references/private-bootstrap.md",
     "agent-update/references/private-ssh-setup.md",
     "agent-update/references/installation-migration.md",

@@ -33,8 +33,10 @@ For an agent refresh:
 3. Every refresh: read [private synchronization](references/private-sync.md) and
    [SSH synchronization](references/private-ssh.md). Fetch the approved private
    inventory and synchronize the current registered owner, including first setup
-   and the cluster key. Report its independent outcome. Other private operations
-   require their explicit scopes from the private protocol.
+   and the cluster key. On a registered personal device, also read
+   [discord-relay](references/private-discord-relay.md) and install its approved
+   payload. Report each independent outcome. Other private operations require
+   their explicit scopes from the private protocol.
 4. Full refreshes: read [reference maintenance](references/reference-maintenance.md)
    and check for advisory vendor updates without changing pins. Read [reconciliation](references/reconciliation.md) and
    [upstream decisions](references/upstream.md). Inspect all changed resources as

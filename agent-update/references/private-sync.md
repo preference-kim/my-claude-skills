@@ -9,6 +9,7 @@ Keep private state under `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`
 | Authorized action | Read before acting |
 | --- | --- |
 | Every agent refresh, or an explicit current-owner SSH update | [SSH synchronization](private-ssh.md) |
+| Every agent refresh on a registered personal device | [discord-relay payload](private-discord-relay.md) |
 | Explicit source review, inventory maintenance or device registration | [Inventory maintenance](private-inventory.md) |
 | Explicit deployment path migration | [Path migration](private-deployment.md#explicit-path-migration) |
 | Explicit server bootstrap or fleet-key lifecycle work | [Bootstrap and fleet keys](private-bootstrap.md) |
@@ -18,7 +19,9 @@ Keep private state under `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`
 
 Routine SSH consumes the approved repository, including first setup and its
 cluster key. It does not authorize source review, enrollment, remote rollout,
-hosts/cloud-init writes or HF/GitHub payloads. A generic server setup also does
+hosts/cloud-init writes or HF/GitHub payloads. The discord-relay payload is the
+user-approved exception: every refresh installs it on registered personal
+devices only. A generic server setup also does
 not authorize hosts-file or token changes. Scope each requested payload and
 target independently; fleet decryption capability does not grant installation
 authority.
@@ -52,7 +55,7 @@ authority.
    maintainer may use its existing authentication. Keep host-key verification
    enabled.
 5. For each requested payload (`inventory`, `cluster-ssh-key`, `hf-token`,
-   `github-token`), read `<payload>.approval.json` at the pinned commit. Require
+   `github-token`, `discord-relay`), read `<payload>.approval.json` at the pinned commit. Require
    `schema_version: 1`, `status: approved`, and `sha256` matching the ciphertext.
    Missing, draft or mismatched approval blocks that payload, independently of
    others. Record each payload's commit and ciphertext digest. Approval records
