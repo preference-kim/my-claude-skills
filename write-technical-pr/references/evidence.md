@@ -1,13 +1,30 @@
 # PR evidence contracts
 
+## Reuse completed validation
+
+When deciding whether PR validation needs more work, read the
+[PR validation rule](../../../agent-guidance/version-control.md#pr-validation).
+It owns the cost and purpose of additional checks and reuse after history changes.
+
+For Base-versus-This-PR measurements, identify each side by its role and actual
+tested revision. This PR names the change being evaluated, not a promise that the
+measurement ran at the current head. Preserve the actual measured hashes after
+a rebase or force-push; never replace them with unmeasured revisions. A revision
+change alone warrants neither a stale-evidence warning nor a rebase explanation.
+Keep routine author checks and rerun inventories out of the description. Report
+a material remaining defect or evidence gap in terms of the affected behavior
+and claim, without narrating branch history.
+
 ## Scope each claim
 
 Distinguish direct measurements, calculations from measured inputs, model-derived
 estimates, hypotheses awaiting a test, and design decisions justified by criteria.
-Do not label derived values as measured. Give the source revision's role and its
-relationship to PR head, workload, units, denominator, resources, and protocol
-needed to interpret a claim. Qualify stale or narrower evidence beside the claim
-in its owning section, or omit it. Candidate allocations are not current resource
+Do not label derived values as measured. Give source revisions and their
+comparison roles, workload, units, denominator, resources, and protocol where
+needed to interpret a claim. For measurements, use the actual tested revisions.
+Qualify evidence whose tested behavior or conditions support only a narrower claim
+in its owning section; replace or omit evidence
+that no longer supports it. Candidate allocations are not current resource
 usage. Report the configurations the review decision needs or the user named.
 
 For comparisons, name the baseline, changed code/option, and conditions held equal.
@@ -82,7 +99,7 @@ interpolation, derived series, and modeled expectations distinctly. Before
 publication, attach a figure that carries a claim to the description, replace it
 with complete tables, or omit its claim. A linked figure, such as one on a host
 the team writing policy approves, only supplements text or tables that carry the
-claim. Do not relabel stale data as current.
+claim. Preserve the measured revisions and coverage in figures as in tables.
 
 Keep local plots, CSVs, logs, and temporary scripts out of the production diff
 unless the repository requires them. The [description policy](policy.md)'s

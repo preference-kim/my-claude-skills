@@ -21,9 +21,12 @@ Preserve code, commands, and GitHub closing syntax.
 
 For the user's own PR, publish a new or revised description body after the
 required review and your final check without waiting for approval. Read it back,
-then ask the user to review it and state what changed. Revise and publish a stale
-description of the user's unmerged PR the same way, whether a push, a lower PR's
-merge, a rebase, or new evidence made it stale; the push itself follows the
+then ask the user to review it and state what changed. Revise and publish the
+description of the user's unmerged PR the same way when its account of behavior,
+scope, or supported conclusions becomes inaccurate. A push, merge, or rebase that
+only changes revision identity does not require an update; preserve valid results
+and their measured revisions under the [evidence contracts](evidence.md).
+The push itself follows the
 [Git policy](../../../agent-guidance/version-control.md#pr-branch-synchronization).
 Changing an existing PR's title still needs the user's approval. For another
 author's PR, publish only a reviewed manuscript the user approved.
@@ -129,9 +132,11 @@ limits. Use further hierarchy only when useful. The reader must understand the
 base-to-PR change and source of each material constraint without reconstructing
 the argument from names or links.
 
-Label the base and this PR "Base" and "This PR" in text and tables, and define
-each once with its revision and what it contains; a revision hash alone does not
-tell the reader which side it is. Name other implementations or comparisons by
+Label the base and this PR "Base" and "This PR" in text, tables, and figures, and
+define each once per comparison with its source revision and what it contains.
+For experiments, use the actual measured revisions under the evidence contracts;
+a revision hash alone does not tell the reader which side it is.
+Name other implementations or comparisons by
 API, algorithm, or distinguishing configuration. Relative adjectives such as
 "ordinary", "optimized", or "new" cannot identify a comparison on their own. Do
 not invent abbreviations or slash-packed metrics to make a table fit. When
@@ -177,8 +182,9 @@ as evidence.
 
 For experiments, quantitative claims, correctness coverage, performance comparisons,
 or figures, read [evidence contracts](evidence.md) before reporting them.
-Report change-specific results, failures, missing checks, and limitations. Omit
-routine build-success statements, host-test counts, and empty validation sections.
+Report change-specific results and material remaining failures, evidence gaps,
+and limitations. Omit routine author verification, including rebase checks,
+build-success statements, host-test counts, and empty validation sections.
 This reporting rule does not waive required checks.
 
 Use words for approximations and words or an en dash for ranges. Bare `~` can pair

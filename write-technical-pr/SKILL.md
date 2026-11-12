@@ -21,7 +21,8 @@ tests, branches, or benchmark artifacts.
 Draft in English with [technical communication](../technical-communication/SKILL.md),
 then prepare the final language under the description policy. Check substantive
 claims against the diff and evidence, and separately check language, structure,
-and formatting. Missing validation must remain explicit.
+and formatting. Keep material gaps in the evidence for retained claims explicit
+under the evidence contracts; a changed head hash alone is not such a gap.
 
 Every new or revised manuscript then follows the
 [document revision workflow](../review-common/document-revision.md). Read it before
