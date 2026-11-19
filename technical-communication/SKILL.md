@@ -46,10 +46,12 @@ Explain plausible alternatives only when they could change the conclusion or
 next action, and identify the evidence that would distinguish them.
 
 Attach the smallest relevant inspected source to the claim it supports. Keep
-decision-critical facts and reasoning in the artifact. For an external reader,
-include accessible source revisions and reproducible commands or code instead
-of local-only evidence. Same-environment reports may link local files but must
-carry the conclusion and essential context. Distinguish a proposed procedure
+decision-critical facts and reasoning in the artifact. For any reader beyond the
+user, such as a team document, PR or message, cite sources that reader can open,
+such as committed files, commits or other web links, with accessible source
+revisions and reproducible commands or code instead of local paths or local-only
+evidence. Reports to the user in the same environment may link local files but
+must carry the conclusion and essential context. Distinguish a proposed procedure
 from one actually run; a simplified reproducer is verified only after that
 version was checked. Report measurements with comparable conditions and scope,
 without inventing precision, missing samples, or general guarantees. Before a

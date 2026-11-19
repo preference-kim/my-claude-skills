@@ -3,7 +3,7 @@
 ## Reviewed source and mappings
 
 - Repository: `https://github.com/csehydrogen/.files.git`; branch: `master`.
-- Reviewed commit: `24759b2829b54150ac9876fff334589899645faa`.
+- Reviewed commit: `99cf34a2e48118f3c2cf7bb5d37330c709816167`.
 - Instruction: `AGENTS.md`; updater: `skills/agent-update/SKILL.md`.
 - Inventory: every file under `skills/`, including added, removed, renamed and
   changed manifests, resources and scripts.
@@ -79,9 +79,12 @@ for isolated consumers. Read the referenced owner before changing that contract.
   review. Leaf reviewers/validation stay read-only; no other GitHub mutation
   or submission is authorized. Preserve separate technical prose review, followed by
   `stop-bullshit` checks of material and feedback, including isolated prompts.
-  Preserve AGENTS' PR ban on inaccessible local evidence and same-environment
-  handoff exception. Keep `stop-bullshit` as the single detailed audit owner
-  and its user-challenge trigger; prose editing remains a separate role.
+  Preserve AGENTS' ban on local paths in anything delivered beyond the user and
+  its same-environment exception for the user's reports and handoffs. Upstream's
+  GitHub links after a push (`99cf34a`) are integrated there, narrowed to such
+  deliveries, by the user's 2026-11-19 decision. Keep `stop-bullshit` as the
+  single detailed audit owner and its user-challenge trigger; prose editing
+  remains a separate role.
   `gh-review-own-pr` owns the confirmed Copilot quota exception; other missing
   reviewer results still require explicit authorization to continue.
 - **TT knowledge:** public `agent-guidance/tt-metal/` retains API/measurement
