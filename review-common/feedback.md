@@ -29,28 +29,56 @@ permissions or delegation rules.
 
 ## Findings and isolated context
 
-Retain one concrete, high-confidence issue per finding. Establish the triggering
-conditions, observed behavior or violated invariant, and impact. Explain the
-contract the fix must satisfy, then give a specific code or test suggestion.
-Cite the smallest relevant changed location and any applicable authoritative
-reference, explaining why it applies. The comment must carry the causal argument
-without making the reader reconstruct it from links.
+Establish the problem, why it occurs, and what outcome this PR promises. Use the
+description, base behavior, and relevant callers, issues, or design history to
+understand the constraints. For staged work, identify the contribution promised
+here. Qualify conclusions that depend on an unverified cause or unclear scope.
 
-Before judging a changed interface or data flow, trace the relevant behavior
-across its callers and stages. Establish what each material value represents, why
-it is needed, and how its role or ownership changes from production to later use.
-Distinguish algorithm or protocol requirements from choices in the current
-representation. If a relationship is unclear, locate the ambiguity and explain
-its concrete effect on implementation, use, or maintenance; the presence of fields
-or documentation alone does not establish a coherent contract. Do not turn a
-preferred presentation into a correctness finding.
+### Identify defects
 
-Prioritize correctness, concurrency, security, compatibility, resource lifetime,
-test coverage, and material maintainability in changed behavior. Use surrounding
-code to establish impact. Exclude speculative and style-only findings.
-A no-finding result is valid. Preserve material uncertainty and required reviewer
-prefixes. Use connected prose without a mandatory three-part template or generic
-background.
+- Give a minimal trigger, the required behavior, what the code does, and the
+  consequence. For input validation or construction, show which valid input is
+  rejected or fails to build, or which invalid input is accepted. Compare with
+  the base before calling a gap in new support a regression. Consider concurrency,
+  security, compatibility, and resource lifetime where they affect the contract.
+- For a changed interface, trace what each material value means, who owns it,
+  and how callers use it. Distinguish protocol requirements from representation
+  choices. Explain the concrete effect of any ownership or contract ambiguity.
+- Distinguish test collection, fixture setup, a wrong expected value or
+  comparison, and a missing case or assertion. Say what the test verifies and
+  which faulty behavior can pass. If both implementation and test need changes,
+  identify the fix and the check that catches it.
+
+### Propose improvements
+
+1. **Would merging this PR resolve the underlying problem?** Trace the original
+   case to the outcome the caller would observe after merge. If the concern
+   survives, show where and why. Explain which different approach would address
+   the cause and what observation would establish success.
+2. **How well does each material implementation choice serve its intent?** Even
+   when the code works, compare it with a feasible alternative under the same
+   constraints. For efficiency, identify the workload and the extra work or
+   measured cost. Distinguish a count of operations from a measured change in
+   latency or throughput. Request a measurement when it could change the decision.
+   For structure, compare the responsible layer, abstraction, or established pattern.
+   Name a concrete benefit for a caller or maintainer and the trade-off it brings.
+
+### Report actionable findings
+
+Keep one concrete, high-confidence finding per comment at the smallest relevant
+changed location. Explain its consequence, the proposed action, and what the
+cited sources establish. Say whether the PR needs the change before merge or
+it is a suggestion, and why. Omit speculative or style-only preferences. A review
+may have no findings. Preserve required prefixes and material uncertainty. Use
+connected prose and only the detail each finding needs.
+
+Prefer the smallest coherent change at the layer that owns the behavior. For a
+test request, give the input and expected result that distinguish the alternatives.
+Use component helpers or direct inputs, and widen to integration only if a local
+test cannot observe the failure. When a short repository pattern fits, adapt it
+as a code suggestion and cite the example.
+
+### Isolated reviewers
 
 Before preparing isolated leaf prompts, read
 [stop-bullshit](../stop-bullshit/SKILL.md). Supply this contract, the applicable
