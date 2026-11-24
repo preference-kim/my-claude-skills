@@ -105,7 +105,10 @@ the approved public key on the named destination account. A destination receivin
 an inbound login needs only that public key. Fleet bootstrap enrolls a new
 configuration consumer and has a separate scope.
 
-A mobile node rule may name a literal `fallback_jump` defined in its context.
+An owner may map a node rule ID to a literal gateway in its context with
+`ssh_fallback_jumps`. Keep owner-specific extensions outside the shared catalog
+so older clients can still render unaffected owners. Compare those owners with
+the previous renderer before publication.
 The renderer emits a fixed, one-second numeric endpoint test. The SSH client
 evaluates it when parsing a matching route, including during `ssh -G`. An
 unreachable endpoint selects the gateway. Validate both branches, gateway trust
