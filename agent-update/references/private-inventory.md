@@ -57,7 +57,9 @@ Complete source review before publishing a new inventory. The maintainer
 encrypts it to the private recipient list, binds approval to the ciphertext
 digest, and publishes the private revision before application. Preserve
 independent credential payloads/approvals, registrations and access scope during
-an SSH-only update.
+an SSH-only update. A maintainer can record an explicitly requested standing
+`/etc/hosts` scope as `hosts_scope.apply_on_refresh: true` on the named personal
+owners. Check every selected owner's independent file plan.
 
 ## Author shared SSH routes
 
@@ -94,6 +96,26 @@ home, and verify intended effective routes for every declared connection alias.
 Review each changed rule's consumers in all contexts, including unreachable
 ones. Record unreachable rollout targets as pending, separately from source
 review and offline rendering; local checks do not establish fleet deployment.
+
+For shared-key access requested across devices, persist each target in
+`ssh_verification.required_cluster_key_routes` on every intended source owner.
+Render and validate all of those profiles before publication. An address record
+alone supplies neither an SSH rule nor destination access. Independently verify
+the approved public key on the named destination account. A destination receiving
+an inbound login needs only that public key. Fleet bootstrap enrolls a new
+configuration consumer and has a separate scope.
+
+A mobile node rule may name a literal `fallback_jump` defined in its context.
+The renderer emits a fixed, one-second numeric endpoint test. The SSH client
+evaluates it when parsing a matching route, including during `ssh -G`. An
+unreachable endpoint selects the gateway. Validate both branches, gateway trust
+and key selection. Preserve any previously approved mobile fallback.
+
+An owner may specify `ssh_personal_migrations` mapping a required literal alias
+to a list containing the exact previously reviewed single-host stanza and,
+when present, its exact conditional jump stanza. Approve each owner's
+baseline separately. Capture authenticated server public host keys in that
+owner's `ssh_known_hosts_additions` (`path`, `entries`, `provenance`).
 
 Include explicitly requested connection aliases when checking context coverage.
 For a local-key requirement, the shared rules must select that key without `-i`

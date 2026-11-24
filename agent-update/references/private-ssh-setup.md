@@ -9,6 +9,8 @@ stage's verification and records.
 1. Read this profile's config/include plans from its last approved version-one
    inventory revision, with the same approval-digest checks. Without that
    snapshot, no inline stanza is a proven managed copy.
+   An approved exact personal stanza migration follows the same candidate
+   procedure as [an update](private-ssh.md#accept-and-verify-a-change).
 2. An include is managed if it equals the current rendering, an earlier approved
    rendering, or that snapshot's include. Preserve any existing nonmatching
    include as a conflict, whether loaded or not, until the user explicitly

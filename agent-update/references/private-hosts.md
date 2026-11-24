@@ -1,9 +1,11 @@
 # Apply hosts-file plans
 
-Read [private synchronization](private-sync.md) first. Apply this reference only
-to an explicit hosts-file request, on the selected configuration owner. For
-source or profile changes, also read [inventory maintenance](private-inventory.md).
-Inspect `/etc/hosts` on the physical host independently of its home mount.
+Read [private synchronization](private-sync.md) first. On every refresh, including
+same-day runs, apply the approved `/etc/hosts` plan when the validator returns
+`apply_hosts_on_refresh: true` for this physical personal owner and account.
+An explicit hosts request can also select this stage. The standing scope covers
+only `/etc/hosts`. Cloud-init changes and [source or profile edits](private-inventory.md)
+each need explicit scope. Inspect the physical host independently of its home mount.
 
 ## Accept the plan
 
@@ -38,9 +40,15 @@ cannot silently replace a jump route with direct access or change its key.
 ## Apply and verify
 
 Use the common writer lock, exact backup, baseline recheck and guarded replacer.
-Both hosts and cloud-init writes require root authorization: probe with
-`sudo -n true`. Without it, leave a protected candidate and report pending;
-do not change sudo policy or wait for a password.
+First compare bytes, root ownership, mode and name resolution. If current,
+record verification without requesting elevation. A required write needs local
+administrator authorization. Use existing noninteractive sudo if available.
+On an opted-in personal device with an interactive user, use its local sudo or
+native administrator prompt for the reviewed write, with the pinned root-owned
+deployment snapshot. Never collect a password in chat or grant standing sudo.
+If unavailable or declined, save the protected candidate, mark hosts pending,
+and continue independent SSH work. Record the physical owner, inventory revision,
+content digest and result after verification.
 
 If a boot manager regenerates hosts, inspect its effective configuration and
 datasource overrides. An approved cloud-init plan may install

@@ -13,16 +13,17 @@ Keep private state under `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`
 | Explicit source review, inventory maintenance or device registration | [Inventory maintenance](private-inventory.md) |
 | Explicit deployment path migration | [Path migration](private-deployment.md#explicit-path-migration) |
 | Explicit server bootstrap or fleet-key lifecycle work | [Bootstrap and fleet keys](private-bootstrap.md) |
-| Explicit hosts-file changes | [Hosts plans](private-hosts.md) |
+| Every refresh with verified `apply_hosts_on_refresh: true`, or explicit hosts-file changes | [Hosts plans](private-hosts.md) |
 | Explicit HF credential setup, repair or synchronization | [HF payload](private-hf.md) |
 | Explicit GitHub credential setup, repair or synchronization | [GitHub payload](private-github.md) |
 
 Routine SSH consumes the approved repository, including first setup and its
-cluster key. It does not authorize source review, enrollment, remote rollout,
-hosts/cloud-init writes or HF/GitHub payloads. The discord-relay payload is the
-user-approved exception: every refresh installs it on registered personal
-devices only. A generic server setup also does
-not authorize hosts-file or token changes. Scope each requested payload and
+cluster key. Each refresh also consumes the current personal owner's approved
+`/etc/hosts` plan when the profile validator returns `apply_hosts_on_refresh: true`.
+A missing flag defaults off. Report the hosts outcome independently of SSH.
+Registered personal devices also receive the approved discord-relay payload.
+Source review, enrollment, remote rollout, cloud-init and HF/GitHub payloads
+require their own scope. Scope each requested payload and
 target independently; fleet decryption capability does not grant installation
 authority.
 
@@ -30,7 +31,9 @@ authority.
 
 1. Read registration at `~/.config/agent-update/private-sync.json`. Validate each
    consumed registration, inventory and approval document against its public
-   schema under `<dotfiles>/schemas`. Require the registration, key
+   draft-2020-12 schema under `<dotfiles>/schemas`. If the host lacks a validator,
+   use Python `jsonschema` in a private-state virtual environment and validate
+   the full documents before device binding or writes. Require the registration, key
    directories and private checkout to belong to the current account and be
    inaccessible to others (directories 0700, files 0600). Resolve configuration
    paths literally, never as shell code.

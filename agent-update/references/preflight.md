@@ -11,7 +11,8 @@ preflight here and use [private synchronization](private-sync.md).
 
 - **Daily:** session-start refresh. If private-state `last-successful-sync`
   contains today's local date, skip public repository/CLI work. Still perform
-  cleanup, complete manifest/link verification and approved SSH fetch/drift checks.
+  cleanup, complete manifest/link verification, approved SSH checks and the
+  current owner's opted-in hosts check.
 - **Forced:** `/agent-update`, `$agent-update` or an explicit refresh runs all
   stages regardless of date.
 - **Requested edit:** use the review-only path below for an isolated proposal.
@@ -23,8 +24,9 @@ preflight here and use [private synchronization](private-sync.md).
   run public CLI updates, cleanup, installation or upstream reconciliation and
   leaves the daily stamp unchanged, unless refresh was also requested.
 
-Generic refresh authorizes neither source review/bootstrap nor hosts-file or
-HF/GitHub writes. Private state is
+A refresh applies an approved hosts plan only on the registered personal owner
+that opted in. Source review, bootstrap, cloud-init and HF/GitHub writes have
+separate explicit scopes. Private state is
 `${XDG_STATE_HOME:-$HOME/.local/state}/agent-update`.
 
 ## Review-only instruction proposals

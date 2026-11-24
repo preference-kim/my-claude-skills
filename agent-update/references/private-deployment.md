@@ -50,7 +50,12 @@ A routine refresh does not migrate installed paths. Changed paths or a missing
 prior path baseline are a conflict before any key or managed-file write. Resolve
 legacy records from the prior pinned configuration and verified installed files;
 if that cannot establish ownership and paths, report the missing evidence rather
-than treating the host as a new installation.
+than treating the host as a new installation. A verified include that previously
+did not use the key can acquire its first key at the same approved path. Recover
+a legacy path from the prior pinned deployment or approved key registry and
+check the verified include/config and both local key paths. A matching public
+identity or absent pair permits adoption. Preserve independent occupants and
+unknown or conflicting prior paths.
 
 For an explicitly authorized migration, prepare a plan for the owning host/account
 with old and new paths, pinned configuration and payload revisions, exact baselines,

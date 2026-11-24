@@ -75,6 +75,8 @@ independent public refresh work.
      the inventory revision is unchanged. After configuration checks pass,
      record its approved revision, digest, renderer/deployment revisions and
      verified include/key paths.
+   - An exact approved personal migration with remaining work also takes the Update
+     path, even when the verified include is already current.
    - **Update:** include equals `last-verified-rendering` but the new rendering
      differs. Follow the update checks below.
    - **Conflict:** include differs from its verified baseline, or the Include
@@ -88,7 +90,14 @@ independent public refresh work.
 
 For Update or First setup, apply the effective-configuration checks below.
 The approved delta authorizes managed changes; unrelated personal rules remain.
-An overlapping personal rule is a conflict. Missing dependencies or unsupported
+For a profile with `ssh_personal_migrations`, render the personal candidate with
+`scripts/render-private-ssh.py --profile <owner> --personal-config <current-config>`
+and verified inventory on stdin. This removes complete approved legacy stanzas,
+if present. With an absent config skip this command and use the first-setup
+Include candidate with a null write baseline.
+A changed or duplicated stanza, hidden personal override, or unrelated change in
+effective options is a conflict. Check the approved replacement and all retained
+aliases. Other overlapping personal rules remain conflicts. Missing dependencies or unsupported
 client options fail the stage before writing. New/changed routes and jump
 helpers must carry an explicit IP or resolvable DNS `HostName`, without a hosts
 write. Probe each affected existing route before writing to establish whether it
@@ -139,7 +148,11 @@ accepts that key. Public-key registration on the destination requires explicit
 target authorization and the common backup, lock and concurrent-write checks.
 
 Read the owning profile's optional `ssh_verification` from the approved inventory
-before selecting probes. `expected_hostnames` maps a literal route alias to its
+before selecting probes. Include each `required_cluster_key_routes` alias as an
+explicit current-owner probe on every refresh. Require normal effective key
+selection and the independently approved distributed fingerprint accepted by
+the destination. An alternate file key, local override or agent cannot pass.
+`expected_hostnames` maps a literal route alias to its
 allowed returned hostnames; use canonical node hostnames for other routes.
 Missing expectations remain unresolved: do not accept a probe's observed hostname
 as its own expectation. Establish expectations during explicit inventory
@@ -204,9 +217,10 @@ aliases and representative local wildcard matches. Repeated identity/certificate
 options are ordered lists.
 
 A new name takes candidate values. An existing name may change only where the
-removed proven managed copy or previous include supplied the old value and the
+removed proven managed copy, exact approved personal migration, or previous
+include supplied the old value and the
 candidate include supplies the new one; record both. Other differences defeat
-or drop personal rules. Also evaluate personal rules alone, without the Include,
+or drop personal rules. Also evaluate the retained personal rules after exact migration, without the Include,
 against empty config: any different value they set for a managed name is a
 conflict, including hidden rules for new names. An identical hostname alone
 does not prove route/authentication equivalence.
@@ -226,6 +240,12 @@ Before probes, check trust for the approved destination, port and jump route
 under hostname, address, `HostKeyAlias` and prior names. Reuse existing trust;
 renaming does not make a known server a first contact. A saved or approved key
 mismatch stops that route; preserve the saved key and report it.
+
+When an owner has approved `ssh_known_hosts_additions`, compare its public keys
+with saved trust for the endpoint, address and aliases. Stop on a same-algorithm
+mismatch or revocation. Append missing approved pins at the planned known-hosts
+path under the common lock before probing. Preserve existing entries and verify
+the new route with strict checking.
 
 For a managed server without trust, compare any approved fingerprint before
 recording. If none exists, the stage authorizes recording the first presented
