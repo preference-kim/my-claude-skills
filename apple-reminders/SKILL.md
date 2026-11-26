@@ -12,6 +12,8 @@ metadata:
 
 Use `remindctl` for Apple Reminders on macOS. It uses Apple's public EventKit APIs, so changes sync through the normal Reminders/iCloud path.
 
+When handling a request from a cloud agent, delegate the reminder operation to a local Codex task on the connected Mac. Have that task load this skill, run `remindctl`, and return the saved ID, requested times, and URL from a fresh read. If another shell cannot reach EventKit, use this same Mac task to verify the item before retrying a write.
+
 ## Prerequisites
 
 - macOS 14+ with Reminders.app
