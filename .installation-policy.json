@@ -2,6 +2,7 @@
   "agent-handoff": "user",
   "agent-takeover": "user",
   "agent-update": "user",
+  "apple-reminders": "user",
   "better-prompt": "user",
   "gh-review-other-pr": "user",
   "gh-review-own-pr": "user",

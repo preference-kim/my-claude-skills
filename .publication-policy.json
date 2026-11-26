@@ -7,6 +7,8 @@
     ".publication-policy.json",
     "LICENSE",
     "README.md",
+    "apple-reminders/SKILL.md",
+    "apple-reminders/LICENSE",
     "agent-handoff/SKILL.md",
     "agent-handoff/agents/openai.yaml",
     "agent-handoff/references/content.md",
