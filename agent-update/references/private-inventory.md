@@ -8,8 +8,12 @@ source revisions, network scopes, preserved blocks and deployment targets privat
 ## Register or reconfigure a device
 
 Establish exact hostname, OS account, role and profile from the device and the
-user's request. Inspect available keys/routes and ask only for unresolved role
-or access choices. Controller capability does not determine device role or hosts
+user's request. Each development-server profile declares `development_stack`
+as `TT`, `HAPI` or `None`; personal-device profiles omit it. A stack recorded
+under `pending_enrollment` can supply the choice at first setup. Verify target
+identity and enrollment authority before creating the profile. Inspect available
+keys/routes and ask only for unresolved role, stack or access choices.
+Controller capability does not determine device role or hosts
 scope. For server setup, follow [bootstrap](private-bootstrap.md). A trusted
 personal device obtains the fleet keys there and registers its own profile,
 paths and network assumptions rather than copying another device's registration.

@@ -78,17 +78,23 @@ block after link creation/removal.
 
 ## Link the host environment
 
-On every refresh, check additive links to tracked settings; write only missing
-entries and preserve surrounding startup text. Tracked-file updates then arrive
-through dotfiles pulls.
+On a registered `development-server`, validate the approved private inventory
+and registration as described in [private synchronization](private-sync.md).
+Use the validator's `development_stacks` object to write one
+`<exact hostname> <stack>` line per entry, sorted by hostname, to
+`~/.config/agent-update/development-stacks` (0600). Use the private writer
+lock, backup and atomic replacement rules. Install this map before the shell
+source line, including for hosts with a delegated SSH owner. Personal devices
+receive private synchronization only for their environment. Skip these Git,
+tmux and shell settings on personal and unregistered hosts.
 
-- Every host: prepend a missing `~/.gitconfig` include of
+- Prepend a missing `~/.gitconfig` include of
   `<dotfiles>/git/config` so local values retain precedence. Report effective
   `git config user.name` and `git config user.email` before/after; `--global`
   ignores includes. A change indicates an absent local value, not an override.
-- Every host: link absent or identical `~/.tmux.conf` to
+- Link absent or identical `~/.tmux.conf` to
   `<dotfiles>/.tmux.conf`; keep a different real file as a reported override.
-- Only a registered `development-server`: ensure the login shell's startup file
+- Ensure the login shell's startup file
   sources the tracked fragment (`~/.bashrc` → `bash/bashrc`, `~/.zshrc` →
   `zsh/interactive.zsh`). Any existing source of that path counts; otherwise
   append `[ -r "<path>" ] && . "<path>"`. Personal/unregistered hosts' startup
