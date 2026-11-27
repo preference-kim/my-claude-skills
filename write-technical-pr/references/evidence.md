@@ -36,13 +36,10 @@ implying no benefit. Narrow the claim unless the task requires the missing
 experiment. Description writing alone does not authorize experiments or
 implementation changes.
 
-For performance results, place a compact method description beside the tables:
-the repository script/test entry point; clock source and timed boundary (for
-example, device timestamps or host wall time around trace replay); profiler
-state; repetitions, aggregation, and whether inputs/randomness vary. State the
-hardware, workload, and configuration differences that affect comparability.
-Keep full commands and setup in a collapsed reproduction block. A unit such as
-microseconds does not identify what was timed.
+Beside performance results, identify the clock and the timed boundaries, such as
+host wall time around trace replay. State profiler status, repetitions,
+aggregation, and whether inputs or randomness varied. Name the hardware,
+workload, and configuration differences that affect comparability.
 
 Distinguish per-call statistics from averages over repeated calls and aggregates
 of those averages. For data-dependent work, explain what variation the reported
@@ -72,11 +69,12 @@ and prefer a formula when it communicates work better than a long integer.
 
 ## Reproduction and coverage
 
-For every reported experiment, include its exact command in a fenced `bash` block:
-repository-relative working directory, required environment and inputs, and exact
-test/benchmark selection. The procedure must work without local aliases, private
-wrappers, undeclared state, or machine-specific absolute paths. A simplified
-procedure is a verified reproducer only if that version was checked.
+For each experiment, briefly state the question it answers, the conditions being
+compared, the values to observe, and when in execution to observe them. Give
+enough detail for a reader to implement the measurement independently. Cite a
+shared test or workload when it identifies the setup. Include a short command
+when its options determine the measurement or the user requests it. Describe a
+procedure as verified only if that procedure was run.
 
 Put results and their method, conditions, units, and acceptance/comparison basis
 together within the description policy's visible-body budget. Use tables for

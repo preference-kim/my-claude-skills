@@ -168,7 +168,7 @@ the governing principle. Never compress sentences or drop the core to fit.
 
 Keep the changed contract, measurement method, main results, and limitations
 needed for the review decision visible. Use compact bullets for experimental
-setup. Put derivations, secondary cases, full commands, and detailed evidence in
+setup. Put derivations, secondary cases, and detailed evidence in
 labeled collapsed blocks. Remove repetition and irrelevant detail before moving
 text there; hidden content also needs an explicit reader purpose. Do not meet the
 budget by hiding a material limitation, omitting the contract, or compressing
@@ -176,9 +176,9 @@ names into unexplained shorthand.
 
 Keep the design, contracts, reproduction, and material results self-contained
 across the description and its collapsed blocks.
-Supporting links cannot replace decision-critical facts. Do not include
-local artifact paths or cite local-only files, logs, figures, or working-tree state
-as evidence.
+Supporting links cannot replace decision-critical facts. Omit local artifact
+paths and embedded source or data bundles, including encoded archives, from
+the entire description. Cite shared, accessible sources for evidence.
 
 For experiments, quantitative claims, correctness coverage, performance comparisons,
 or figures, read [evidence contracts](evidence.md) before reporting them.
